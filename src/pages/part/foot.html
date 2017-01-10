@@ -1,0 +1,28 @@
+<!-- foot start -->
+${__wd_define_debug__ ? `
+<script>
+  // 加载调试面板
+  (function() {
+    var keyword = 'vConsole';
+    var search = window.location.search;
+    if(search.indexOf(keyword) != -1) {
+      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole')}" crossorigin="anonymous"></sc' + 'ript>');
+      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole-elements')}" crossorigin="anonymous"></sc' + 'ript>');
+      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole-resources')}" crossorigin="anonymous"></sc' + 'ript>');
+      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole-sources')}" crossorigin="anonymous"></sc' + 'ript>');
+    }
+  })();
+</script>
+` : ''}
+
+<script>
+  // 统计脚本
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6f8af5890dcd62a8bd38a1e06fa72039";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+<!-- foot end -->
