@@ -127,9 +127,7 @@ let checkVersion = (cb) => {
 
 // 清理构建文件
 let cleanBuild = (cb) => {
-  let ver = getPkgVersion();
-
-  del(['./src/*.html', `./dist/${ver}/**`], {
+  del(['./src/*.html', `./dist/**`], {
     dryRun: false
   }).then((paths) => {
     funLog('cleanBuild', paths.join('\n'));
@@ -198,7 +196,7 @@ gulp.task('check', (cb) => {
 });
 
 // 清理目录
-gulp.task('clean', ['check'], (cb) => {
+gulp.task('clean', (cb) => {
   cleanBuild(cb);
 });
 
@@ -220,12 +218,12 @@ gulp.task('open', ['server'], (cb) => {
 });
 
 // 构建项目（客户端构建）
-gulp.task('clientBuild', ['check'], (cb) => {
+gulp.task('clientBuild', ['check', 'clean'], (cb) => {
   buildProject(cb);
 });
 
 // 构建项目（服务器构建）
-gulp.task('build', (cb) => {
+gulp.task('build', ['clean'], (cb) => {
   buildProject(cb);
 });
 
