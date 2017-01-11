@@ -112,37 +112,3 @@ Linux /etc/hosts
 > [关于p3p简洁策略,以及浏览器的支持情况.](http://www.cnblogs.com/_franky/archive/2011/03/16/1985954.html)  
 > [记一次iphone 微信内置浏览器跨域无法获取cookie问题的解决方法](http://blog.csdn.net/zhx19920405/article/details/51417250)  
 > [safari浏览器cookie问题](http://www.cnblogs.com/xiaoheimiaoer/p/4228873.html)  
-
-## 构建部署
-
-[基于 Jenkins 和 Git 实现服务器构建和发布](http://weidai.wiki/pages/viewpage.action?pageId=2332225)  
-
-> ### 准备工作
-> #### Git Repository
-> 1. 待发布的 Git 仓储，如 git@git.weidai.work:group/project.git 仓储。  
-> 2. 待发布的 Git 分支，如 dev-v1.0.0 分支。  
-> 3. 仓储根下 /dist/ 目录，如 /dist/1.0.0/home.index.html 文件。  
-> 4. [可选]仓储根下 /package.json 文件，含有 dependencies 或 devDependencies 节点。  
-> 5. [可选]仓储根下 /gulpfile.js 文件，含有 build 任务。  
-> #### Jenkins Job
-> 1. 向配置管理员（王冬辉） 申请创建各个环境的 Job 配置。  
-> 2. 提供项目的 Git 仓储地址和默认发布的 Git 分支名。  
-> 3. 告知是否存在 /package.json 文件，即是否需要安装项目依赖。  
-> 4. 告知是否存在 /gulpfile.js 文件，即是否需要执行构建任务。  
-> 5. 申请为 Job 分配相应的管理人员和操作权限。  
-> ### 构建发布
-> #### 环境配置
-> 1. node v6.9.2  
-> 2. npm 3.10.9  
-> 3. gulp 3.9.1  
-> #### 平台流程
-> 1. Jenkins 平台为每个 Job 分配相应的工作目录，可手工或自动清理该目录。  
-> 2. 找到相应 Job 后，触发 Build 或 Build with Parameters 操作。  
-> 3. 填写需要发布的 Git 分支名，生产环境固定为 master 分支。  
-> 4. 拉取指定的 Git 仓储和分支，放置于相应的工作目录。  
-> 5. [可选]执行 npm install 命令，查找 /package.json 文件，安装 npm 依赖。  
-> 6. [可选]执行 gulp build --env=<dev|test|prod> 命令，查找 /gulpfile.js 文件，调用 build 任务。  
-> 7. 增量复制 /dist/ 目录下文件，至 nginx 服务器指定目录下，如 /usr/share/nginx/static/fed/group/project/ 目录。  
-> 8. 生产环境发布后，平台会自动刷新当前目录在 CDN 中的缓存，刷新功能有每日次数限制。  
-> 9. 生产环境发布后，平台会在当前分支自动创建标签，格式为 release_yyyy-MM-DD_${BUILD_NUMBER} 标准。  
-> 10. 可通过域名访问，检查是否部署成功，如 https://static.wdai.com/static/fed/group/project/1.0.0/home.index.html 地址。  
