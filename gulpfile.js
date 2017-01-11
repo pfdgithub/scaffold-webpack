@@ -25,7 +25,9 @@ let taskLog = (name, ...message) => {
 /*
 // 获取任务错误
 let getTaskError = (name, message) => {
-  return new gutil.PluginError(`[Task] ${name}`, message);
+  return new gutil.PluginError(`[Task] ${name}`, message, {
+    showStack: true
+  });
 };
 */
 // 输出函数日志
@@ -35,7 +37,9 @@ let funLog = (name, ...message) => {
 
 // 获取函数错误
 let getFunError = (name, message) => {
-  return new gutil.PluginError(`[Funtion] ${name}`, message);
+  return new gutil.PluginError(`[Funtion] ${name}`, message, {
+    showStack: true
+  });
 };
 
 // 获取 package 中版本号
