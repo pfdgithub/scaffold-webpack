@@ -19,6 +19,8 @@
   },
   "extends": ["eslint:recommended", "plugin:react/recommended"],
   "rules": {
+    "no-console": 1,
+    "no-debugger": 1,
     "no-var": 1,
     "block-scoped-var": 1,
     "no-use-before-define": 1,
