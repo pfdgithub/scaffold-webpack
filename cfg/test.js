@@ -34,11 +34,12 @@ let getModules = () => {
 // 获取插件
 let getPlugins = () => {
   let param = defaults.getDefinePluginParam({
+    defineEnv: 'test',
+    defineDebug: true,
     publicPagePath,
     publicPageFullname,
     publicAssetPath,
-    publicRpcPath,
-    defineDebug: true
+    publicRpcPath
   });
   param['process.env.NODE_ENV'] = JSON.stringify('production');
 

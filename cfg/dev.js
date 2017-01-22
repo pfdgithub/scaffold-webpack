@@ -96,11 +96,12 @@ let getModules = () => {
 // 获取插件
 let getPlugins = () => {
   let param = defaults.getDefinePluginParam({
+    defineEnv: 'dev',
+    defineDebug: true,
     publicPagePath,
     publicPageFullname,
     publicAssetPath,
-    publicRpcPath,
-    defineDebug: true
+    publicRpcPath
   });
 
   return [].concat(
