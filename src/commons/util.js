@@ -291,34 +291,55 @@ util.stringToDate = (dateString) => {
 };
 
 //千分位分割数字
-util.thousandSeparator = (number) => {
-  if (number) {
-    let strNum = number.toString();
-    let match = strNum.match(/^(\d+)(\.\d+)?$/);
-    if (match) {
-      let integer = match[1];
-      let fraction = match[2] ? match[2] : '';
-      if (integer.length > 3) {
-        let source = integer.split('');
-        let target = [];
+util.thousandSeparator = (number, len) => {
+    let strNum = "";
+    let decLen = 0;
 
-        for (let i = 0; i < source.length; i++) {
-          let index = (source.length - 1) - i;
-          let item = source[index];
+    if (typeof (len) === "number" && len > 0) {
+      decLen = len;
+    }
 
-          target.push(item);
-          if (((i + 1) % 3) == 0 && i != (source.length - 1)) {
-            target.push(',');
+    if (typeof (number) === "number") {
+      strNum = number.toFixed(decLen);
+    }
+    else if (typeof (number) !== "undefined") {
+      strNum = number.toString();
+    }
+
+    if (strNum) {
+      let match = strNum.match(/^(\-)?(\d+)(\.\d+)?$/);
+      if (match) {
+        let symbol = match[1] ? match[1] : '';
+        let integer = match[2] ? match[2] : '';
+        let fraction = match[3] ? match[3] : '';
+
+        if (integer.length > 3) {
+          let source = integer.split('');
+          let target = [];
+
+          for (let i = 0; i < source.length; i++) {
+            let index = (source.length - 1) - i;
+            let item = source[index];
+
+            target.push(item);
+            if (((i + 1) % 3) == 0 && i != (source.length - 1)) {
+              target.push(',');
+            }
           }
+
+          integer = target.reverse().join('');
         }
 
-        integer = target.reverse().join('');
-        return integer + fraction;
+        for (let i = 0; i < decLen; i++) {
+          fraction = fraction + "0";
+        }
+        fraction = fraction.substring(0, (decLen === 0 ? decLen : (decLen + 1)));
+
+        return symbol + integer + fraction;
       }
     }
-  }
 
-  return number;
+    return number;
 };
 
 //过滤字符串中特殊字符，避免破坏JSON结构。
