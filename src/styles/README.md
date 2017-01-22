@@ -1,8 +1,5 @@
 # 公共样式目录
 
-antDesign [Ant Design 字体](https://ant.design/docs/resource/download-cn)  
-fontAwesome [Font Awesome 字体](http://fontawesome.io)  
-
 base.less 基础样式。  
 util.less 辅助功能。  
 
