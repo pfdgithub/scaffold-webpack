@@ -69,15 +69,17 @@ nattyFetch.setGlobal({
   mockUrlSuffix: '',
   // 是否取消上一次没有完成的请求。
   overrideSelfConcurrent: false,
+  // 配置可用的插件。
+  plugins: [
+  ],
+  // method 设置为 POST 时采用何种格式向服务端发送数据。
+  postDataFormat: 'FORM',
   // 请求成功时的数据处理函数，该函数接收到的参数是下文的"数据结构约定"中content的值。
   process: (content, vars) => {
     log('process', content, vars);
 
     return content;
   },
-  // 配置可用的插件。
-  plugins: [
-  ],
   // 在请求失败(网络错误，超时，success为false等)时是否进行请求重试。
   retry: 0,
   // 是否开启缓存功能。
