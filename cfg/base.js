@@ -167,7 +167,6 @@ module.exports = {
     }
   },
   output: {
-    // crossOriginLoading: 'anonymous',
     // sourceMapFilename: '[file].map', // [file][id][hash]
     // devtoolModuleFilenameTemplate: 'webpack:///[resource-path]', // [resource][resource-path][loaders][all-loaders][id][hash][absolute-resource-path]
     // devtoolFallbackModuleFilenameTemplate: 'webpack:///[resource-path]', // [resource][resource-path][loaders][all-loaders][id][hash][absolute-resource-path]
