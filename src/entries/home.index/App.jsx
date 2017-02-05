@@ -25,11 +25,13 @@ class App extends EntryBase {
   render() {
     return (
       <div className={cls(style.App)}>
-        <img src={logo} onClick={this.testState} />
+        <img src={logo} />
         <br/>
-        <span>点击图片刷新</span>
+        <span onClick={this.testState}>点击此处模拟数据</span>
         <br/>
         {JSON.stringify(this.state.output)}
+        <br/>
+        <span onClick={this.codeSplitting}>点击此处加载视图</span>
       </div>
     );
   }
@@ -44,6 +46,13 @@ class App extends EntryBase {
     })).catch(this.unmountCheck((error) => {
       alert(error.message);
     }));
+  }
+
+  codeSplitting = () => {
+    require.ensure([], (require) => {
+      let TimerContainer = require('views/TimerContainer').default;
+      TimerContainer.init();
+    });
   }
 }
 
