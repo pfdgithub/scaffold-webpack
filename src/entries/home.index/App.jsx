@@ -27,7 +27,7 @@ class App extends EntryBase {
       <div className={cls(style.App)}>
         <img src={logo} onClick={this.testState} />
         <br/>
-        <span>微贷网</span>
+        <span>点击图片刷新</span>
         <br/>
         {JSON.stringify(this.state.output)}
       </div>
