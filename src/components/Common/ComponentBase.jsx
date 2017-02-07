@@ -31,12 +31,11 @@ class ComponentBase extends React.Component {
 
   // 卸载检测——未卸载才执行回调函数
   unmountCheck(callback) {
-    if(this.instanceData.isUnmount) {
-      return undefined;
-    }
-    else {
-      return callback;
-    }
+    return (content) => {
+      if (!this.instanceData.isUnmount) {
+        callback(content);
+      }
+    };
   }
 }
 
