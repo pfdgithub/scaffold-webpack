@@ -27,6 +27,31 @@ let devServerProxy = {
     target: '//127.0.0.1:8000/',
     pathRewrite: {
       '^/proxy/': '/'
+    },
+    onProxyReq: function (proxyReq, req/*, res*/) {
+      /**
+       * 当代理 POST 请求时 http-proxy-middleware 与 body-parser 有冲突。
+       * [Modify Post Parameters](https://github.com/chimurai/http-proxy-middleware/blob/master/recipes/modify-post.md)
+       * [Edit proxy request/response POST parameters](https://github.com/chimurai/http-proxy-middleware/issues/61)
+       * [socket hang up error with nodejs](http://stackoverflow.com/questions/25207333/socket-hang-up-error-with-nodejs)
+       */
+      if (req.method == "POST" && req.body) {
+        // // 使用 application/json 类型提交表单
+        // let bodyData = JSON.stringify(req.body);
+        // proxyReq.setHeader('Content-Type', 'application/json');
+        // proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+        // proxyReq.write(bodyData);
+        // proxyReq.end();
+
+        // 使用 application/x-www-form-urlencoded 类型提交表单
+        let bodyData = Object.keys(req.body).map(function (key) {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(req.body[key])
+        }).join('&');
+        proxyReq.setHeader('Content-Type', 'application/x-www-form-urlencoded');
+        proxyReq.setHeader('Content-Length', bodyData.length);
+        proxyReq.write(bodyData);
+        proxyReq.end();
+      }
     }
   }
 };
