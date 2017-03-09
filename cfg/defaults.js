@@ -6,6 +6,7 @@ let pkg = require('../package.json');
 
 let version = pkg.version; // 项目版本
 let port = 8000; // 调试端口
+let https = false; // 使用 https 协议
 let pageSuffix = '.html'; // 入口页面后缀名
 let assetDir = 'assets'; // 资产文件夹
 let assetFilename = '[name]'; // 资源文件名
@@ -103,6 +104,7 @@ let getDefinePluginParam = (param) => {
 module.exports = {
   version: version,
   port: port,
+  https: https,
   pageSuffix: pageSuffix,
   assetDir: assetDir,
   assetFilename: assetFilename,
