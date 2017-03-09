@@ -1,3 +1,4 @@
+let fs = require('fs');
 let path = require('path');
 let webpack = require('webpack');
 let Autoprefixer = require('autoprefixer');
@@ -223,6 +224,11 @@ module.exports = {
       errorDetails: true,
       colors: true
     },
+    https: defaults.https ? {
+      key: fs.readFileSync(path.join(__dirname, './cert/key.pem'), 'utf8'),
+      cert: fs.readFileSync(path.join(__dirname, './cert/cert.pem'), 'utf8'),
+      cacert: fs.readFileSync(path.join(__dirname, './cert/cert.pem'), 'utf8')
+    } : undefined,
     publicPath: undefined // 必须被具体环境配置所覆盖 output.publicPath
   },
   postcss: function () {
