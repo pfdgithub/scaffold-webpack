@@ -46,18 +46,15 @@ let getPlugins = () => {
   return [].concat(
     base.plugins,
     defaults.getHtmlWebpackPlugins(defaults.verDistPath),
-    // new webpack.optimize.DedupePlugin(), // 谨慎使用重复数据删除插件
     new webpack.DefinePlugin(param),
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     // new webpack.optimize.UglifyJsPlugin({
     //   // mangle: {
     //   //   except: ['React', 'ReactDOM']
     //   // },
-    //   comments: false,
-    //   compress: {
-    //     warnings: false
-    //   }
+    //   sourceMap: true,
+    //   comments: false
     // }),
     new AssetsWebpackPlugin({
       path: defaults.verDistPath,

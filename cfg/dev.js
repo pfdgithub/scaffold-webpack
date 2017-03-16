@@ -152,6 +152,7 @@ let getPlugins = () => {
     base.plugins,
     defaults.getHtmlWebpackPlugins(defaults.srcPath),
     new webpack.DefinePlugin(param),
+    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin()
   );
 };

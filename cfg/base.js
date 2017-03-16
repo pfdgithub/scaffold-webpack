@@ -1,12 +1,16 @@
 let fs = require('fs');
 let path = require('path');
 let webpack = require('webpack');
-let Autoprefixer = require('autoprefixer');
 let HtmlWebpackEventPlugin = require('html-webpack-event-plugin');
 let HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 let ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 let defaults = require('./defaults');
+let postcssPlugins = () => { 
+  return [
+    require('autoprefixer')
+  ];
+};
 
 // 获取入口配置
 let getEntries = () => {
@@ -26,71 +30,148 @@ let getEntries = () => {
 // 获取加载器
 let getModules = () => {
   return {
-    // noParse: false,
-    // unknownContextRequest: '.',
-    // unknownContextRecursive: true,
-    // unknownContextRegExp: /^\.\/.*$/,
-    // unknownContextCritical: true,
-    // exprContextRequest: '.',
-    // exprContextRegExp: /^\.\/.*$/,
-    // exprContextRecursive: true,
-    // exprContextCritical: true,
-    // wrappedContextRegExp: /.*/,
-    // wrappedContextRecursive: true,
-    // wrappedContextCritical: false,
-    // postLoaders: [
-    //   {
-    //     test: '',
-    //     loader: '',
-    //     loaders: [],
-    //     exclude: [],
-    //     include: []
-    //   }
-    // ],
-
-    preLoaders: [
+    rules: [
       {
+        enforce: "pre",
         test: /\.(js|jsx)$/,
-        loader: 'eslint-loader?cache',
+        use: {
+          loader: 'eslint-loader',
+          options: {
+            cache: true
+          }
+        },
         include: defaults.srcPath
-      }
-    ],
-    loaders: [
+      },
       {
         test: /\.css$/,
-        loader: ExtractTextWebpackPlugin.extract('style-loader', 'css-loader!postcss-loader')
+        use: {
+          loader: ExtractTextWebpackPlugin.extract({
+            fallback: {
+              loader: 'style-loader'
+            },
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  importLoaders: 1,
+                  sourceMap: true
+                }
+              },
+              {
+                loader: 'postcss-loader',
+                options: {
+                  plugins: postcssPlugins
+                }
+              }
+            ]
+          })
+        },
+        include: defaults.srcPath
       },
       {
         test: /\.(png|jpg|gif)$/,
-        loader: 'url-loader?limit=8192'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 8192
+          }
+        },
+        include: defaults.srcPath
       },
       {
         test: /\.(ico|mp4|ogg|svg|eot|ttf|woff|woff2)$/,
-        loader: 'file-loader'
+        use: {
+          loader: 'file-loader'
+        },
+        include: defaults.srcPath
       },
       {
         test: /\.html$/,
-        loader: 'html-loader?interpolate&minimize=false&attrs=script:src link:href img:src a:href'
+        use: {
+          loader: 'html-loader',
+          options: {
+            interpolate: true,
+            minimize: false,
+            attrs: 'script:src link:href img:src a:href'
+          }
+        },
+        include: defaults.srcPath
       },
       {
         test: /\.less$/,
+        use: {
+          loader: ExtractTextWebpackPlugin.extract({
+            fallback: {
+              loader: 'style-loader'
+            },
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  importLoaders: 1,
+                  sourceMap: true
+                }
+              },
+              {
+                loader: 'postcss-loader',
+                options: {
+                  plugins: postcssPlugins
+                }
+              },
+              {
+                loader: 'less-loader',
+                options: {
+                  sourceMap: true
+                }
+              }
+            ]
+          })
+        },
         // 非指定目录正常处理
         exclude: [
           defaults.componentPath,
           defaults.viewPath,
           defaults.entryPath
-        ],
-        loader: ExtractTextWebpackPlugin.extract('style-loader', 'css-loader!postcss-loader!less-loader')
+        ]
       },
       {
         test: /\.less$/,
+        use: {
+          loader: ExtractTextWebpackPlugin.extract({
+            fallback: {
+              loader: 'style-loader'
+            },
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  importLoaders: 1,
+                  sourceMap: true,
+                  modules: true,
+                  localIdentName: '[name]-[local]-[hash:base64:5]' // [path][name][local][hash:base64:5]
+                }
+              },
+              {
+                loader: 'postcss-loader',
+                options: {
+                  plugins: postcssPlugins
+                }
+              },
+              {
+                loader: 'less-loader',
+                options: {
+                  sourceMap: true
+                }
+              }
+            ]
+          })
+        },
         // 指定目录启用 CSS Modules
         include: [
           defaults.componentPath,
           defaults.viewPath,
           defaults.entryPath
         ],
-        loader: ExtractTextWebpackPlugin.extract('style-loader', 'css-loader?modules&localIdentName=[name]-[local]-[hash:base64:5]!postcss-loader!less-loader') // [path][name][local][hash:base64:5]
       }
     ]
   };
@@ -101,11 +182,20 @@ let getPlugins = () => {
   return [
     new webpack.NoErrorsPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
-      names: Object.keys(defaults.extractBundle)
+      names: Object.keys(defaults.extractBundle).push('manifest')
     }),
+    new webpack.BannerPlugin({
+      banner: 'Banner'
+    }),
+    // new webpack.LoaderOptionsPlugin({
+    //   minimize: true,
+    //   context: __dirname,
+    //   debug: true
+    // }),
     new HtmlWebpackEventPlugin(),
     new HtmlWebpackHarddiskPlugin(),
-    new ExtractTextWebpackPlugin(`${defaults.assetFilename}.css`, {
+    new ExtractTextWebpackPlugin({
+      filename: `${defaults.assetFilename}.css`, // [id][name][contenthash]
       allChunks: true,
       disable: false
     })
@@ -113,33 +203,17 @@ let getPlugins = () => {
 };
 
 module.exports = {
-  // context: process.cwd(),
-  // target: 'web',
-  // bail: false,
-  // profile: false,
-  // recordsPath: path.join(__dirname, '../compilerState.json'),
-  // recordsInputPath: path.join(__dirname, '../compilerState.json'),
-  // recordsOutputPath: path.join(__dirname, '../compilerState.json'),
-  // amd: {},
-  // loader: {},
-  // node: {
-  //   console: false,
-  //   global: true,
-  //   process: true,
-  //   Buffer: true,
-  //   __filename: 'mock',
-  //   __dirname: 'mock',
-  //   setImmediate: true
-  // },
-  // resolveLoader: {
-  //   moduleTemplates: ['*-webpack-loader', '*-web-loader', '*-loader', '*'],
-  //   modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules'],
-  //   extensions: ['', '.webpack-loader.js', '.web-loader.js', '.loader.js', '.js'],
-  //   packageMains: ['webpackLoader', 'webLoader', 'loader', 'main']
-  // },
   // externals: {
   //   'react': 'React',
   //   'react-dom': 'ReactDOM'
+  // },
+  // performance: {
+  //   hints: "warning",
+  //   maxEntrypointSize: 250000,
+  //   maxAssetSize: 250000,
+  //   assetFilter: (assetFilename) => {
+  //     return !(/\.map$/.test(assetFilename))
+  //   }
   // },
 
   debug: true,
@@ -149,14 +223,7 @@ module.exports = {
   module: getModules(),
   plugins: getPlugins(),
   resolve: {
-    // root: [path.join(__dirname, '..')],
-    // modulesDirectories: ['node_modules'],
-    // fallback: [path.join(__dirname, '..')],
-    // packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
-    // packageAlias: '',
-    // unsafeCache: [],
-
-    extensions: ['', '.jsx', '.js'],
+    extensions: ['.jsx', '.js'],
     alias: {
       commons: path.join(defaults.srcPath, 'commons'),
       components: path.join(defaults.srcPath, 'components'),
@@ -168,20 +235,6 @@ module.exports = {
     }
   },
   output: {
-    // sourceMapFilename: '[file].map', // [file][id][hash]
-    // devtoolModuleFilenameTemplate: 'webpack:///[resource-path]', // [resource][resource-path][loaders][all-loaders][id][hash][absolute-resource-path]
-    // devtoolFallbackModuleFilenameTemplate: 'webpack:///[resource-path]', // [resource][resource-path][loaders][all-loaders][id][hash][absolute-resource-path]
-    // devtoolLineToLine: false,
-    // hotUpdateChunkFilename: '[id].[hash].hot-update.js', //[id][hash]
-    // hotUpdateMainFilename: '[hash].hot-update.json', // [hash]
-    // jsonpFunction: 'webpackJsonp',
-    // hotUpdateFunction: 'webpackHotUpdate',
-    // library: 'libraryName',
-    // libraryTarget: 'var', // var this commonjs commonjs2 amd umd
-    // umdNamedDefine: true,
-    // sourcePrefix: '\t',
-    // crossOriginLoading: false, // false anonymous use-credentials
-
     pathinfo: true,
     filename: `${defaults.assetFilename}.js`, // [name][hash][chunkhash]
     chunkFilename: `${defaults.assetFilename}.js`, // [id][name][hash][chunkhash]
@@ -191,33 +244,10 @@ module.exports = {
   devServer: {
     port: defaults.port,
     inline: true, // there is no inline mode for WebpackDevServer API
-
-    /* webpack-dev-server options */
-
-    // historyApiFallback: false,
-    // proxy: {},
-    // setup: () => {},
-    // staticOptions: {},
-    // clientLogLevel: 'info', // error warning info none
     contentBase: defaults.srcPath,
     hot: true,
     compress: true,
-
-    /* webpack-dev-middleware options */
-
-    // noInfo: false,
-    // quiet: false,
-    // lazy: true,
-    // filename: '[name].js', // output.filename
-    // index: "index.html",
-    // reporter: null,
-    // serverSideRender: false,
-    // watchOptions: {
-    //   aggregateTimeout: 300,
-    //   poll: undefined
-    // },
-    // headers: {},
-
+    publicPath: undefined, // 必须被具体环境配置所覆盖 output.publicPath
     stats: {
       chunkModules: false,
       children: false,
@@ -228,10 +258,6 @@ module.exports = {
       key: fs.readFileSync(path.join(__dirname, './cert/key.pem'), 'utf8'),
       cert: fs.readFileSync(path.join(__dirname, './cert/cert.pem'), 'utf8'),
       cacert: fs.readFileSync(path.join(__dirname, './cert/cert.pem'), 'utf8')
-    } : undefined,
-    publicPath: undefined // 必须被具体环境配置所覆盖 output.publicPath
-  },
-  postcss: function () {
-    return [Autoprefixer];
+    } : undefined
   }
 };
