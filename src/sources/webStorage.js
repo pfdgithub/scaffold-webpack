@@ -1,7 +1,6 @@
 import nattyStorage from 'natty-storage';
 
 let def = {
-  async: false, // 是否以异步方式使用。如果开启，则set/get/has/remove四个方法的返回值都是Promise实例，可以调用then方法。
   key: 'wd', // 缓存对象存储数据所使用的唯一标识。
   tag: 'v1.0' // 缓存的标记，用于判断是否有效。
 };

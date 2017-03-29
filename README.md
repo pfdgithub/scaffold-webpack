@@ -15,7 +15,7 @@ dist/ 构建文件目录。
 src/ 源文件目录。  
 .babelrc Babel 配置文件。  
 .eslintrc ESLint 配置文件。  
-.gitignore Git 配置文件。
+.gitignore Git 配置文件。  
 gulpfile.js Gulp 配置文件。  
 package.json 项目配置文件。  
 
