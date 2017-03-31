@@ -131,7 +131,7 @@ let checkVersion = (cb) => {
 
 // 清理构建文件
 let cleanBuild = (cb) => {
-  del(['./src/*.html', `./dist/**`], {
+  del(['./dist/**'], {
     dryRun: false
   }).then((paths) => {
     funLog('cleanBuild', paths.join('\n'));
@@ -162,6 +162,8 @@ let devServer = (cb) => {
 // 构建项目
 let buildProject = (cb) => {
   let config = getWebpackConfig();
+  let devServer = config.devServer;
+  let statsCfg = devServer.stats;
 
   webpack(config, (err, stats) => {
     if (err) {
@@ -176,12 +178,7 @@ let buildProject = (cb) => {
       return cb(gErr);
     }
 
-    funLog('buildProject', stats.toString({
-      chunkModules: false,
-      children: false,
-      errorDetails: true,
-      colors: true
-    }));
+    funLog('buildProject', stats.toString(statsCfg));
     cb();
   });
 };
@@ -205,7 +202,7 @@ gulp.task('clean', (cb) => {
 });
 
 // 启动开发服务器
-gulp.task('server', ['check'], (cb) => {
+gulp.task('server', [/*'check'*/], (cb) => {
   devServer(cb);
 });
 
@@ -222,7 +219,7 @@ gulp.task('open', ['server'], (cb) => {
 });
 
 // 构建项目（客户端构建）
-gulp.task('clientBuild', ['check', 'clean'], (cb) => {
+gulp.task('clientBuild', [/*'check',*/ 'clean'], (cb) => {
   buildProject(cb);
 });
 

@@ -1,10 +1,13 @@
 let path = require('path');
 let glob = require('glob');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let pkg = require('../package.json');
 
+let name = pkg.name; // 项目名称
 let version = pkg.version; // 项目版本
+let description = pkg.description; // 项目描述
+let timestamp = Date.now(); // 时间戳
+
 let port = 8000; // 调试端口
 let https = false; // 使用 https 协议
 let pageSuffix = '.html'; // 入口页面后缀名
@@ -18,20 +21,12 @@ let entryPath = path.join(srcPath, 'entries'); // 入口脚本路径
 let componentPath = path.join(srcPath, 'components'); // 业务组件路径
 let viewPath = path.join(srcPath, 'views'); // 单页视图路径
 let mockPath = path.join(srcPath, 'mocks'); // 模拟数据路径
-let verDistPath = path.join(distPath, version); // 当前版本的构建文件路径
 
-let extractBundle = { // 提取公共依赖（注意：由于 webpack 的实现机制，被引用最多的 bundle 中会包含初始化代码。）
-  commonBundle: [
-    'commons/base', 'commons/util', 'commons/device', 'commons/config',
-    'sources/db.global', 'sources/db.inner'
-  ],
-  reactBundle: ['react', 'react-dom']
-};
 let entryPages = (() => { // 入口页面列表
   let pageList = [];
   let pattern = path.join(pagePath, '*' + pageSuffix);
 
-  glob.sync(pattern).forEach(function (fullFileName) {
+  glob.sync(pattern).forEach((fullFileName) => {
     let name = path.parse(fullFileName).name;
     pageList.push(name);
   });
@@ -42,10 +37,10 @@ let entryPages = (() => { // 入口页面列表
 // 获取入口页面对象
 let getPublicPageFullname = (publicPagePath) => { // 项目页面全名
   let pageObj = {};
-  entryPages.forEach(function (entryPage) {
+  entryPages.forEach((entryPage) => {
     let separators = entryPage.split('.');
     let temp = pageObj;
-    separators.forEach(function (separator, index, array) {
+    separators.forEach((separator, index, array) => {
       if (index == array.length - 1) {
         temp[separator] = publicPagePath + entryPage + pageSuffix;
       }
@@ -61,34 +56,7 @@ let getPublicPageFullname = (publicPagePath) => { // 项目页面全名
   });
   return pageObj;
 };
-// 获取 html-webpack-plugin 插件配置
-let getHtmlWebpackPlugins = (outputPath) =>{
-  let plugins = [];
 
-  // 获取 html-webpack-plugin 插件配置
-  entryPages.forEach(function (entryPage) {
-    plugins.push(new HtmlWebpackPlugin({
-      template: path.join(pagePath, entryPage + pageSuffix),
-      filename: path.join(outputPath, entryPage + pageSuffix), // 输出至指定目录
-      chunks: [].concat(Object.keys(extractBundle), entryPage),
-      chunksSortMode: 'dependency',
-      hash: true,
-      inject: true,
-      alwaysWriteToDisk: true, // 将内存文件写入磁盘
-      alterAssetTags: function (htmlPluginData) { // 为插入的标签添加 crossorigin 属性，允许跨域脚本提供详细错误信息。
-        let assetTags = [].concat(htmlPluginData.head).concat(htmlPluginData.body);
-        assetTags.forEach(function (assetTag) {
-          if (assetTag.tagName == 'script' || assetTag.tagName == 'link') {
-            assetTag.attributes.crossorigin = 'anonymous';
-          }
-        });
-        return htmlPluginData;
-      }
-    }));
-  });
-
-  return plugins;
-};
 // 获取 DefinePlugin 插件参数
 let getDefinePluginParam = (param) => {
   return {
@@ -102,7 +70,11 @@ let getDefinePluginParam = (param) => {
 };
 
 module.exports = {
+  name: name,
   version: version,
+  description: description,
+  timestamp: timestamp,
+
   port: port,
   https: https,
   pageSuffix: pageSuffix,
@@ -116,12 +88,8 @@ module.exports = {
   componentPath: componentPath,
   viewPath: viewPath,
   mockPath: mockPath,
-  verDistPath: verDistPath,
 
-  extractBundle: extractBundle,
   entryPages: entryPages,
-
   getPublicPageFullname: getPublicPageFullname,
-  getHtmlWebpackPlugins: getHtmlWebpackPlugins,
   getDefinePluginParam: getDefinePluginParam
 };

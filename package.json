@@ -8,6 +8,7 @@
     "clean": "gulp clean",
     "server": "gulp server --env=dev",
     "open": "gulp open --env=dev",
+    "build:dev": "gulp clientBuild --env=dev",
     "build:test": "gulp clientBuild --env=test",
     "build:prod": "gulp clientBuild --env=prod"
   },
@@ -31,7 +32,6 @@
     "cookie-parser": "^1.4.3",
     "css-loader": "^0.27.3",
     "del": "^2.2.2",
-    "es3ify-loader": "^0.2.0",
     "eslint": "^3.18.0",
     "eslint-loader": "^1.7.0",
     "eslint-plugin-react": "^6.10.3",

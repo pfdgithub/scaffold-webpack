@@ -28,6 +28,7 @@ npm run check 检查 Git 分支名与 package.json 版本号是否一致。
 npm run clean 清理构建目录和临时文件。  
 npm run server 启动本地静态服务器（开发环境）。  
 npm run open 启动本地静态服务器，并打开浏览器（开发环境）。  
+npm run build:dev 构建项目（开发环境）。  
 npm run build:test 构建项目（测试环境）。  
 npm run build:prod 构建项目（生产环境）。  
 
@@ -94,7 +95,7 @@ Linux /etc/hosts
 
 ## 跨域配置
 
-[异步跨域 cookie 在 IOS 和 Andriod 的 Safari 或 WebView 中无法写入](http://weidai.wiki/pages/viewpage.action?pageId=2330760)  
+[异步跨域 cookie 在 IOS 和 Andriod 的 Safari 或 WebView 中无法写入](http://blog.codemonkey.cn/archives/546)  
 
 > 当入口页面与后端接口没有部署在同域（协议/域名(IP)/端口）时，需要进行跨域配置。  
 > 简单请求时，不能携带跨域凭证信息（如 cookie ），只需要后端接口返回 Access-Control-Allow-Origin:* 协议头即可。  
