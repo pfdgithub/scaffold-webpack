@@ -1,7 +1,10 @@
 {
   "presets": [
     [
-      "es2015"
+      "es2015",
+      {
+        // "modules": false // 暂时不启用，react-hot-loader v1 目前不支持
+      }
     ],
     "stage-0",
     "react"
