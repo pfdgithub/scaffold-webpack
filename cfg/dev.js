@@ -58,14 +58,14 @@ let getModules = () => {
     let test = rule.test;
     let use = rule.use;
     // 找到处理 .js 和 .jsx 文件的普通 loader 后在其 use 数组中添加新的 loader
-    if((enforce === undefined || enforce === '' || enforce === 'normal')
-      && (Object.prototype.toString.call(test) === '[object RegExp]' && test.source === '\.(js|jsx)$')
+    if ((enforce === undefined || enforce === '' || enforce === 'normal')
+      && (Object.prototype.toString.call(test) === '[object RegExp]' && test.source === '\\.(js|jsx)$') //注意转移字符
       && Object.prototype.toString.call(use) === '[object Array]') {
-        // 在数组开头添加
-        use.unshift({
-          loader: 'react-hot-loader'
-        });
-      }
+      // 在数组开头添加
+      use.unshift({
+        loader: 'react-hot-loader'
+      });
+    }
   });
 
   return base.module;
