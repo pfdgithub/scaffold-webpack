@@ -42,7 +42,7 @@ let getEntries = () => {
 
   for (let key in base.entry) {
     newEntries[key] = [
-      `webpack-dev-server/client?http://127.0.0.1:${defaults.port}/`, // Automatic Refresh - Inline mode
+      `webpack-dev-server/client?${defaults.https ? 'https' : 'http'}://127.0.0.1:${defaults.port}/`, // Automatic Refresh - Inline mode
       'webpack/hot/only-dev-server' // Automatic Refresh - Hot Module Replacement
     ].concat(base.entry[key]);
   }
