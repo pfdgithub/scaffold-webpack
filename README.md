@@ -2,6 +2,10 @@
 
 脚手架，基于 [webpack](https://github.com/webpack/webpack) 搭建。  
 
+注意：  
+react-router v4 API不兼容老版本  
+react-hot-loader v3 API不兼容老版本  
+
 # 分支说明
 
 react 使用 [react](https://github.com/facebook/react) 作为 View 层。  
@@ -34,13 +38,23 @@ npm run build:prod 构建项目（生产环境）。
 
 # 注意事项
 
-适度使用 ES6 和 ES7 语法，使用前需检查 Babel 支持程度。对于低版本浏览器的支持，根据情况需要 babel-polyfill es5-shim es5-sham console-polyfill JSON 支持。  
+适度使用 ES6 和 ES7 语法，使用前需检查 Babel 支持程度。根据情况选择 core-js babel-plugin-transform-runtime babel-polyfill 做兼容处理。  
+对于低版本浏览器的支持，可能还需要 es5-shim es5-sham console-polyfill JSON 做兼容处理。  
+默认情况下 Babel 只转换“语法”，不转换“内置函数”、“静态方法”、“实例方法”。  
+使用 core-js 可有针对性的选择需要使用的“内置函数”、“静态方法”、“实例方法”，并可控制是否注入全局命名空间，但维护量工作量较大。  
+使用 babel-plugin-transform-runtime 配合 babel-runtime 可支持“内置函数”、“静态方法”，不污染全局命名空间，适用于开发工具库。  
+使用 babel-polyfill 可大而全的支持“内置函数”、“静态方法”、“实例方法”，但会污染全局命名空间，适用于开发应用程序。  
 参考：  
+[core-js](https://github.com/zloirock/core-js)  
+[Runtime transform](http://babeljs.io/docs/plugins/transform-runtime/)  
+[Polyfill](http://babeljs.io/docs/usage/polyfill/)  
+[babel的polyfill和runtime的区别](https://segmentfault.com/q/1010000005596587)  
 [Babel下的ES6兼容性与规范](http://imweb.io/topic/561f9352883ae3ed25e400f5)  
 [react 项目的一个ie8兼容性问题](http://www.aliued.com/?p=3240)  
-[How to use the Polyfill](https://babeljs.io/docs/usage/polyfill/)  
 [如何区分Babel中的stage-0,stage-1,stage-2以及stage-3（一）](http://www.cnblogs.com/flyingzl/p/5501247.html)  
-[http://www.cnblogs.com/flyingzl/p/5501247.html](http://www.cnblogs.com/flyingzl/p/5504203.html)  
+[如何区分Babel中的stage-0,stage-1,stage-2以及stage-3（二）](http://www.cnblogs.com/flyingzl/p/5504203.html)  
+[ES6 + Webpack + React + Babel 如何在低版本浏览器上愉快的玩耍(上)](https://yq.aliyun.com/articles/59107)  
+[ES6 + Webpack + React + Babel 如何在低版本浏览器上愉快的玩耍(下)](https://yq.aliyun.com/articles/60724)  
 
 仍未解决的问题，表现为在 modules[moduleId].call(...) 处出现 Cannot read property 'call' of undefined 异常。  
 发现其 moduleId 并未存在于 modules 中，有可能是该模块被去重或提取至某一个 bundle 中，而该 bundle 未能在被使用前及时加载。  

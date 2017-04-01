@@ -3,19 +3,14 @@
     [
       "es2015",
       {
-        // "modules": false // 暂时不启用，react-hot-loader v1 目前不支持
+        "modules": false
       }
     ],
     "stage-0",
     "react"
   ],
   "plugins": [
-    [
-      "transform-runtime",
-      {
-        // "helpers": false // defaults to true
-      }
-    ],
+    "transform-runtime",
     [
       "imports",
       {

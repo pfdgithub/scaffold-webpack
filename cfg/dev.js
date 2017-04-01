@@ -42,6 +42,7 @@ let getEntries = () => {
 
   for (let key in base.entry) {
     newEntries[key] = [
+      'react-hot-loader/patch',
       `webpack-dev-server/client?${defaults.https ? 'https' : 'http'}://127.0.0.1:${defaults.port}/`, // Automatic Refresh - Inline mode
       'webpack/hot/only-dev-server' // Automatic Refresh - Hot Module Replacement
     ].concat(base.entry[key]);
@@ -63,7 +64,7 @@ let getModules = () => {
       && Object.prototype.toString.call(use) === '[object Array]') {
       // 在数组顶部添加
       use.unshift({
-        loader: 'react-hot-loader'
+        loader: 'react-hot-loader/webpack'
       });
     }
   });

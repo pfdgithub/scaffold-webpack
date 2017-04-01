@@ -26,11 +26,11 @@ class App extends EntryBase {
     return (
       <div className={cls(style.App)}>
         <img src={logo} />
-        <br/>
+        <br />
         <span onClick={this.testState}>点击此处模拟数据</span>
-        <br/>
+        <br />
         {JSON.stringify(this.state.output)}
-        <br/>
+        <br />
         <span onClick={this.codeSplitting}>点击此处加载视图</span>
       </div>
     );
@@ -52,6 +52,13 @@ class App extends EntryBase {
     require.ensure([], (require) => {
       let TimerContainer = require('views/TimerContainer').default;
       TimerContainer.init();
+
+      if (module.hot) {
+        module.hot.accept('views/TimerContainer', () => {
+          let TimerContainerNew = require('views/TimerContainer').default;
+          TimerContainerNew.init();
+        });
+      }
     });
   }
 }
