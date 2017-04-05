@@ -36,6 +36,7 @@
     "curly": 1,
     "semi": 1,
     "arrow-parens": 1,
-    "arrow-body-style": [1, "always"]
+    "arrow-body-style": 1,
+    "react/prop-types": 1
   }
 }

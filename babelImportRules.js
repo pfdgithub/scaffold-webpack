@@ -19,7 +19,7 @@ let camel2Underline = (name) => {
 };
 */
 let rules = {
-  'react-router': {
+  /*'react-router': {
     importSpecifier: (importType, moduleName, importedName, localName) => {
       return [
           {
@@ -30,7 +30,7 @@ let rules = {
           }
         ];
     }
-  }
+  }*/
 };
 
 let ruleExtend = {
