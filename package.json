@@ -64,7 +64,7 @@
     "babel-runtime": "^6.23.0",
     "classnames": "^2.2.5",
     "core-js": "^2.4.1",
-    "natty-fetch": "^2.2.3",
+    "natty-fetch": "^2.3.0",
     "natty-storage": "^2.0.1",
     "normalize.css": "^6.0.0",
     "react": "^15.4.2",
