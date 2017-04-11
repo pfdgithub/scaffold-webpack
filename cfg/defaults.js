@@ -16,11 +16,16 @@ let assetFilename = '[name]'; // 资源文件名
 
 let srcPath = path.join(__dirname, '../src'); // 源文件路径
 let distPath = path.join(__dirname, '../dist'); // 构建文件路径
-let pagePath = path.join(srcPath, 'pages'); // 入口页面路径
-let entryPath = path.join(srcPath, 'entries'); // 入口脚本路径
+let commonPath = path.join(srcPath, 'commons'); // 公共资源路径
 let componentPath = path.join(srcPath, 'components'); // 业务组件路径
-let viewPath = path.join(srcPath, 'views'); // 单页视图路径
+let entryPath = path.join(srcPath, 'entries'); // 入口脚本路径
+let imagePath = path.join(srcPath, 'images'); // 公共图片路径
+let libraryPath = path.join(srcPath, 'libraries'); // 第三方库路径
 let mockPath = path.join(srcPath, 'mocks'); // 模拟数据路径
+let pagePath = path.join(srcPath, 'pages'); // 入口页面路径
+let sourcePath = path.join(srcPath, 'sources'); // 数据源路径
+let stylePath = path.join(srcPath, 'styles'); // 公共样式路径
+let viewPath = path.join(srcPath, 'views'); // 单页视图路径
 
 let entryPages = (() => { // 入口页面列表
   let pageList = [];
@@ -70,26 +75,31 @@ let getDefinePluginParam = (param) => {
 };
 
 module.exports = {
-  name: name,
-  version: version,
-  description: description,
-  timestamp: timestamp,
+  name,
+  version,
+  description,
+  timestamp,
 
-  port: port,
-  https: https,
-  pageSuffix: pageSuffix,
-  assetDir: assetDir,
-  assetFilename: assetFilename,
+  port,
+  https,
+  pageSuffix,
+  assetDir,
+  assetFilename,
 
-  srcPath: srcPath,
-  distPath: distPath,
-  pagePath: pagePath,
-  entryPath: entryPath,
-  componentPath: componentPath,
-  viewPath: viewPath,
-  mockPath: mockPath,
+  srcPath,
+  distPath,
+  commonPath,
+  componentPath,
+  entryPath,
+  imagePath,
+  libraryPath,
+  mockPath,
+  pagePath,
+  sourcePath,
+  stylePath,
+  viewPath,
 
-  entryPages: entryPages,
-  getPublicPageFullname: getPublicPageFullname,
-  getDefinePluginParam: getDefinePluginParam
+  entryPages,
+  getPublicPageFullname,
+  getDefinePluginParam
 };

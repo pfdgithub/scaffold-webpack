@@ -185,7 +185,7 @@ let buildProject = (cb) => {
 
 // 校验代码
 gulp.task('lint', () => {
-  return gulp.src(['src/**/*.{js,jsx}', '!src/{libraries,styles}/**'])
+  return gulp.src(['src/**/*.{js,jsx}', '!src/libraries/**', '!src/styles/*/**'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
@@ -202,7 +202,7 @@ gulp.task('clean', (cb) => {
 });
 
 // 启动开发服务器
-gulp.task('server', [/*'check'*/], (cb) => {
+gulp.task('server', ['check'], (cb) => {
   devServer(cb);
 });
 
@@ -219,7 +219,7 @@ gulp.task('open', ['server'], (cb) => {
 });
 
 // 构建项目（客户端构建）
-gulp.task('clientBuild', [/*'check',*/ 'clean'], (cb) => {
+gulp.task('clientBuild', ['check', 'clean'], (cb) => {
   buildProject(cb);
 });
 

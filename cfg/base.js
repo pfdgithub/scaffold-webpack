@@ -69,6 +69,60 @@ let getModules = () => {
         include: defaults.srcPath
       },
       {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              interpolate: true,
+              minimize: false,
+              attrs: 'script:src link:href img:src a:href'
+            }
+          }
+        ],
+        include: defaults.srcPath
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+              name: '[name]-[hash].[ext]'
+            }
+          }
+        ],
+        include: defaults.srcPath
+      },
+      {
+        test: /\.(svg|eot|ttf|woff|woff2)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name]-[hash].[ext]'
+            }
+          }
+        ],
+        // 字体只能放在公共样式目录
+        include: defaults.stylePath
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              name: '[name]-[hash]'
+            }
+          }
+        ],
+        // 除公共样式目录外，其他目录使用 svg-sprite
+        include: defaults.srcPath,
+        exclude: defaults.stylePath
+      },
+      {
         test: /\.css$/,
         use: ExtractTextWebpackPlugin.extract({
           fallback: {
@@ -90,73 +144,7 @@ let getModules = () => {
             }
           ]
         })
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(ico|mp4|ogg|svg|eot|ttf|woff|woff2)$/,
-        use: [
-          {
-            loader: 'file-loader'
-          }
-        ]
-      },
-      {
-        test: /\.html$/,
-        use: [
-          {
-            loader: 'html-loader',
-            options: {
-              interpolate: true,
-              minimize: false,
-              attrs: 'script:src link:href img:src a:href'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.less$/,
-        use: ExtractTextWebpackPlugin.extract({
-          fallback: {
-            loader: 'style-loader'
-          },
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: postcssPlugins
-              }
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                sourceMap: true
-              }
-            }
-          ]
-        }),
-        // 非指定目录正常处理
-        exclude: [
-          defaults.componentPath,
-          defaults.viewPath,
-          defaults.entryPath
-        ]
+        // 不限制目录（包含 node_modules 目录）
       },
       {
         test: /\.less$/,
@@ -171,7 +159,7 @@ let getModules = () => {
                 importLoaders: 1,
                 sourceMap: true,
                 modules: true,
-                localIdentName: '[name]-[local]-[hash:base64:5]' // [path][name][local][hash:base64:5]
+                localIdentName: '[name]-[local]-[hash:base64:5]'
               }
             },
             {
@@ -188,11 +176,47 @@ let getModules = () => {
             }
           ]
         }),
-        // 指定目录启用 CSS Modules
+        // 业务组件、入口脚本、单页视图，启用 CSS Modules
         include: [
           defaults.componentPath,
-          defaults.viewPath,
-          defaults.entryPath
+          defaults.entryPath,
+          defaults.viewPath
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: ExtractTextWebpackPlugin.extract({
+          fallback: {
+            loader: 'style-loader'
+          },
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: postcssPlugins
+              }
+            },
+            {
+              loader: 'less-loader',
+              options: {
+                sourceMap: true
+              }
+            }
+          ]
+        }),
+        // 除业务组件、入口脚本、单页视图外，其他目录正常处理
+        include: defaults.srcPath,
+        exclude: [
+          defaults.componentPath,
+          defaults.entryPath,
+          defaults.viewPath
         ]
       }
     ]
@@ -209,8 +233,15 @@ let getPlugins = () => {
       filename: path.join(defaults.distPath, defaults.version, entryPage + defaults.pageSuffix),
       chunks: [].concat(Object.keys(extractBundle), entryPage),
       chunksSortMode: 'dependency',
-      hash: true,
+      hash: false,
       inject: true,
+      // minify: {
+      //   removeComments: true,
+      //   collapseWhitespace: true,
+      //   conservativeCollapse: true,
+      //   minifyJS: true,
+      //   minifyCSS: true
+      // },
       alwaysWriteToDisk: true, // 将内存文件写入磁盘
       alterAssetTags: (htmlPluginData) => { // 为插入的标签添加 crossorigin 属性，允许跨域脚本提供详细错误信息。
         let assetTags = [].concat(htmlPluginData.head).concat(htmlPluginData.body);
@@ -262,13 +293,13 @@ module.exports = {
   resolve: {
     extensions: ['.jsx', '.js'],
     alias: {
-      commons: path.join(defaults.srcPath, 'commons'),
-      components: path.join(defaults.srcPath, 'components'),
-      images: path.join(defaults.srcPath, 'images'),
-      libraries: path.join(defaults.srcPath, 'libraries'),
-      sources: path.join(defaults.srcPath, 'sources'),
-      styles: path.join(defaults.srcPath, 'styles'),
-      views: path.join(defaults.srcPath, 'views')
+      commons: defaults.commonPath,
+      components: defaults.componentPath,
+      images: defaults.imagePath,
+      libraries: defaults.libraryPath,
+      sources: defaults.sourcePath,
+      styles: defaults.stylePath,
+      views: defaults.viewPath
     }
   },
   output: {

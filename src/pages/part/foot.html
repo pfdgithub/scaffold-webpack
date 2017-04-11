@@ -6,10 +6,10 @@ ${__wd_define_debug__ ? `
     var keyword = 'vConsole';
     var search = window.location.search;
     if(search.indexOf(keyword) != -1) {
-      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole')}" crossorigin="anonymous"></sc' + 'ript>');
-      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole-elements')}" crossorigin="anonymous"></sc' + 'ript>');
-      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole-resources')}" crossorigin="anonymous"></sc' + 'ript>');
-      document.write('<sc' + 'ript src="${require('!!file-loader!vconsole-sources')}" crossorigin="anonymous"></sc' + 'ript>');
+      document.write('<sc' + 'ript src="${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole.min.js')}" crossorigin="anonymous"></sc' + 'ript>');
+      document.write('<sc' + 'ript src="${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole-elements.min.js')}" crossorigin="anonymous"></sc' + 'ript>');
+      document.write('<sc' + 'ript src="${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole-resources.min.js')}" crossorigin="anonymous"></sc' + 'ript>');
+      document.write('<sc' + 'ript src="${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole-sources.min.js')}" crossorigin="anonymous"></sc' + 'ript>');
     }
   })();
 </script>

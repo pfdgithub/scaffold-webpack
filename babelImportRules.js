@@ -45,5 +45,5 @@ let ruleExtend = {
     }
   }
 };
- 
+
 module.exports = ruleExtend;
