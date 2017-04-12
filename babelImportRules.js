@@ -19,18 +19,6 @@ let camel2Underline = (name) => {
 };
 */
 let rules = {
-  /*'react-router': {
-    importSpecifier: (importType, moduleName, importedName, localName) => {
-      return [
-          {
-            newImportType: 'ImportDefaultSpecifier',
-            newModuleName: `${moduleName}/lib/${importedName}`,
-            newImportedName: importedName,
-            newLocalName: localName
-          }
-        ];
-    }
-  }*/
 };
 
 let ruleExtend = {

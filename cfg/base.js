@@ -1,5 +1,6 @@
 let path = require('path');
 let webpack = require('webpack');
+let beautify = require('js-beautify');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
 let HtmlWebpackEventPlugin = require('html-webpack-event-plugin');
 let HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
@@ -229,13 +230,13 @@ let getPlugins = () => {
   let htmlPlugins = [];
   defaults.entryPages.forEach((entryPage) => {
     htmlPlugins.push(new HtmlWebpackPlugin({
-      template: path.join(defaults.pagePath, entryPage + defaults.pageSuffix),
-      filename: path.join(defaults.distPath, defaults.version, entryPage + defaults.pageSuffix),
-      chunks: [].concat(Object.keys(extractBundle), entryPage),
-      chunksSortMode: 'dependency',
-      hash: false,
-      inject: true,
-      // minify: {
+      template: path.join(defaults.pagePath, entryPage + defaults.pageSuffix), // 指定 html 模版路径
+      filename: path.join(defaults.distPath, defaults.version, entryPage + defaults.pageSuffix), // 指定 html 输出路径
+      chunks: [].concat(Object.keys(extractBundle), entryPage), // 指定 html 中注入的资源。
+      chunksSortMode: 'dependency', // 按照依赖顺序排序
+      hash: false, // 在资源文件后追加 webpack 编译哈希
+      inject: true, // 将 js 文件注入 body 底部
+      // minify: { // 压缩 html 源码
       //   removeComments: true,
       //   collapseWhitespace: true,
       //   conservativeCollapse: true,
@@ -250,6 +251,14 @@ let getPlugins = () => {
             assetTag.attributes.crossorigin = 'anonymous';
           }
         });
+        return htmlPluginData;
+      },
+      afterHtmlProcessing: (htmlPluginData) => { // 格式化 html 源码
+        let newHtml = beautify.html(htmlPluginData.html, {
+          indent_size: 2,
+          preserve_newlines: false
+        });
+        htmlPluginData.html = newHtml;
         return htmlPluginData;
       }
     }));
@@ -303,6 +312,7 @@ module.exports = {
     }
   },
   output: {
+    crossOriginLoading: "anonymous",
     filename: `${defaults.assetFilename}.js`,
     chunkFilename: `${defaults.assetFilename}.js`,
     path: path.join(defaults.distPath, defaults.version, defaults.assetDir),
