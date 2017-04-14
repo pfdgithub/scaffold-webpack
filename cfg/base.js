@@ -160,7 +160,7 @@ let getModules = () => {
                 importLoaders: 1,
                 sourceMap: true,
                 modules: true,
-                localIdentName: '[name]-[local]-[hash]'
+                localIdentName: '[name]-[local]-[hash:base64:5]'
               }
             },
             {
