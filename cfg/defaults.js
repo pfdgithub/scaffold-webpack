@@ -68,9 +68,9 @@ let getDefinePluginParam = (param) => {
     '__wd_define_env__': JSON.stringify(param.defineEnv),
     '__wd_define_debug__': JSON.stringify(param.defineDebug),
     '__wd_public_page_path__': JSON.stringify(param.publicPagePath),
-    '__wd_public_page_fullname__': JSON.stringify(param.publicPageFullname),
     '__wd_public_asset_path__': JSON.stringify(param.publicAssetPath),
-    '__wd_public_rpc_path__': JSON.stringify(param.publicRpcPath)
+    '__wd_public_rpc_path__': JSON.stringify(param.publicRpcPath),
+    '__wd_public_page_fullname__': JSON.stringify(param.publicPageFullname)
   };
 };
 
