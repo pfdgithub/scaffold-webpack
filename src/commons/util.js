@@ -194,7 +194,7 @@ util.isMobile = (mobile) => {
 
 //检验邮箱
 util.isEmail = (email) => {
-  let reg = /^[\.\w\d\-_]+@[\w\d\-_]+(\.[\w\d\-_])+$/;
+  let reg = /^[\.\w-]+@[\w-]+(\.[\w-]+)+$/;
   return reg.test(email);
 };
 
