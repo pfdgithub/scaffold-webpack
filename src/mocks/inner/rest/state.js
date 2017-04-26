@@ -1,13 +1,14 @@
-module.exports = (req, res/*, app*/) => {
+module.exports = (req, res) => {
   res.cookie('serverTime', Date.now());
 
-  return {
+  res.json({
     code: 0,
     message: "",
     data: {
       query: req.query,
       body: req.body,
-      cookie: req.cookies
+      cookie: req.cookies,
+      rest: res.locals.restParam
     }
-  };
+  });
 };

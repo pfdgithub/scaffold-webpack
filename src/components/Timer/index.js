@@ -1,2 +1,2 @@
-import App from './App';
-export default App;
+import Timer from './Timer';
+export default Timer;

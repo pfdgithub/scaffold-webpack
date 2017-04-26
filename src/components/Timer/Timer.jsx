@@ -1,13 +1,12 @@
 import React from 'react';
-import cls from 'classnames';
 
 import ComponentBase from '../Common/ComponentBase';
-import style from './styles/App.less';
+import styles from './styles/Timer.less';
 import util from 'commons/util';
 
 let intervalId = 0;
 
-class App extends ComponentBase {
+class Timer extends ComponentBase {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,11 +32,11 @@ class App extends ComponentBase {
 
   render() {
     return (
-      <span className={cls(style.App)}>
+      <span className={styles.timer}>
         {util.msecToString(this.state.time, 'yyyy-MM-dd HH:mm:ss')}
       </span>
     );
   }
 }
 
-export default App;
+export default Timer;

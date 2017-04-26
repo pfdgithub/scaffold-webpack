@@ -1,8 +1,8 @@
 import React from 'react';
-import cls from 'classnames';
+import classnames from 'classnames';
 
 import EntryBase from '../Common/EntryBase';
-import style from './styles/App.less';
+import styles from './styles/App.less';
 import logo from './images/logo.png';
 import db from 'sources/db.inner';
 
@@ -24,10 +24,10 @@ class App extends EntryBase {
 
   render() {
     return (
-      <div className={cls(style.App)}>
+      <div className={classnames(styles.App)}>
         <img src={logo} />
         <br />
-        <span onClick={this.testState}>点击此处模拟数据</span>
+        <span onClick={this.getState}>点击此处模拟数据</span>
         <br />
         {JSON.stringify(this.state.output)}
         <br />
@@ -36,13 +36,26 @@ class App extends EntryBase {
     );
   }
 
-  testState = () => {
-    db.test.state({
+  getState = () => {
+    // 传统风格接口
+    db.legacy.state({
       clientTime: Date.now()
     }).then(this.unmountCheck((content) => {
       this.setState({
         output: content.data
       });
+    })).catch(this.unmountCheck((error) => {
+      alert(error.message);
+    }));
+
+    // REST 风格接口
+    db.rest.state({
+      ':state': 123,
+      clientTime: Date.now()
+    }).then(this.unmountCheck((content) => {
+      /* eslint-disable */
+      console.log(content.data);
+      /* eslint-enable */
     })).catch(this.unmountCheck((error) => {
       alert(error.message);
     }));

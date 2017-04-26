@@ -192,6 +192,12 @@ util.isMobile = (mobile) => {
   return reg.test(mobile);
 };
 
+//检验邮箱
+util.isEmail = (email) => {
+  let reg = /^[\.\w\d\-_]+@[\w\d\-_]+(\.[\w\d\-_])+$/;
+  return reg.test(email);
+};
+
 //检验银行卡号
 util.isBankCard = (cardId) => {
   let reg = /^\d{16,}$/;
@@ -292,54 +298,54 @@ util.stringToDate = (dateString) => {
 
 //千分位分割数字
 util.thousandSeparator = (number, len) => {
-    let strNum = "";
-    let decLen = 0;
+  let strNum = "";
+  let decLen = 0;
 
-    if (typeof (len) === "number" && len > 0) {
-      decLen = len;
-    }
+  if (typeof (len) === "number" && len > 0) {
+    decLen = len;
+  }
 
-    if (typeof (number) === "number") {
-      strNum = number.toFixed(decLen);
-    }
-    else if (typeof (number) !== "undefined") {
-      strNum = number.toString();
-    }
+  if (typeof (number) === "number") {
+    strNum = number.toFixed(decLen);
+  }
+  else if (typeof (number) !== "undefined") {
+    strNum = number.toString();
+  }
 
-    if (strNum) {
-      let match = strNum.match(/^(\-)?(\d+)(\.\d+)?$/);
-      if (match) {
-        let symbol = match[1] ? match[1] : '';
-        let integer = match[2] ? match[2] : '';
-        let fraction = match[3] ? match[3] : '';
+  if (strNum) {
+    let match = strNum.match(/^(\-)?(\d+)(\.\d+)?$/);
+    if (match) {
+      let symbol = match[1] ? match[1] : '';
+      let integer = match[2] ? match[2] : '';
+      let fraction = match[3] ? match[3] : '';
 
-        if (integer.length > 3) {
-          let source = integer.split('');
-          let target = [];
+      if (integer.length > 3) {
+        let source = integer.split('');
+        let target = [];
 
-          for (let i = 0; i < source.length; i++) {
-            let index = (source.length - 1) - i;
-            let item = source[index];
+        for (let i = 0; i < source.length; i++) {
+          let index = (source.length - 1) - i;
+          let item = source[index];
 
-            target.push(item);
-            if (((i + 1) % 3) == 0 && i != (source.length - 1)) {
-              target.push(',');
-            }
+          target.push(item);
+          if (((i + 1) % 3) == 0 && i != (source.length - 1)) {
+            target.push(',');
           }
-
-          integer = target.reverse().join('');
         }
 
-        for (let i = 0; i < decLen; i++) {
-          fraction = fraction + "0";
-        }
-        fraction = fraction.substring(0, (decLen === 0 ? decLen : (decLen + 1)));
-
-        return symbol + integer + fraction;
+        integer = target.reverse().join('');
       }
-    }
 
-    return number;
+      for (let i = 0; i < decLen; i++) {
+        fraction = fraction + "0";
+      }
+      fraction = fraction.substring(0, (decLen === 0 ? decLen : (decLen + 1)));
+
+      return symbol + integer + fraction;
+    }
+  }
+
+  return number;
 };
 
 //过滤字符串中特殊字符，避免破坏JSON结构。
@@ -382,6 +388,78 @@ util.stringJsonFilter = (source, hideCode) => {
     let target = source.replace(escRE, escFunc);
     return target;
   }
+};
+
+// 人类友好日期
+util.humanFriendlyDate = (timestamp) => {
+  let ret = timestamp;
+
+  if (typeof (timestamp) === 'number') {
+    let diff = Math.floor((Date.now() - timestamp) / 1000); // 秒
+    if (diff >= (12 * 30 * 24 * 60 * 60)) {
+      ret = this.msecToString(timestamp, 'yyyy-MM-dd');
+    }
+    else if (diff >= (30 * 24 * 60 * 60)) {
+      ret = Math.floor(diff / (30 * 24 * 60 * 60)) + '月前';
+    }
+    else if (diff >= (24 * 60 * 60)) {
+      ret = Math.floor(diff / (24 * 60 * 60)) + '天前';
+    }
+    else if (diff >= (60 * 60)) {
+      ret = Math.floor(diff / (60 * 60)) + '小时前';
+    }
+    else if (diff >= (60)) {
+      ret = Math.floor(diff / (60)) + '分钟前';
+    }
+    else {
+      ret = '刚刚';
+    }
+  }
+
+  return ret;
+};
+
+// 人类友好数字
+util.humanFriendlyNumber = (num) => {
+  let ret = num;
+
+  if (typeof (num) === 'number') {
+    if (num >= (100 * 1000 * 1000 * 1000)) {
+      ret = Math.floor(num / (100 * 1000 * 1000 * 1000)) + '千亿';
+    }
+    else if (num >= (10 * 1000 * 1000 * 1000)) {
+      ret = Math.floor(num / (10 * 1000 * 1000 * 1000)) + '百亿';
+    }
+    // else if (num >= (1000 * 1000 * 1000)) {
+    //   ret = Math.floor(num / (1000 * 1000 * 1000)) + '十亿';
+    // }
+    else if (num >= (100 * 1000 * 1000)) {
+      ret = Math.floor(num / (100 * 1000 * 1000)) + '亿';
+    }
+    else if (num >= (10 * 1000 * 1000)) {
+      ret = Math.floor(num / (10 * 1000 * 1000)) + '千万';
+    }
+    else if (num >= (1000 * 1000)) {
+      ret = Math.floor(num / (1000 * 1000)) + '百万';
+    }
+    // else if (num >= (100 * 1000)) {
+    //   ret = Math.floor(num / (100 * 1000)) + '十万';
+    // }
+    else if (num >= (10 * 1000)) {
+      ret = Math.floor(num / (10 * 1000)) + '万';
+    }
+    else if (num >= (1000)) {
+      ret = Math.floor(num / (1000)) + '千';
+    }
+    else if (num >= (100)) {
+      ret = Math.floor(num / (100)) + '百';
+    }
+    else {
+      ret = num;
+    }
+  }
+
+  return ret;
 };
 
 //加载页面
@@ -470,155 +548,5 @@ util.getLastRouteProp = (routeComponent, prop) => {
   }
   return undefined;
 };
-
-// 官网金钱格式化
-util.formatMoney = function (number) {
-  let beforePoint = '',
-    afterPoint = '',
-    newArr = [],
-    beforeNumber = '';
-
-  let text = parseFloat(number);
-
-  if (text < 0) {
-    beforeNumber = '-';
-    text = Math.abs(text);
-  }
-
-  text += '';
-
-  if (text.indexOf('.') != -1) {
-    text = parseFloat(text).toFixed(3) + '';
-    text = text.substring(0, text.lastIndexOf('.') + 3);
-    let arr = text.split('.');
-    beforePoint = arr[0];
-    afterPoint = arr[1] == '00' ? '' : ('.' + arr[1]);
-  } else {
-    beforePoint = text;
-  }
-
-  let specialArr = beforePoint.split('');
-  specialArr.reverse();
-  let len = specialArr.length;
-
-  for (let i = 1; i <= len; i++) {
-    newArr.push(specialArr[i - 1]);
-    if (i % 3 == 0 && i != 0 && i != len) {
-      newArr.push(',');
-    }
-  }
-  beforePoint = newArr.reverse();
-  beforePoint = beforePoint.join('');
-  return beforeNumber + beforePoint + afterPoint;
-};
-
-// 原官网加密方式start
-// 特殊数据提交加密
-util.encode = function (input) {
-  let unicodetoBytes = function (s) {
-    let result = new Array();
-    if (!s) {
-      return result;
-    }
-    result.push(255);
-    result.push(254);
-    for (let i = 0; i < s.length; i++) {
-      let c = s.charCodeAt(i).toString(16);
-      if (c.length == 1) {
-        i = '000' + c;
-      }
-      else if (c.length == 2) {
-        c = '00' + c;
-      }
-      else if (c.length == 3) {
-        c = '0' + c;
-      }
-      let var1 = parseInt(c.substring(2), 16);
-      let var2 = parseInt(c.substring(0, 2), 16);
-      result.push(var1);
-      result.push(var2);
-    }
-    return result;
-  };
-  let keyStr = 'ABCDEFGHIJKLMNOP' + 'QRSTUVWXYZabcdef' + 'ghijklmnopqrstuv' + 'wxyz0123456789+/' + '=';
-  let newlet = new Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
-  input = unicodetoBytes(input);
-  let output = '';
-  let chr1, chr2, chr3 = '';
-  let enc1, enc2, enc3, enc4 = '';
-  let i = 0;
-  do {
-    chr1 = input[i++];
-    chr2 = input[i++];
-    chr3 = input[i++];
-    enc1 = chr1 >> 2;
-    enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-    enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-    enc4 = chr3 & 63;
-    if (isNaN(chr2)) {
-      enc3 = enc4 = 64;
-    } else if (isNaN(chr3)) {
-      enc4 = 64;
-    }
-    output = output + keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
-    chr1 = chr2 = chr3 = '';
-    enc1 = enc2 = enc3 = enc4 = '';
-  } while (i < input.length);
-  let random1 = Math.round(Math.random() * 61) + 0;
-  let random2 = Math.round(Math.random() * 61) + 0;
-  let random3 = Math.round(Math.random() * 61) + 0;
-  let random4 = Math.round(Math.random() * 61) + 0;
-  let random5 = Math.round(Math.random() * 61) + 0;
-  let random6 = Math.round(Math.random() * 61) + 0;
-  let random7 = Math.round(Math.random() * 61) + 0;
-  let random8 = Math.round(Math.random() * 61) + 0;
-  let random9 = Math.round(Math.random() * 61) + 0;
-  let random10 = Math.round(Math.random() * 61) + 0;
-  let random11 = Math.round(Math.random() * 61) + 0;
-  let random12 = Math.round(Math.random() * 61) + 0;
-  let random13 = Math.round(Math.random() * 61) + 0;
-  let random14 = Math.round(Math.random() * 61) + 0;
-  let random15 = Math.round(Math.random() * 61) + 0;
-  let random16 = Math.round(Math.random() * 61) + 0;
-  let random17 = Math.round(Math.random() * 61) + 0;
-  let random18 = Math.round(Math.random() * 61) + 0;
-  let random19 = Math.round(Math.random() * 61) + 0;
-  let random20 = Math.round(Math.random() * 61) + 0;
-  return (newlet[random1] +
-    newlet[random2] +
-    newlet[random3] +
-    newlet[random4] +
-    newlet[random5] +
-    newlet[random6] +
-    newlet[random7] +
-    newlet[random8] +
-    newlet[random9] +
-    newlet[random10] + output +
-    newlet[random11] +
-    newlet[random12] +
-    newlet[random13] +
-    newlet[random14] +
-    newlet[random15] +
-    newlet[random16] +
-    newlet[random17] +
-    newlet[random18] +
-    newlet[random19] +
-    newlet[random20]);
-};
-
-// 特殊数据获取解密
-util.bytesToUnicode = function (bs) {
-  let result = '';
-  let offset = 0;
-  if (bs.length >= 2 && bs[0] == 255 && bs[1] == 254) {
-    offset = 2;
-  }
-  for (let i = offset; i < bs.length; i += 2) {
-    let code = bs[i] + (bs[i + 1] << 8);
-    result += String.fromCharCode(code);
-  }
-  return result;
-};
-// 原官网加密方式end
 
 export default util;

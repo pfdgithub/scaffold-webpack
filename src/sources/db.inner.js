@@ -47,7 +47,7 @@ context.on('reject', (err/*, cfg*/) => {
       setTimeout(() => {
         lock = false;
       }, 0);
-    }  
+    }
   }
 });
 context.on('reject', (/*err, cfg*/) => {
@@ -55,11 +55,25 @@ context.on('reject', (/*err, cfg*/) => {
 context.on('error', (/*err, cfg*/) => {
 });
 
-context.create('test', {
+// 传统风格接口
+context.create('legacy', {
   // 状态检查
   'state': {
     method: 'POST',
-    url: 'test/state'
+    url: 'legacy/state'
+  }
+});
+
+// REST 风格接口
+context.create('rest', {
+  // 状态检查
+  'state': {
+    method: 'POST',
+    url: 'rest/:state',
+    rest: true,
+    header: {
+      'Content-Type': 'application/json; charset=utf-8'
+    }
   }
 });
 

@@ -7,7 +7,7 @@ let cookieParser = require('cookie-parser');
 let defaults = require('./defaults');
 
 // setup 配置
-let devServerSetup = (prefix) =>{
+let devServerSetup = (prefix) => {
   prefix = prefix ? prefix : '/mocks/';
 
   return (app) => {
@@ -19,25 +19,30 @@ let devServerSetup = (prefix) =>{
 
     // 拦截 mocks 目录
     app.use(prefix, (req, res, next) => {
-      // 物理路径
+      // 查找 mock 文件
       let pathObject = path.parse(req.path);
       let jsFilePath = path.join(defaults.mockPath, pathObject.dir, pathObject.name + '.js');
       let jsonFilePath = path.join(defaults.mockPath, pathObject.dir, pathObject.name + '.json');
+      let globalFilePath = path.join(defaults.mockPath, 'global.js');
 
       if (fs.existsSync(jsFilePath)) { // 检查 js 文件
         delete require.cache[require.resolve(jsFilePath)];
         let jsModule = require(jsFilePath);
-        let jsonRet = jsModule(req, res, app);
-        res.json(jsonRet);
+        jsModule(req, res); // 执行函数
       }
       else if (fs.existsSync(jsonFilePath)) { // 检查 json 文件
         delete require.cache[require.resolve(jsonFilePath)];
         let jsonModule = require(jsonFilePath);
-        res.json(jsonModule);
+        res.json(jsonModule); // 输出 json
       }
-      else { // 转交控制权
-        next();
+      else if (fs.existsSync(globalFilePath)) { // 检查 global.js 文件
+        delete require.cache[require.resolve(globalFilePath)];
+        let globalModule = require(globalFilePath);
+        globalModule(req, res); // 执行函数
       }
+
+      // 转交控制权
+      next();
     });
   };
 };
@@ -59,17 +64,16 @@ let devServerProxy = (prefix, target) => {
       // cookieDomainRewrite: false, // 修改 cookie 所属域
       onProxyReq: (proxyReq, req/*, res*/) => { // 代理目标请求发出前触发
         /**
-         * 当代理 POST 请求时 http-proxy-middleware 与 body-parser 有冲突。
+         * 当代理请求含有 body 时 http-proxy-middleware 与 body-parser 有冲突。
          * [Modify Post Parameters](https://github.com/chimurai/http-proxy-middleware/blob/master/recipes/modify-post.md)
          * [Edit proxy request/response POST parameters](https://github.com/chimurai/http-proxy-middleware/issues/61)
          * [socket hang up error with nodejs](http://stackoverflow.com/questions/25207333/socket-hang-up-error-with-nodejs)
          */
         let body = req.body;
-        let method = req.method.toLowerCase();
         let contentType = req.get('Content-Type');
         contentType = contentType ? contentType.toLowerCase() : '';
 
-        if (body && method == 'post') {
+        if (body) {
           if (contentType.includes('application/json')) {
             // 使用 application/json 类型提交表单
             let bodyData = JSON.stringify(body);
@@ -106,6 +110,7 @@ module.exports = (cfg) => {
     hot: true,
     inline: true,
     compress: true,
+    disableHostCheck: true,
     port: defaults.port,
     publicPath: cfg.publicPath,
     setup: devServerSetup(cfg.mockPrefix),
