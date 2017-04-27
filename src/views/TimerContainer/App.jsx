@@ -51,7 +51,7 @@ class App extends ViewBase {
 
   render() {
     return (
-      <div className={cls(style.App)}>
+      <div className={cls(style.app)}>
         <Timer/>
         <br/>
         <span>调整窗口监听宽高</span>

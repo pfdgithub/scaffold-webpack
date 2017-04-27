@@ -24,7 +24,7 @@ class App extends EntryBase {
 
   render() {
     return (
-      <div className={classnames(styles.App)}>
+      <div className={classnames(styles.app)}>
         <img src={logo} />
         <br />
         <span onClick={this.getState}>点击此处模拟数据</span>
