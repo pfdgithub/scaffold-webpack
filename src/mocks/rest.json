@@ -1,0 +1,5 @@
+{
+  "apiList": [
+    "/inner/rest/:state"
+  ]
+}
