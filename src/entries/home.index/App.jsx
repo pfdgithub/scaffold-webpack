@@ -62,14 +62,15 @@ class App extends EntryBase {
   }
 
   codeSplitting = () => {
-    require.ensure([], (require) => {
-      let TimerContainer = require('views/TimerContainer').default;
-      TimerContainer.init();
+    import('views/TimerContainer').then((TimerContainer) => {
+      TimerContainer.default.init();
 
       if (module.hot) {
         module.hot.accept('views/TimerContainer', () => {
-          let TimerContainerNew = require('views/TimerContainer').default;
-          TimerContainerNew.init();
+
+          import('views/TimerContainer').then((TimerContainerNew) => {
+            TimerContainerNew.default.init();
+          });
         });
       }
     });

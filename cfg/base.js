@@ -268,7 +268,7 @@ let getPlugins = () => {
     }),
     new ExtractTextWebpackPlugin({
       filename: `${defaults.assetFilename}.css`,
-      allChunks: false,
+      allChunks: true, // 打包在异步模块中的依赖样式，会因丢失依赖项而在加载时抛出异常。
       disable: false
     }),
     new webpack.BannerPlugin({

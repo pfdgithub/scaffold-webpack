@@ -66,14 +66,17 @@ npm run build:prod 构建项目（生产环境）。
 [atool-build开启watch功能后，使用该插件会报模块找不到的错误](https://github.com/ant-design/babel-plugin-import/issues/97)  
 [removed DedupePlugin](https://github.com/webpack/webpack/pull/3266)  
 
-暂时绕过去的问题，表现为在启用 extract-text-webpack-plugin 后，使用 require.ensure 进行 Code Splitting 操作时，会丢失按需加载组件中的部分样式。  
+~~暂时绕过去的问题，表现为在启用 extract-text-webpack-plugin 后，使用 require.ensure 进行 Code Splitting 操作时，会丢失按需加载组件中的部分样式。  
 发现在按需加载的组件中，通过 import 方式引入的 less 文件，有些会抛出 doesn't export content 错误，有些能正常引入（似乎是 src 下的文件），有些无法引入（似乎是 antd-mobile 下的文件），没有找到规律。  
-测试了一下，应该能排除 babel-plugin-import 和 CSS Modules 的嫌疑。在配置 extract-text-webpack-plugin 的 allChunks 属性，将全部样式提取至入口文件后，暂时绕过了该问题。  
+测试了一下，应该能排除 babel-plugin-import 和 CSS Modules 的嫌疑。在配置 extract-text-webpack-plugin 的 allChunks 属性，将全部样式提取至入口文件后，暂时绕过了该问题。~~  
+上面的问题在更新依赖后似乎已经修复，但又出现新的问题。异步模块中依赖的样式会在，开发服务器启动后且未触发模块热更新之前，抛出 Cannot read property 'call' of undefined 异常。  
+综合自己调试和第三方资料后，推测是由于丢失了 css-loader 和 style-loader 依赖项造成的，目前相对简单和友好的解决方案，还是设置 allChunks 为 true 的方式。  
 参考：  
 [Webpack2 + ExtractTextWebpackPlugin + Code Split produce only the last part of the css](https://github.com/webpack/webpack/issues/2763)  
 [Extract Text Plugin: require.ensure() causes incomplete file (Webpack 2)](https://github.com/webpack/webpack/issues/2450)  
 [Extract text plugin with code splitting](https://github.com/webpack/extract-text-webpack-plugin/issues/208)  
 [ExtractTextPlugin extracts from asynchronous split point chunks](https://github.com/webpack/extract-text-webpack-plugin/issues/120)  
+[[bug] async js chunks that include scss imports cause => Uncaught (in promise) TypeError: Cannot read property 'call' of undefined](https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/456)  
 
 react-router 中 hashHistory 的 state 存储方式，以及 natty-storage 的存储方式，使用了 Web Storage 技术。使用时一定要做好回退机制。  
 已知在 Safari 的隐身模式（无痕模式）下，无法使用 Web Storage 技术，会出现 QuotaExceededError: DOM Exception 22: An attempt was made to add something to storage that exceeded the quota. 异常。  
