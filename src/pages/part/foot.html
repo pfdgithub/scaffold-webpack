@@ -1,6 +1,6 @@
 <!-- foot start -->
-${__wd_define_debug__ ? `
-<script>
+${(__wd_define_env__ == 'dev' || __wd_define_env__ == 'test') ? `
+<script type="text/javascript">
   // 加载调试面板
   (function() {
     var keyword = 'vConsole';

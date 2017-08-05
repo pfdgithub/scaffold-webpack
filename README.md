@@ -20,6 +20,7 @@ src/ 源文件目录。
 .babelrc Babel 配置文件。  
 .eslintrc ESLint 配置文件。  
 .gitignore Git 配置文件。  
+.postcssrc PostCSS 配置。  
 gulpfile.js Gulp 配置文件。  
 package.json 项目配置文件。  
 
@@ -27,9 +28,9 @@ package.json 项目配置文件。
 
 建议以 package.json 文件的 scripts 节点作为命令行入口。  
 
-npm run lint 使用 ESLint 验证代码规范。  
 npm run check 检查 Git 分支名与 package.json 版本号是否一致。 
 npm run clean 清理构建目录和临时文件。  
+npm run latest 复制当前版本为 latest 版本。  
 npm run server 启动本地静态服务器（开发环境）。  
 npm run open 启动本地静态服务器，并打开浏览器（开发环境）。  
 npm run build:dev 构建项目（开发环境）。  

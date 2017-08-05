@@ -26,8 +26,8 @@ let log = (type, ...rest) => {
 nattyFetch.on('resolve', (data, config) => {
   log('resolve', data, config);
 });
-nattyFetch.on('reject', (error, config) => {
-  log('reject', error, config);
+nattyFetch.on('reject', (error, config, vars) => {
+  log('reject', error, config, vars);
 });
 nattyFetch.on('error', (error, config) => {
   log('error', error, config);
@@ -55,8 +55,8 @@ nattyFetch.setGlobal({
   ignoreSelfConcurrent: false,
   // 请求方式是否使用jsonp。
   jsonp: false,
-  // 追加标记信息
-  mark: false,
+  // 用于实现jsonp的script标签是否要加上crossorigin属性。
+  jsonpCrossOrigin: false,
   // 配置ajax的请求方式。
   method: 'GET',
   // 是否开启mock模式。
@@ -92,6 +92,8 @@ nattyFetch.setGlobal({
   traditional: false,
   // 请求地址。
   url: '',
+  // 追加标记信息
+  urlMark: false,
   // 请求地址前缀，如果url的值是"绝对路径"或"相对路径"，则不会自动添加该前缀。
   urlPrefix: '',
   // 全局`url`后缀

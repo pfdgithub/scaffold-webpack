@@ -128,10 +128,9 @@ module.exports = (cfg) => {
     proxy: devServerProxy(cfg.proxyPrefix, cfg.proxyTarget),
     contentBase: path.join(defaults.distPath, defaults.version),
     stats: {
-      chunkModules: false,
+      colors: true,
       children: false,
-      errorDetails: true,
-      colors: true
+      modules: false
     },
     https: defaults.https ? {
       key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem'), 'utf8'),

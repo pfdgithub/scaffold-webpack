@@ -76,7 +76,7 @@ let getModules = () => {
 let getPlugins = () => {
   let param = defaults.getDefinePluginParam({
     defineEnv: 'dev',
-    defineDebug: true,
+    defineVer: defaults.version,
     publicPagePath,
     publicAssetPath,
     publicRpcPath,
@@ -91,7 +91,9 @@ let getPlugins = () => {
     new webpack.LoaderOptionsPlugin({
       debug: true,
       minimize: false,
-      context: __dirname
+      options: {
+        context: __dirname
+      }
     })
   );
 };

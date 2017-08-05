@@ -1,9 +1,9 @@
 let util = {};
 
-//解析URL查询参数
-util.parseQueryString = () => {
+// 解析URL查询参数
+util.parseQueryString = (search) => {
   let query = {};
-  let search = window.location.search;
+  search = search ? search : window.location.search;
 
   if (search.indexOf('?') == 0) {
     let parameters = search.slice(1).split('&');
@@ -23,8 +23,13 @@ util.parseQueryString = () => {
   return query;
 };
 
-//拼接URL查询参数
+// 拼接URL查询参数
 util.joinQueryString = (query) => {
+  if (typeof (query) === 'undefined'
+    || JSON.stringify(query) === '{}') {
+    return '';
+  }
+
   let search = '?';
 
   for (let key in query) {
@@ -42,10 +47,10 @@ util.joinQueryString = (query) => {
   return search;
 };
 
-//解析hash查询参数
-util.parseHashString = () => {
+// 解析hash查询参数
+util.parseHashString = (hash) => {
   let query = {};
-  let hash = window.location.hash;
+  hash = hash ? hash : window.location.hash;
 
   if (hash.indexOf('#') == 0) {
     let parameters = hash.slice(1).split('&');
@@ -65,8 +70,12 @@ util.parseHashString = () => {
   return query;
 };
 
-//拼接hash查询参数
+// 拼接hash查询参数
 util.joinHashString = (query) => {
+  if (typeof (query) === 'undefined') {
+    return '';
+  }
+
   let hash = '#';
 
   for (let key in query) {
@@ -81,7 +90,7 @@ util.joinHashString = (query) => {
   return hash;
 };
 
-//解析URL
+// 解析URL
 util.parseUrl = (url) => {
   let a = document.createElement('a');
   a.href = url;
@@ -114,14 +123,14 @@ util.parseUrl = (url) => {
       }
       return ret;
     })(),
-    file: (a.pathname.match(/\/([^\/?#]+)$/i) || ['', ''])[1],
-    path: a.pathname.replace(/^([^\/])/, '/$1'),
-    relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || ['', ''])[1],
+    file: (a.pathname.match(/\/([^/?#]+)$/i) || ['', ''])[1],
+    path: a.pathname.replace(/^([^/])/, '/$1'),
+    relative: (a.href.match(/tps?:\/\/[^/]+(.+)/) || ['', ''])[1],
     segments: a.pathname.replace(/^\//, '').split('/')
   };
 };
 
-//检查指定URL是否同域
+// 检查指定URL是否同域
 util.isEqOrigin = (url) => {
   let remote = util.parseUrl(url);
   let local = window.location;
@@ -129,7 +138,7 @@ util.isEqOrigin = (url) => {
   return remote.origin.toLowerCase() == local.origin.toLowerCase();
 };
 
-//安全过滤
+// 安全过滤
 util.safetyFilter = (unsafeString) => {
   if (unsafeString) {
     let text = document.createTextNode(unsafeString);
@@ -141,7 +150,7 @@ util.safetyFilter = (unsafeString) => {
   return unsafeString;
 };
 
-//替换br为CRLF
+// 替换br为CRLF
 util.brToCrlf = (brString) => {
   let reg = /<\s*br\s*\/?\s*>/ig;
 
@@ -152,7 +161,7 @@ util.brToCrlf = (brString) => {
   return brString;
 };
 
-//替换CRLF为br
+// 替换CRLF为br
 util.crlfToBr = (crlfString) => {
   let reg = /(\r\n)|(\n)/g;
 
@@ -163,7 +172,7 @@ util.crlfToBr = (crlfString) => {
   return crlfString;
 };
 
-//检验身份证号码
+// 检验身份证号码
 util.isIDNo = (cid) => {
   let arrExp = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
   let arrValid = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2];
@@ -186,19 +195,19 @@ util.isIDNo = (cid) => {
   }
 };
 
-//检验手机号
+// 检验手机号
 util.isMobile = (mobile) => {
   let reg = /^1\d{10}$/;
   return reg.test(mobile);
 };
 
-//检验邮箱
+// 检验邮箱
 util.isEmail = (email) => {
-  let reg = /^[\.\w-]+@[\w-]+(\.[\w-]+)+$/;
+  let reg = /^[.\w-]+@[\w-]+(\.[\w-]+)+$/;
   return reg.test(email);
 };
 
-//检验银行卡号
+// 检验银行卡号
 util.isBankCard = (cardId) => {
   let reg = /^\d{16,}$/;
   return reg.test(cardId);
@@ -213,7 +222,7 @@ util.maskMobile = (mobile) => {
   return mobile;
 };
 
-//字符串格式化
+// 字符串格式化
 util.stringFormat = (...rest) => {
   let format = rest[0];
   let args = rest[1];
@@ -238,7 +247,7 @@ util.stringFormat = (...rest) => {
   return result;
 };
 
-//毫秒转换为 yyyy-MM-dd HH:mm:ss
+// 毫秒转换为 yyyy-MM-dd HH:mm:ss
 util.msecToString = (timestamp, format) => {
   let ret = '';
 
@@ -296,7 +305,7 @@ util.stringToDate = (dateString) => {
   return ret;
 };
 
-//千分位分割数字
+// 千分位分割数字
 util.thousandSeparator = (number, len) => {
   let strNum = "";
   let decLen = 0;
@@ -313,7 +322,7 @@ util.thousandSeparator = (number, len) => {
   }
 
   if (strNum) {
-    let match = strNum.match(/^(\-)?(\d+)(\.\d+)?$/);
+    let match = strNum.match(/^(-)?(\d+)(\.\d+)?$/);
     if (match) {
       let symbol = match[1] ? match[1] : '';
       let integer = match[2] ? match[2] : '';
@@ -348,7 +357,7 @@ util.thousandSeparator = (number, len) => {
   return number;
 };
 
-//过滤字符串中特殊字符，避免破坏JSON结构。
+// 过滤字符串中特殊字符，避免破坏JSON结构。
 util.stringJsonFilter = (source, hideCode) => {
   /*
    * 参考资料：
@@ -397,10 +406,10 @@ util.humanFriendlyDate = (timestamp) => {
   if (typeof (timestamp) === 'number') {
     let diff = Math.floor((Date.now() - timestamp) / 1000); // 秒
     if (diff >= (12 * 30 * 24 * 60 * 60)) {
-      ret = this.msecToString(timestamp, 'yyyy-MM-dd');
+      ret = Math.floor(diff / (12 * 30 * 24 * 60 * 60)) + '年前';
     }
     else if (diff >= (30 * 24 * 60 * 60)) {
-      ret = Math.floor(diff / (30 * 24 * 60 * 60)) + '月前';
+      ret = Math.floor(diff / (30 * 24 * 60 * 60)) + '个月前';
     }
     else if (diff >= (24 * 60 * 60)) {
       ret = Math.floor(diff / (24 * 60 * 60)) + '天前';
@@ -462,19 +471,7 @@ util.humanFriendlyNumber = (num) => {
   return ret;
 };
 
-//加载页面
-util.gotoPage = (url) => {
-  // TODO 异步切换
-  window.location.href = url;
-};
-
-//返回页面
-util.backPage = () => {
-  // TODO 异步切换
-  window.history.back();
-};
-
-//是否支持 Web Storage
+// 是否支持 Web Storage
 util.supportStorage = (() => {
   if (window.sessionStorage) {
     try {
@@ -491,62 +488,38 @@ util.supportStorage = (() => {
   }
 })();
 
-//Ract Router 垫片
-util.reactRouterPollyfill = (() => {
-  return {
-    location: {
-      getStateOrQuery: (location) => {
-        let ret = util.supportStorage ? location.state : location.query;
-        ret = ret ? ret : {};
-        return ret;
-      }
-    },
-    history: {
-      setStateOrQuery: (data) => {
-        let ret = {};
-        if (util.supportStorage) {
-          ret.state = data;
-        }
-        else {
-          ret.query = data;
-        }
-        return ret;
-      }
+// 加载页面
+util.gotoPage = (url, query, hash) => {
+  let href = url + util.joinQueryString(query) + util.joinHashString(hash);
+  window.location.href = href;
+};
+
+// 返回页面
+util.backPage = () => {
+  window.history.back();
+};
+
+// 空闲控制 返回函数连续调用时，空闲时间必须大于或等于 idle，action 才会执行
+util.debounce = (idle, action) => {
+  let last = 0;
+  return (...rest) => {
+    clearTimeout(last);
+    last = setTimeout(() => {
+      action(...rest);
+    }, idle);
+  };
+};
+
+// 频率控制 返回函数连续调用时，action 执行频率限定为 次 / delay
+util.throttle = (delay, action) => {
+  let last = 0;
+  return (...rest) => {
+    let curr = Date.now();
+    if (curr - last > delay) {
+      last = curr;
+      action(...rest);
     }
   };
-})();
-
-/**
- * 获取当前 Route 链中最后一个拥有指定属性的 Route 实例。
- *
- * 路由格式如下：
- * <Router>
- *   <Route path="/" prop="Route1" component={Route1}>
- *     <Route path="Route2" prop="Route2" component={Route2} />
- *     <Route path="Route3" prop="Route3" component={Route3} />
- *   </Route>
- * </Router>
- *
- * 调用方式如下：
- * class Route1 extends React.Component {
- *   render() {
- *     let prop = util.getLastRouteProp(this, 'prop');
- *   }
- * }
- */
-util.getLastRouteProp = (routeComponent, prop) => {
-  if (routeComponent && prop && routeComponent.props) {
-    let routes = routeComponent.props.routes; //当前显示内容的 Route 实例链
-    if (routes && routes.length > 0) {
-      for (let i = routes.length - 1; i >= 0; i--) {
-        let route = routes[i];
-        if (route && (typeof (route[prop]) != 'undefined')) {
-          return route[prop];
-        }
-      }
-    }
-  }
-  return undefined;
 };
 
 export default util;

@@ -19,7 +19,7 @@ let publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
 let getPlugins = () => {
   let param = defaults.getDefinePluginParam({
     defineEnv: 'test',
-    defineDebug: true,
+    defineVer: defaults.version,
     publicPagePath,
     publicAssetPath,
     publicRpcPath,
@@ -33,12 +33,15 @@ let getPlugins = () => {
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.DefinePlugin(param),
     // new webpack.optimize.UglifyJsPlugin({
+    //   comments: new RegExp(defaults.name),
     //   sourceMap: true
     // }),
     new webpack.LoaderOptionsPlugin({
       debug: true,
       minimize: false,
-      context: __dirname
+      options: {
+        context: __dirname
+      }
     })
   );
 };

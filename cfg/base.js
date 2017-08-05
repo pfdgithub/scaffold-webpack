@@ -13,7 +13,7 @@ let defaults = require('./defaults');
 let extractBundle = {
   reactBundle: ['react', 'react-dom'],
   commonBundle: [
-    'commons/base', 'commons/util', 'commons/device', 'commons/config',
+    'commons/base', 'commons/util', 'commons/config',
     'sources/db.global', 'sources/db.inner'
   ]
 };
@@ -35,13 +35,6 @@ let getEntries = () => {
 
 // 获取加载器
 let getModules = () => {
-  // postcss 插件
-  let postcssPlugins = () => {
-    return [
-      require('autoprefixer')
-    ];
-  };
-
   return {
     rules: [
       {
@@ -140,7 +133,7 @@ let getModules = () => {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: postcssPlugins
+                sourceMap: true
               }
             }
           ]
@@ -166,7 +159,7 @@ let getModules = () => {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: postcssPlugins
+                sourceMap: true
               }
             },
             {
@@ -201,7 +194,7 @@ let getModules = () => {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: postcssPlugins
+                sourceMap: true
               }
             },
             {
@@ -270,6 +263,7 @@ let getPlugins = () => {
     new HtmlWebpackHarddiskPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
+      minChunks: Infinity,
       names: Object.keys(extractBundle)
     }),
     new ExtractTextWebpackPlugin({
@@ -278,7 +272,7 @@ let getPlugins = () => {
       disable: false
     }),
     new webpack.BannerPlugin({
-      banner: `name: ${defaults.name}\nversion: ${defaults.version}\ndescription: ${defaults.description}\ntimestamp: ${defaults.timestamp}`
+      banner: `name: ${defaults.name}\nversion: ${defaults.version}\ndescription: ${defaults.description}`
     }),
     new AssetsWebpackPlugin({
       path: path.join(defaults.distPath, defaults.version),
@@ -304,8 +298,11 @@ module.exports = {
     alias: {
       commons: defaults.commonPath,
       components: defaults.componentPath,
+      entries: defaults.entryPath,
       images: defaults.imagePath,
       libraries: defaults.libraryPath,
+      mocks: defaults.mockPath,
+      pages: defaults.pagePath,
       sources: defaults.sourcePath,
       styles: defaults.stylePath,
       views: defaults.viewPath

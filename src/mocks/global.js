@@ -39,6 +39,7 @@ let parseRestCfg = (restModule) => {
         params.push(param); // 记录参数名称
       });
     }
+    apiPattern = '^' + apiPattern + '$'; // 严格匹配请求路径（不含后缀）
 
     return {
       api: api,
@@ -58,7 +59,9 @@ let matchReqApi = (restApiObjArr, req) => {
   // 遍历接口对象数组，找到匹配当前请求的第一个对象
   let matchApiObj = restApiObjArr.find((apiObj) => {
     let reg = new RegExp(apiObj.pattern);
-    let matchArr = req.path.match(reg);
+    let pathObject = path.parse(req.path); // 移除请求路径后缀
+    let noExt = `${pathObject.dir}/${pathObject.name}`;
+    let matchArr = noExt.match(reg);
     if (matchArr) {
       // 从当前请求中提取参数值
       values = matchArr.filter((match, index) => {

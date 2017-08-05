@@ -1,6 +1,5 @@
 let gulp = require('gulp');
 let gutil = require('gulp-util');
-let eslint = require('gulp-eslint');
 let del = require('del');
 let open = require('open');
 let path = require('path');
@@ -112,7 +111,7 @@ let checkVersion = (cb) => {
   let pkgVersionStr = getPkgVersion(); // 1.0.0
   let gitBranchStr = getGitBranch(); // dev-v1.0.0
   let pkgVersionArr = pkgVersionStr.match(/^(\d+)\.(\d+)\.(\d+)$/);
-  let gitBranchArr = gitBranchStr.match(/^([\w\-]+)-v((\d+)\.(\d+)\.(\d+))$/);
+  let gitBranchArr = gitBranchStr.match(/^([\w-]+)-v((\d+)\.(\d+)\.(\d+))$/);
 
   if (pkgVersionArr && gitBranchArr) {
     let pkgVersion = pkgVersionArr[0]; // 1.0.0
@@ -140,6 +139,18 @@ let cleanBuild = (cb) => {
     let gErr = getFunError('cleanBuild', err);
     cb(gErr);
   });
+};
+
+// 复制最终版本
+let copyLatest = () => {
+  let pkgVersionStr = getPkgVersion(); // 1.0.0
+  let src = `./dist/${pkgVersionStr}/**`;
+  let dest = `./dist/latest/`;
+
+  funLog('copyLatest', src, dest);
+
+  return gulp.src(src)
+    .pipe(gulp.dest(dest));
 };
 
 // 开发服务器
@@ -183,14 +194,6 @@ let buildProject = (cb) => {
   });
 };
 
-// 校验代码
-gulp.task('lint', () => {
-  return gulp.src(['src/**/*.{js,jsx}', '!src/libraries/**', '!src/styles/*/**'])
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
-});
-
 // 检查版本号
 gulp.task('check', (cb) => {
   checkVersion(cb);
@@ -199,6 +202,11 @@ gulp.task('check', (cb) => {
 // 清理目录
 gulp.task('clean', (cb) => {
   cleanBuild(cb);
+});
+
+// 复制当前构建版本为最终版本
+gulp.task('copyLatest', () => {
+  return copyLatest();
 });
 
 // 启动开发服务器

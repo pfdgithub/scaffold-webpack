@@ -5,16 +5,13 @@ let context = nattyFetch.context({
   withCredentials: true,
   urlPrefix: config.public.rpcPath.inner,
   urlSuffix: '.json',
-  plugins: [
-    nattyFetch.plugin.soon
-  ],
   fit: (response) => {
     let obj = response ? response : {};
     return {
       success: obj.code === 0,
       error: {
         raw: response,
-        message: (obj.code > 0 && obj.message) ? obj.message : '网络错误，请稍后重试。'
+        message: obj.message ? obj.message : '操作失败，请稍后重试。'
       },
       content: {
         raw: response,
@@ -79,3 +76,6 @@ context.create('rest', {
 
 // 输出上下文的所有接口
 export default context.api;
+
+// 输出上下文
+export let dbContext = context;
