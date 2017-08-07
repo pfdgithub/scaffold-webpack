@@ -254,30 +254,48 @@ util.msecToString = (timestamp, format) => {
   if (timestamp && format) {
     let time = new Date(timestamp);
 
-    let year = time.getFullYear();
-    let month = time.getMonth() + 1;
-    let date = time.getDate();
-    let hour = time.getHours();
-    let minutes = time.getMinutes();
-    let second = time.getSeconds();
-    let millisecond = time.getMilliseconds();
+    let sYear = time.getFullYear().toString().substr(-2); // 短年份
+    let sMonth = time.getMonth() + 1; // 短月份
+    let sDate = time.getDate(); // 短日期
+    let sHour = time.getHours(); // 短小时
+    let sMinutes = time.getMinutes(); // 短分钟
+    let sSecond = time.getSeconds(); // 短秒
+    let sMillisecond = time.getMilliseconds(); // 短毫秒
 
-    month = month < 10 ? ('0' + month) : month;
-    date = date < 10 ? ('0' + date) : date;
-    hour = hour < 10 ? ('0' + hour) : hour;
-    minutes = minutes < 10 ? ('0' + minutes) : minutes;
-    second = second < 10 ? ('0' + second) : second;
-    millisecond = millisecond < 10 ? ('00' + millisecond) : (millisecond < 100 ? ('0' + millisecond) : millisecond);
+    let lYear = time.getFullYear(); // 长年份
+    let lMonth = sMonth < 10 ? ('0' + sMonth) : sMonth; // 长月份
+    let lDate = sDate < 10 ? ('0' + sDate) : sDate; // 长日期
+    let lHour = sHour < 10 ? ('0' + sHour) : sHour; // 长小时
+    let lMinutes = sMinutes < 10 ? ('0' + sMinutes) : sMinutes; // 长分钟
+    let lSecond = sSecond < 10 ? ('0' + sSecond) : sSecond; // 长秒
+    let lMillisecond = sMillisecond < 10 ? ('0' + sMillisecond) : sMillisecond; // 长毫秒
+    let llMillisecond = sMillisecond < 10 ? ('00' + sMillisecond) : (sMillisecond < 100 ? ('0' + sMillisecond) : sMillisecond); // 长长毫秒
 
     ret = format;
-    ret = ret.replace(/yyyy/g, year);
-    ret = ret.replace(/MM/g, month);
-    ret = ret.replace(/dd/g, date);
-    ret = ret.replace(/HH/g, hour);
-    ret = ret.replace(/mm/g, minutes);
-    ret = ret.replace(/ss/g, second);
-    ret = ret.replace(/fff/g, millisecond);
+
+    ret = ret.replace(/yyyy/g, lYear); // 长年份
+    ret = ret.replace(/yy/g, sYear); // 短年份
+
+    ret = ret.replace(/MM/g, lMonth); // 长月份
+    ret = ret.replace(/M/g, sMonth); // 短月份
+
+    ret = ret.replace(/dd/g, lDate); // 长日期
+    ret = ret.replace(/d/g, sDate); // 短日期
+
+    ret = ret.replace(/HH/g, lHour); // 长小时
+    ret = ret.replace(/H/g, sHour); // 短小时
+
+    ret = ret.replace(/mm/g, lMinutes); // 长分钟
+    ret = ret.replace(/m/g, sMinutes); // 短分钟
+
+    ret = ret.replace(/ss/g, lSecond); // 长秒
+    ret = ret.replace(/s/g, sSecond); // 短秒
+
+    ret = ret.replace(/fff/g, llMillisecond); // 长长毫秒
+    ret = ret.replace(/ff/g, lMillisecond); // 长毫秒
+    ret = ret.replace(/f/g, sMillisecond); // 短毫秒
   }
+
   return ret;
 };
 
