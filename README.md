@@ -11,7 +11,7 @@ react-hot-loader v3 API不兼容老版本
 react 使用 [react](https://github.com/facebook/react) 作为 View 层。  
 react-antd 使用 [ant-design](https://github.com/ant-design/ant-design) 作为 UI 库。  
 react-antd-mobile 使用 [ant-design-mobile](https://github.com/ant-design/ant-design-mobile) 作为 UI 库。  
-react-ts 处于 alpha 阶段。使用 [react](https://github.com/facebook/react) 作为 View 层，使用 [typescript](https://www.typescriptlang.org/) 作为书写语法。  
+react-ts 使用 [react](https://github.com/facebook/react) 作为 View 层，使用 [typescript](https://www.typescriptlang.org/) 作为书写语法。  
 
 # 目录结构
 
