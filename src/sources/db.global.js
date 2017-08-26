@@ -80,6 +80,9 @@ nattyFetch.setGlobal({
 
     return content;
   },
+  // 追加到url上的queryString的值。
+  query: {
+  },
   // 是否开启RESTFul API接口风格。如果开启，在调用接口时传入的:号开头的参数会被填充到url中。
   rest: false,
   // 在请求失败(网络错误，超时，success为false等)时是否进行请求重试。
