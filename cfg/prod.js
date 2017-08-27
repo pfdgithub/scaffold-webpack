@@ -1,4 +1,12 @@
+let path = require('path');
 let webpack = require('webpack');
+/**
+ * 2017-08-26
+ * 临时方案：并行混淆代码
+ * uglifyjs-webpack-plugin 尚未发布的 1.x 版本已经内置了并行支持。
+ * webpack.optimize.UglifyJsPlugin 目前使用 0.4.6 版本。
+ */
+let ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 
 let devServer = require('./devServer');
 let defaults = require('./defaults');
@@ -32,9 +40,18 @@ let getPlugins = () => {
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.DefinePlugin(param),
-    new webpack.optimize.UglifyJsPlugin({
-      comments: new RegExp(defaults.name),
-      sourceMap: true
+    // new webpack.optimize.UglifyJsPlugin({
+    //   comments: new RegExp(defaults.name),
+    //   sourceMap: true
+    // }),
+    new ParallelUglifyPlugin({
+      sourceMap: true,
+      cacheDir: path.resolve('node_modules/.cache/webpack-parallel-uglify-plugin'),
+      uglifyJS: {
+        output: {
+          comments: `/${defaults.name}/`
+        }
+      }
     }),
     new webpack.LoaderOptionsPlugin({
       debug: false,

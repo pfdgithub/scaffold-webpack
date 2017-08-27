@@ -35,6 +35,14 @@ let getEntries = () => {
 
 // 获取加载器
 let getModules = () => {
+  // cache-loader 配置
+  let cacheLoader = {
+    loader: 'cache-loader',
+    options: {
+      cacheDirectory: path.resolve('node_modules/.cache/cache-loader')
+    }
+  };
+
   return {
     rules: [
       {
@@ -53,6 +61,7 @@ let getModules = () => {
       {
         test: /\.(js|jsx)$/,
         use: [
+          cacheLoader,
           {
             loader: 'babel-loader',
             options: {
@@ -65,6 +74,7 @@ let getModules = () => {
       {
         test: /\.html$/,
         use: [
+          cacheLoader,
           {
             loader: 'html-loader',
             options: {
@@ -79,6 +89,7 @@ let getModules = () => {
       {
         test: /\.(png|jpg|gif)$/,
         use: [
+          cacheLoader,
           {
             loader: 'url-loader',
             options: {
@@ -92,6 +103,7 @@ let getModules = () => {
       {
         test: /\.(svg|eot|ttf|woff|woff2)$/,
         use: [
+          cacheLoader,
           {
             loader: 'file-loader',
             options: {
@@ -105,6 +117,7 @@ let getModules = () => {
       {
         test: /\.svg$/,
         use: [
+          cacheLoader,
           {
             loader: 'svg-sprite-loader',
             options: {
@@ -118,7 +131,7 @@ let getModules = () => {
       },
       {
         test: /\.css$/,
-        use: ExtractTextWebpackPlugin.extract({
+        use: [cacheLoader].concat(ExtractTextWebpackPlugin.extract({
           fallback: {
             loader: 'style-loader'
           },
@@ -137,12 +150,12 @@ let getModules = () => {
               }
             }
           ]
-        })
+        }))
         // 不限制目录（包含 node_modules 目录）
       },
       {
         test: /\.less$/,
-        use: ExtractTextWebpackPlugin.extract({
+        use: [cacheLoader].concat(ExtractTextWebpackPlugin.extract({
           fallback: {
             loader: 'style-loader'
           },
@@ -169,7 +182,7 @@ let getModules = () => {
               }
             }
           ]
-        }),
+        })),
         // 业务组件、入口脚本、单页视图，启用 CSS Modules
         include: [
           defaults.componentPath,
@@ -179,7 +192,7 @@ let getModules = () => {
       },
       {
         test: /\.less$/,
-        use: ExtractTextWebpackPlugin.extract({
+        use: [cacheLoader].concat(ExtractTextWebpackPlugin.extract({
           fallback: {
             loader: 'style-loader'
           },
@@ -204,7 +217,7 @@ let getModules = () => {
               }
             }
           ]
-        }),
+        })),
         // 除业务组件、入口脚本、单页视图外，其他目录正常处理
         include: defaults.srcPath,
         exclude: [

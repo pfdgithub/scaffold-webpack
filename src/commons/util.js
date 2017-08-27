@@ -299,7 +299,7 @@ util.msecToString = (timestamp, format) => {
   return ret;
 };
 
-//yyyy-MM-dd HH:mm:ss 转换为Date
+// yyyy-MM-dd HH:mm:ss 转换为Date
 util.stringToDate = (dateString) => {
   let ret = undefined;
 
