@@ -32,8 +32,8 @@ package.json 项目配置文件。
 npm run check 检查 Git 分支名与 package.json 版本号是否一致。 
 npm run clean 清理构建目录和临时文件。  
 npm run latest 复制当前版本为 latest 版本。  
-npm run server 启动本地静态服务器（开发环境）。  
-npm run open 启动本地静态服务器，并打开浏览器（开发环境）。  
+npm run server 启动本地静态服务器（开发环境）。[或 gulp server --env=dev](#SIGINT-信号量)  
+npm run open 启动本地静态服务器，并打开浏览器（开发环境）。[或 gulp open --env=dev](#SIGINT-信号量)  
 npm run build:dev 构建项目（开发环境）。  
 npm run build:test 构建项目（测试环境）。  
 npm run build:prod 构建项目（生产环境）。  
@@ -78,6 +78,14 @@ npm run build:prod 构建项目（生产环境）。
 [Extract text plugin with code splitting](https://github.com/webpack/extract-text-webpack-plugin/issues/208)  
 [ExtractTextPlugin extracts from asynchronous split point chunks](https://github.com/webpack/extract-text-webpack-plugin/issues/120)  
 [[bug] async js chunks that include scss imports cause => Uncaught (in promise) TypeError: Cannot read property 'call' of undefined](https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/456)  
+
+## SIGINT 信号量
+
+执行 npm run xxx 会启动子进程，但在触发 Ctrl + C 后 npm 并未将 SIGINT 信号量传播至子进程。  
+造成主进程虽已结束，但子进程却残留下来，表现为 webpack-dev-server 监听端口被占用。  
+如果出现此情况，就需要绕过 npm 直接调用 xxx 命令。  
+参考：  
+[passing unix signals to child rather than dying](https://github.com/npm/npm/issues/4603)  
 
 # 其他资料
 
