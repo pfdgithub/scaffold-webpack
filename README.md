@@ -32,8 +32,8 @@ package.json 项目配置文件。
 npm run check 检查 Git 分支名与 package.json 版本号是否一致。 
 npm run clean 清理构建目录和临时文件。  
 npm run latest 复制当前版本为 latest 版本。  
-npm run server 启动本地静态服务器（开发环境）。[或 gulp server --env=dev](#SIGINT-信号量)  
-npm run open 启动本地静态服务器，并打开浏览器（开发环境）。[或 gulp open --env=dev](#SIGINT-信号量)  
+npm run server 启动本地静态服务器（开发环境）。[或 gulp server --env=dev](#sigint 信号量)  
+npm run open 启动本地静态服务器，并打开浏览器（开发环境）。[或 gulp open --env=dev](#sigint 信号量)  
 npm run build:dev 构建项目（开发环境）。  
 npm run build:test 构建项目（测试环境）。  
 npm run build:prod 构建项目（生产环境）。  
