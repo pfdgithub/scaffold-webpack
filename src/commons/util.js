@@ -40,7 +40,8 @@ util.joinQueryString = (query) => {
     value = encodeURIComponent(value);
     search += key + '=' + value + '&';
   }
-  if (search[search.length - 1] == '&') {
+  if (search[search.length - 1] == '&'
+    || search[search.length - 1] == '?') {
     search = search.substring(0, search.length - 1);
   }
 
@@ -83,7 +84,8 @@ util.joinHashString = (query) => {
     value = encodeURIComponent(value);
     hash += key + '=' + value + '&';
   }
-  if (hash[hash.length - 1] == '&') {
+  if (hash[hash.length - 1] == '&'
+    || hash[hash.length - 1] == '?') {
     hash = hash.substring(0, hash.length - 1);
   }
 
