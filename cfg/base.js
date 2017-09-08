@@ -131,11 +131,12 @@ let getModules = () => {
       },
       {
         test: /\.css$/,
-        use: [cacheLoader].concat(ExtractTextWebpackPlugin.extract({
+        use: ExtractTextWebpackPlugin.extract({
           fallback: {
             loader: 'style-loader'
           },
           use: [
+            cacheLoader,
             {
               loader: 'css-loader',
               options: {
@@ -150,16 +151,17 @@ let getModules = () => {
               }
             }
           ]
-        }))
+        })
         // 不限制目录（包含 node_modules 目录）
       },
       {
         test: /\.less$/,
-        use: [cacheLoader].concat(ExtractTextWebpackPlugin.extract({
+        use: ExtractTextWebpackPlugin.extract({
           fallback: {
             loader: 'style-loader'
           },
           use: [
+            cacheLoader,
             {
               loader: 'css-loader',
               options: {
@@ -182,7 +184,7 @@ let getModules = () => {
               }
             }
           ]
-        })),
+        }),
         // 业务组件、入口脚本、单页视图，启用 CSS Modules
         include: [
           defaults.componentPath,
@@ -192,11 +194,12 @@ let getModules = () => {
       },
       {
         test: /\.less$/,
-        use: [cacheLoader].concat(ExtractTextWebpackPlugin.extract({
+        use: ExtractTextWebpackPlugin.extract({
           fallback: {
             loader: 'style-loader'
           },
           use: [
+            cacheLoader,
             {
               loader: 'css-loader',
               options: {
@@ -217,7 +220,7 @@ let getModules = () => {
               }
             }
           ]
-        })),
+        }),
         // 除业务组件、入口脚本、单页视图外，其他目录正常处理
         include: defaults.srcPath,
         exclude: [
