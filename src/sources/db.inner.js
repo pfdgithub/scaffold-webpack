@@ -23,6 +23,9 @@ let context = nattyFetch.context({
 
 // 上下文事件
 let lock = false; // 注意，一个页面只会初始化一次
+nattyFetch.on('resolve', (data, config) => {
+  log('resolve', data, config);
+});
 context.on('reject', (err/*, cfg*/) => {
   if (err.raw && err.raw.code === 10001) {
     let message = err.message || '当前未登陆或登陆超时，请重新登陆。';
@@ -46,8 +49,6 @@ context.on('reject', (err/*, cfg*/) => {
       }, 0);
     }
   }
-});
-context.on('reject', (/*err, cfg*/) => {
 });
 context.on('error', (/*err, cfg*/) => {
 });
