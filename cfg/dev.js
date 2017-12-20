@@ -43,8 +43,9 @@ let getEntries = () => {
   for (let key in base.entry) {
     newEntries[key] = [
       'react-hot-loader/patch',
-      `webpack-dev-server/client?${defaults.https ? 'https' : 'http'}://127.0.0.1:${defaults.port}/`, // Automatic Refresh - Inline mode
-      'webpack/hot/only-dev-server' // Automatic Refresh - Hot Module Replacement
+      // // 自动刷新
+      // `webpack-dev-server/client?${defaults.https ? 'https' : 'http'}://127.0.0.1:${defaults.port}/`, // Automatic Refresh - Inline mode
+      // 'webpack/hot/only-dev-server' // Automatic Refresh - Hot Module Replacement
     ].concat(base.entry[key]);
   }
 
@@ -54,20 +55,21 @@ let getEntries = () => {
 // 获取加载器
 let getModules = () => {
   let rules = base.module.rules;
-  rules.forEach((rule) => {
-    let enforce = rule.enforce;
-    let test = rule.test;
-    let use = rule.use;
-    // 找到处理 .js 和 .jsx 文件的普通 loader 后在其 use 数组中添加新的 loader
-    if ((enforce === undefined || enforce === '' || enforce === 'normal')
-      && (Object.prototype.toString.call(test) === '[object RegExp]' && test.source === '\\.(js|jsx)$') //注意转义字符
-      && Object.prototype.toString.call(use) === '[object Array]') {
-      // 在数组顶部添加
-      use.unshift({
-        loader: 'react-hot-loader/webpack'
-      });
-    }
-  });
+  // // 使用 react-hot-loader/webpack 处理 jsx 文件
+  // rules.forEach((rule) => {
+  //   let enforce = rule.enforce;
+  //   let test = rule.test;
+  //   let use = rule.use;
+  //   // 找到处理 .js 和 .jsx 文件的普通 loader 后在其 use 数组中添加新的 loader
+  //   if ((enforce === undefined || enforce === '' || enforce === 'normal')
+  //     && (Object.prototype.toString.call(test) === '[object RegExp]' && test.source === '\\.(js|jsx)$') //注意转义字符
+  //     && Object.prototype.toString.call(use) === '[object Array]') {
+  //     // 在数组顶部添加
+  //     use.unshift({
+  //       loader: 'react-hot-loader/webpack'
+  //     });
+  //   }
+  // });
 
   return base.module;
 };
