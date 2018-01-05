@@ -1,7 +1,7 @@
 /**
  * babel-plugin-imports 插件配置
  */
-/*
+
 // 驼峰转破折号
 let camel2Dash = (name) => {
   let _name = name[0].toLowerCase() + name.substring(1);
@@ -17,7 +17,7 @@ let camel2Underline = (name) => {
     return '_' + letter.toLowerCase();
   });
 };
-*/
+
 let rules = {
 };
 

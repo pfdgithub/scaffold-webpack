@@ -1,25 +1,26 @@
-let path = require('path');
-let webpack = require('webpack');
-let beautify = require('js-beautify');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
-let HtmlWebpackEventPlugin = require('html-webpack-event-plugin');
-let HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-let ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
-let AssetsWebpackPlugin = require('assets-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const beautify = require('js-beautify');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackEventPlugin = require('html-webpack-event-plugin');
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const AssetsWebpackPlugin = require('assets-webpack-plugin');
 
-let defaults = require('./defaults');
+const defaults = require('./defaults');
 
 // 提取公共依赖
-let extractBundle = {
+const extractBundle = {
   reactBundle: ['react', 'react-dom'],
   commonBundle: [
     'commons/base', 'commons/util', 'commons/config',
     'sources/db.global', 'sources/db.inner'
-  ]
+  ],
+  manifest: undefined
 };
 
 // 获取入口配置
-let getEntries = () => {
+const getEntries = () => {
   let entries = {};
   let pages = defaults.entryPages;
 
@@ -30,11 +31,20 @@ let getEntries = () => {
     ];
   });
 
-  return Object.assign({}, extractBundle, entries);
+  // 排除无效入口
+  let validBundle = {};
+  for (let key in extractBundle) {
+    let val = extractBundle[key];
+    if (val && val.length > 0) {
+      validBundle[key] = val;
+    }
+  }
+
+  return Object.assign({}, validBundle, entries);
 };
 
 // 获取加载器
-let getModules = () => {
+const getModules = () => {
   // cache-loader 配置
   let cacheLoader = {
     loader: 'cache-loader',
@@ -61,7 +71,6 @@ let getModules = () => {
       {
         test: /\.(js|jsx)$/,
         use: [
-          cacheLoader,
           {
             loader: 'babel-loader',
             options: {
@@ -89,7 +98,6 @@ let getModules = () => {
       {
         test: /\.(png|jpg|gif)$/,
         use: [
-          cacheLoader,
           {
             loader: 'url-loader',
             options: {
@@ -103,7 +111,6 @@ let getModules = () => {
       {
         test: /\.(svg|eot|ttf|woff|woff2)$/,
         use: [
-          cacheLoader,
           {
             loader: 'file-loader',
             options: {
@@ -234,13 +241,13 @@ let getModules = () => {
 };
 
 // 获取插件
-let getPlugins = () => {
+const getPlugins = () => {
   // html-webpack-plugin 插件
   let htmlPlugins = [];
   defaults.entryPages.forEach((entryPage) => {
     htmlPlugins.push(new HtmlWebpackPlugin({
       template: path.join(defaults.pagePath, entryPage + defaults.pageSuffix), // 指定 html 模版路径
-      filename: path.join(defaults.distPath, defaults.version, entryPage + defaults.pageSuffix), // 指定 html 输出路径
+      filename: path.join(defaults.distPath/* , defaults.version */, entryPage + defaults.pageSuffix), // 指定 html 输出路径
       chunks: [].concat(Object.keys(extractBundle), entryPage), // 指定 html 中注入的资源。
       chunksSortMode: 'dependency', // 按照依赖顺序排序
       hash: false, // 在资源文件后追加 webpack 编译哈希
@@ -283,12 +290,18 @@ let getPlugins = () => {
       names: Object.keys(extractBundle)
     }),
     new ExtractTextWebpackPlugin({
-      filename: `${defaults.assetFilename}.css`,
+      filename: `[name]-[contenthash].css`,
       allChunks: true, // 打包在异步模块中的依赖样式，会因丢失依赖项而在加载时抛出异常。
       disable: false
     }),
     new webpack.BannerPlugin({
       banner: `name: ${defaults.name}\nversion: ${defaults.version}\ndescription: ${defaults.description}`
+    }),
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      return chunk.mapModules(m => path.relative(m.context, m.resource)).join("_");
     }),
     new AssetsWebpackPlugin({
       path: path.join(defaults.distPath, defaults.version),
@@ -326,8 +339,8 @@ module.exports = {
   },
   output: {
     crossOriginLoading: "anonymous",
-    filename: `${defaults.assetFilename}.js`,
-    chunkFilename: `${defaults.assetFilename}.js`,
+    filename: `[name].js`,
+    chunkFilename: `[name].js`,
     path: path.join(defaults.distPath, defaults.version, defaults.assetDir),
     pathinfo: undefined,
     publicPath: undefined

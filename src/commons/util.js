@@ -5,12 +5,12 @@ util.parseQueryString = (search) => {
   let query = {};
   search = search ? search : window.location.search;
 
-  if (search.indexOf('?') == 0) {
+  if (search.indexOf('?') === 0) {
     let parameters = search.slice(1).split('&');
     for (let i = 0; i < parameters.length; i++) {
       let p = parameters[i];
       let kv = p.split('=');
-      if (kv.length == 2) {
+      if (kv.length === 2) {
         let k = kv[0];
         let v = kv[1];
         if (k) {
@@ -40,8 +40,8 @@ util.joinQueryString = (query) => {
     value = encodeURIComponent(value);
     search += key + '=' + value + '&';
   }
-  if (search[search.length - 1] == '&'
-    || search[search.length - 1] == '?') {
+  if (search[search.length - 1] === '&'
+    || search[search.length - 1] === '?') {
     search = search.substring(0, search.length - 1);
   }
 
@@ -53,12 +53,12 @@ util.parseHashString = (hash) => {
   let query = {};
   hash = hash ? hash : window.location.hash;
 
-  if (hash.indexOf('#') == 0) {
+  if (hash.indexOf('#') === 0) {
     let parameters = hash.slice(1).split('&');
     for (let i = 0; i < parameters.length; i++) {
       let p = parameters[i];
       let kv = p.split('=');
-      if (kv.length == 2) {
+      if (kv.length === 2) {
         let k = kv[0];
         let v = kv[1];
         if (k) {
@@ -84,8 +84,8 @@ util.joinHashString = (query) => {
     value = encodeURIComponent(value);
     hash += key + '=' + value + '&';
   }
-  if (hash[hash.length - 1] == '&'
-    || hash[hash.length - 1] == '?') {
+  if (hash[hash.length - 1] === '&'
+    || hash[hash.length - 1] === '?') {
     hash = hash.substring(0, hash.length - 1);
   }
 
@@ -137,7 +137,7 @@ util.isEqOrigin = (url) => {
   let remote = util.parseUrl(url);
   let local = window.location;
 
-  return remote.origin.toLowerCase() == local.origin.toLowerCase();
+  return remote.origin.toLowerCase() === local.origin.toLowerCase();
 };
 
 // 安全过滤
@@ -185,13 +185,14 @@ util.isIDNo = (cid) => {
       sum += parseInt(cid.substr(i, 1), 10) * arrExp[i];
     }
     idx = sum % 11;
-    return (arrValid[idx] == cid.substr(17, 1).toUpperCase());
+    return (arrValid[idx] === cid.substr(17, 1).toUpperCase());
   } else if (/^\d{15}$/.test(cid)) {
     let year = cid.substring(6, 8);
     let month = cid.substring(8, 10);
     let day = cid.substring(10, 12);
     let temp_date = new Date(year, parseInt(month) - 1, parseInt(day));
-    return (temp_date.getFullYear() == (parseInt(year) + 1900) && temp_date.getMonth() == (parseInt(month) - 1) && temp_date.getDate() == parseInt(day));
+    return (temp_date.getFullYear() === (parseInt(year) + 1900) &&
+      temp_date.getMonth() === (parseInt(month) - 1) && temp_date.getDate() === parseInt(day));
   } else {
     return false;
   }
@@ -217,7 +218,7 @@ util.isBankCard = (cardId) => {
 
 // 掩盖手机号码
 util.maskMobile = (mobile) => {
-  if (mobile && mobile.length == 11) {
+  if (mobile && mobile.length === 11) {
     return mobile.slice(0, 3) + '****' + mobile.slice(7);
   }
 
@@ -230,16 +231,16 @@ util.stringFormat = (...rest) => {
   let args = rest[1];
   let result = format;
   if (rest.length > 1) {
-    if (rest.length == 2 && typeof (args) == 'object') {
+    if (rest.length === 2 && typeof (args) === 'object') {
       for (let key in args) {
-        if (args[key] != undefined) {
+        if (args[key] !== undefined) {
           let reg = new RegExp('({' + key + '})', 'g');
           result = result.replace(reg, args[key]);
         }
       }
     } else {
       for (let i = 1; i < rest.length; i++) {
-        if (rest[i] != undefined) {
+        if (rest[i] !== undefined) {
           let reg = new RegExp('({)' + (i - 1) + '(})', 'g');
           result = result.replace(reg, rest[i]);
         }
@@ -325,6 +326,42 @@ util.stringToDate = (dateString) => {
   return ret;
 };
 
+// 日期进位 bit 可选为 yyyy MM dd HH mm ss
+// 如：bit 为 dd 可将 2017-01-01 00:00:00.000 转换为 2017-01-01 23:59:59.999
+util.dateCarryBit = (timestamp, bit) => {
+  let newTimestamp = timestamp;
+
+  if (timestamp && bit) {
+    let date = new Date(timestamp);
+
+    if (bit === 'yyyy') {
+      date.setFullYear(date.getFullYear() + 1);
+    }
+    else if (bit === 'MM') {
+      date.setMonth(date.getMonth() + 1);
+    }
+    else if (bit === 'dd') {
+      date.setDate(date.getDate() + 1);
+    }
+    else if (bit === 'HH') {
+      date.setHours(date.getHours() + 1);
+    }
+    else if (bit === 'mm') {
+      date.setMinutes(date.getMinutes() + 1);
+    }
+    else if (bit === 'ss') {
+      date.setSeconds(date.getSeconds() + 1);
+    }
+
+    if (date.getTime() !== parseInt(timestamp)) {
+      date.setMilliseconds(date.getMilliseconds() - 1);
+      newTimestamp = date.getTime();
+    }
+  }
+
+  return newTimestamp;
+};
+
 // 千分位分割数字
 util.thousandSeparator = (number, len) => {
   let strNum = "";
@@ -357,7 +394,7 @@ util.thousandSeparator = (number, len) => {
           let item = source[index];
 
           target.push(item);
-          if (((i + 1) % 3) == 0 && i != (source.length - 1)) {
+          if (((i + 1) % 3) === 0 && i !== (source.length - 1)) {
             target.push(',');
           }
         }
@@ -411,12 +448,75 @@ util.stringJsonFilter = (source, hideCode) => {
   let escRE = /[\\"\u0000-\u001F\u2028\u2029]/g;
 
   //只处理字符串类型
-  if (typeof (source) != 'string') {
+  if (typeof (source) !== 'string') {
     return source;
   } else {
     let target = source.replace(escRE, escFunc);
     return target;
   }
+};
+
+// UTF-8 转 BASE64
+util.utf8ToBase64 = (utf8) => {
+  let base64 = window.btoa(window.unescape(window.encodeURIComponent(utf8)));
+  return base64;
+};
+
+// BASE64 转 UTF-8
+util.base64ToUtf8 = (base64) => {
+  let utf8 = window.decodeURIComponent(window.escape(window.atob(base64)));
+  return utf8;
+};
+
+// 节流 当调用动作触发一段时间后，才会执行该动作，若在这段时间间隔内又调用此动作则将重新计算时间间隔
+util.debounce = (idle, action) => {
+  let last = 0;
+  return (...rest) => {
+    clearTimeout(last);
+    last = setTimeout(() => {
+      action(...rest);
+    }, idle);
+  };
+};
+
+// 防抖 预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新的时间周期
+util.throttle = (delay, action) => {
+  let last = 0;
+  return (...rest) => {
+    let curr = Date.now();
+    if (curr - last >= delay) {
+      last = curr;
+      action(...rest);
+    }
+  };
+};
+
+// 是否支持 Web Storage
+util.supportStorage = () => {
+  if (window.sessionStorage) {
+    try {
+      let item = 'wd-sessionStorage-test';
+      window.sessionStorage.setItem(item, item);
+      window.sessionStorage.removeItem(item);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  else {
+    return false;
+  }
+};
+
+// 加载页面
+util.gotoPage = (url, query, hash) => {
+  let href = url + util.joinQueryString(query) + util.joinHashString(hash);
+  window.location.href = href;
+};
+
+// 返回页面
+util.backPage = () => {
+  window.history.back();
 };
 
 // 人类友好日期
@@ -483,63 +583,15 @@ util.humanFriendlyNumber = (num) => {
     else if (num >= (100)) {
       ret = Math.floor(num / (100)) + '百';
     }
+    // else if (num >= (10)) {
+    //   ret = Math.floor(num / (10)) + '十';
+    // }
     else {
       ret = num;
     }
   }
 
   return ret;
-};
-
-// 是否支持 Web Storage
-util.supportStorage = (() => {
-  if (window.sessionStorage) {
-    try {
-      let item = 'wd-sessionStorage-test';
-      window.sessionStorage.setItem(item, item);
-      window.sessionStorage.removeItem(item);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  else {
-    return false;
-  }
-})();
-
-// 加载页面
-util.gotoPage = (url, query, hash) => {
-  let href = url + util.joinQueryString(query) + util.joinHashString(hash);
-  window.location.href = href;
-};
-
-// 返回页面
-util.backPage = () => {
-  window.history.back();
-};
-
-// 空闲控制 返回函数连续调用时，空闲时间必须大于或等于 idle，action 才会执行
-util.debounce = (idle, action) => {
-  let last = 0;
-  return (...rest) => {
-    clearTimeout(last);
-    last = setTimeout(() => {
-      action(...rest);
-    }, idle);
-  };
-};
-
-// 频率控制 返回函数连续调用时，action 执行频率限定为 次 / delay
-util.throttle = (delay, action) => {
-  let last = 0;
-  return (...rest) => {
-    let curr = Date.now();
-    if (curr - last > delay) {
-      last = curr;
-      action(...rest);
-    }
-  };
 };
 
 export default util;

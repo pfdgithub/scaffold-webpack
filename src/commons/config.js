@@ -14,9 +14,9 @@ let publicPageFullname = __wd_public_page_fullname__;
 /* eslint-enable */
 
 // 调试模式
-let isDebug = defineEnv == 'dev' || defineEnv == 'test';
+let isDebug = defineEnv === 'dev' || defineEnv === 'test';
 // 模拟数据
-let isMock = defineEnv == 'dev';
+let isMock = defineEnv === 'dev';
 
 // 默认配置
 export default {

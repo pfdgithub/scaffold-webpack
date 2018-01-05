@@ -4,9 +4,9 @@ import ComponentBase from '../Common/ComponentBase';
 import styles from './styles/Timer.less';
 import util from 'commons/util';
 
-let intervalId = 0;
-
 class Timer extends ComponentBase {
+  _intervalId = 0;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +17,7 @@ class Timer extends ComponentBase {
   componentDidMount() {
     super.componentDidMount();
 
-    intervalId = setInterval(() => {
+    this._intervalId = setInterval(() => {
       this.setState({
         time: Date.now()
       });
@@ -27,7 +27,7 @@ class Timer extends ComponentBase {
   componentWillUnmount() {
     super.componentWillUnmount();
 
-    clearInterval(intervalId);
+    clearInterval(this._intervalId);
   }
 
   render() {

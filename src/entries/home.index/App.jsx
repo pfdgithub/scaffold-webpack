@@ -10,7 +10,8 @@ class App extends EntryBase {
   constructor(props) {
     super(props);
     this.state = {
-      output: {}
+      legacy: {},
+      rest: {}
     };
   }
 
@@ -27,54 +28,86 @@ class App extends EntryBase {
       <div className={classnames(styles.app)}>
         <img src={logo} />
         <br />
-        <span onClick={this.getState}>点击此处模拟数据</span>
         <br />
-        {JSON.stringify(this.state.output)}
+        <a onClick={this.getLegacyData}>传统风格接口</a>
         <br />
-        <span onClick={this.codeSplitting}>点击此处加载视图</span>
+        {JSON.stringify(this.state.legacy)}
+        <br />
+        <br />
+        <a onClick={this.getRestData}>REST 风格接口</a>
+        <br />
+        {JSON.stringify(this.state.rest)}
+        <br />
+        <br />
+        <a onClick={this.loadView}>加载视图</a>
+        <br />
+        <a onClick={this.unloadView}>卸载视图</a>
+        <br />
+        <br />
       </div>
     );
   }
 
-  getState = () => {
-    // 传统风格接口
+  // 传统风格接口
+  getLegacyData = () => {
     db.legacy.state({
       clientTime: Date.now()
     }).then(this.unmountCheck((content) => {
       this.setState({
-        output: content.data
+        legacy: content.data
       });
     })).catch(this.unmountCheck((error) => {
       alert(error.message);
     }));
+  }
 
-    // REST 风格接口
+  // REST 风格接口
+  getRestData = () => {
     db.rest.state({
       ':state': 123,
       clientTime: Date.now()
     }).then(this.unmountCheck((content) => {
-      /* eslint-disable */
-      console.log(content.data);
-      /* eslint-enable */
+      this.setState({
+        rest: content.data
+      });
     })).catch(this.unmountCheck((error) => {
       alert(error.message);
     }));
   }
 
-  codeSplitting = () => {
-    import('views/TimerContainer').then((TimerContainer) => {
-      TimerContainer.default.init();
+  // 加载视图
+  loadView = () => {
+    import(/* webpackChunkName: "chunk-TimerContainer" */ 'views/TimerContainer')
+      .then((view) => {
+        this.replaceView(view);
 
-      if (module.hot) {
-        module.hot.accept('views/TimerContainer', () => {
-
-          import('views/TimerContainer').then((TimerContainerNew) => {
-            TimerContainerNew.default.init();
+        if (module.hot) {
+          module.hot.accept('views/TimerContainer', () => {
+            import(/* webpackChunkName: "chunk-TimerContainer" */ 'views/TimerContainer')
+              .then((view) => {
+                this.replaceView(view);
+              });
           });
-        });
-      }
-    });
+        }
+      });
   }
+
+  // 卸载视图
+  unloadView = () => {
+    this.replaceView(null);
+  }
+
+  // 替换视图
+  activeView = null;
+  replaceView = (newView) => {
+    // 销毁原视图
+    this.activeView && this.activeView.destroy();
+    // 更新新视图
+    this.activeView = newView && (newView.default || newView);
+    // 初始化新视图
+    this.activeView && this.activeView.init();
+  };
+
 }
 
 export default App;

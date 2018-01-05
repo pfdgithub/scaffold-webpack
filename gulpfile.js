@@ -1,5 +1,6 @@
 let gulp = require('gulp');
 let gutil = require('gulp-util');
+let zip = require('gulp-zip');
 let del = require('del');
 let open = require('open');
 let path = require('path');
@@ -130,10 +131,10 @@ let checkVersion = (cb) => {
 
 // 清理构建文件
 let cleanBuild = (cb) => {
-  del(['./dist/**'], {
+  del(['./dist/**', './node_modules/.cache/**'], {
     dryRun: false
   }).then((paths) => {
-    funLog('cleanBuild', paths.join('\n'));
+    funLog('cleanBuild', paths.length);
     cb();
   }).catch((err) => {
     let gErr = getFunError('cleanBuild', err);
@@ -143,13 +144,27 @@ let cleanBuild = (cb) => {
 
 // 复制最终版本
 let copyLatest = () => {
-  let pkgVersionStr = getPkgVersion(); // 1.0.0
-  let src = `./dist/${pkgVersionStr}/**`;
+  let ver = getPkgVersion(); // 1.0.0
+  let src = `./dist/${ver}/**`;
   let dest = `./dist/latest/`;
 
   funLog('copyLatest', src, dest);
 
   return gulp.src(src)
+    .pipe(gulp.dest(dest));
+};
+
+// zip 压缩
+let compress = () => {
+  let ver = getPkgVersion(); // 1.0.0
+  let src = `./dist/${ver}/**`;
+  let dest = `./dist/`;
+  let zipName = `${ver}.zip`;
+
+  funLog('compress', src, dest);
+
+  return gulp.src(src)
+    .pipe(zip(zipName))
     .pipe(gulp.dest(dest));
 };
 
@@ -159,13 +174,14 @@ let devServer = (cb) => {
   let devServer = config.devServer;
   let port = devServer.port;
 
-  new WebpackDevServer(webpack(config), devServer).listen(port, '0.0.0.0', (err) => {
+  funLog('devServer', `Listening at ${port}`);
+
+  new WebpackDevServer(webpack(config), devServer).listen(port, (err) => {
     if (err) {
       let gErr = getFunError('devServer', err);
       return cb(gErr);
     }
 
-    funLog('devServer', `Listening at 0.0.0.0:${port}`);
     cb();
   });
 };
@@ -209,21 +225,14 @@ gulp.task('copyLatest', () => {
   return copyLatest();
 });
 
-// 启动开发服务器
-gulp.task('server', ['check'], (cb) => {
-  devServer(cb);
+// 压缩构建文件
+gulp.task('compress', () => {
+  return compress();
 });
 
-// 浏览器打开项目主页
-gulp.task('open', ['server'], (cb) => {
-  let config = getWebpackConfig();
-  let devServer = config.devServer;
-  let port = devServer.port;
-  let uri = `http://127.0.0.1:${port}/home.index.html`;
-
-  open(uri);
-  taskLog('open', uri);
-  cb();
+// 启动开发服务器
+gulp.task('serve', ['check', 'clean'], (cb) => {
+  devServer(cb);
 });
 
 // 构建项目（客户端构建）

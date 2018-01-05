@@ -31,14 +31,46 @@ package.json 项目配置文件。
 
 npm run check 检查 Git 分支名与 package.json 版本号是否一致。 
 npm run clean 清理构建目录和临时文件。  
-npm run latest 复制当前版本为 latest 版本。  
-npm run server 启动本地静态服务器（开发环境）。[或 gulp server --env=dev](#sigint-信号量)  
-npm run open 启动本地静态服务器，并打开浏览器（开发环境）。[或 gulp open --env=dev](#sigint-信号量)  
+npm run latest 复制当前版本至 latest 目录。  
+npm run compress 压缩当前版本为 zip 文件。  
+npm run serve 启动本地静态服务器（开发环境）。[或 gulp serve --env=dev](#sigint-信号量)  
 npm run build:dev 构建项目（开发环境）。  
 npm run build:test 构建项目（测试环境）。  
 npm run build:prod 构建项目（生产环境）。  
 
+# 脚手架配置
+
+配置信息放置于 package.json 文件的 scaffoldConfig 节点。  
+```javascript
+{
+  "dev": { // 开发环境配置
+    "port": 8000, // 服务器端口
+    "https": false, // 启用 HTTPS 模式
+    "rpc": { // 后端接口配置（包含协议和域名的绝对路径）
+      "innerMode": "mock", // inner 接口模式 <mock|proxy|remote>
+      "innerPrefix": "[protocol]://[domain]/[path]/" // inner 接口路径（ proxy 或 remote 模式下使用）
+    }
+  },
+  "test": { // 测试环境配置
+    "pagePrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
+    "assetPrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
+    "rpcPrefix": { // 项目页面路径（绝对路径）
+      "inner": "//[domain]/[path]/" // inner 接口路径
+    }
+  },
+  "prod": { // 生产环境配置
+    "pagePrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
+    "assetPrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
+    "rpcPrefix": { // 项目页面路径（绝对路径）
+      "inner": "//[domain]/[path]/" // inner 接口路径
+    }
+  }
+}
+```
+
 # 注意事项
+
+## 兼容处理
 
 适度使用 ES6 和 ES7 语法，使用前需检查 Babel 支持程度。根据情况选择 core-js babel-plugin-transform-runtime babel-polyfill 做兼容处理。  
 对于低版本浏览器的支持，可能还需要 es5-shim es5-sham console-polyfill JSON 做兼容处理。  
@@ -58,6 +90,8 @@ npm run build:prod 构建项目（生产环境）。
 [ES6 + Webpack + React + Babel 如何在低版本浏览器上愉快的玩耍(上)](https://yq.aliyun.com/articles/59107)  
 [ES6 + Webpack + React + Babel 如何在低版本浏览器上愉快的玩耍(下)](https://yq.aliyun.com/articles/60724)  
 
+## 加载异常
+
 ~~仍未解决的问题，表现为在 modules[moduleId].call(...) 处出现 Cannot read property 'call' of undefined 异常。  
 发现其 moduleId 并未存在于 modules 中，有可能是该模块被去重或提取至某一个 bundle 中，而该 bundle 未能在被使用前及时加载。  
 在 webpack 1 中，找不到好的解决方案，在 webpack 2 中已经移除。只能禁用 webpack.optimize.DedupePlugin 插件，稍感欣慰的是，似乎打包后文件并没有大很多。  
@@ -66,6 +100,8 @@ npm run build:prod 构建项目（生产环境）。
 [配置 .babelrc 不起作用](https://github.com/ant-design/babel-plugin-import/issues/81)  
 [atool-build开启watch功能后，使用该插件会报模块找不到的错误](https://github.com/ant-design/babel-plugin-import/issues/97)  
 [removed DedupePlugin](https://github.com/webpack/webpack/pull/3266)~~  
+
+## 样式异常
 
 ~~暂时绕过去的问题，表现为在启用 extract-text-webpack-plugin 后，使用 require.ensure 进行 Code Splitting 操作时，会丢失按需加载组件中的部分样式。  
 发现在按需加载的组件中，通过 import 方式引入的 less 文件，有些会抛出 doesn't export content 错误，有些能正常引入（似乎是 src 下的文件），有些无法引入（似乎是 antd-mobile 下的文件），没有找到规律。  
@@ -87,9 +123,18 @@ npm run build:prod 构建项目（生产环境）。
 参考：  
 [passing unix signals to child rather than dying](https://github.com/npm/npm/issues/4603)  
 
+## react-hot-loader 生产环境配置
+
+生产环境打包文件中，含有本地磁盘路径，是由于 react-hot-loader 的 react-hot-loader/babel 配置中，需要检测 ```NODE_ENV=production``` 环境变量。  
+但 Babel 插件代码并未在 Webpack 的处理范围内，需要单独配置 node 环境变量 ```cross-env NODE_ENV=production```。  
+
+参考：  
+[react-hot-loader 3 babel plugin cased to the bundle.js size increased.](https://github.com/gaearon/react-hot-loader/issues/357)  
+[contains file path in production build with webpack](https://github.com/gaearon/react-hot-loader/issues/630)  
+
 # 其他资料
 
-hosts 目录位置：  
+## hosts 文件
 Windows C:\windows\system32\drivers\etc\hosts  
 Mac /private/etc/hosts  
 Linux /etc/hosts  

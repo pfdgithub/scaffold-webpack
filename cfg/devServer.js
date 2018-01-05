@@ -1,14 +1,16 @@
-let fs = require('fs');
-let path = require('path');
-let bodyParser = require('body-parser');
-let multer = require('multer');
-let cookieParser = require('cookie-parser');
+const fs = require('fs');
+const path = require('path');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const cookieParser = require('cookie-parser');
 
-let defaults = require('./defaults');
+const defaults = require('./defaults');
 
 // setup 配置
-let devServerSetup = (prefix) => {
-  prefix = prefix ? prefix : '/mocks/'; // 默认前缀
+const devServerSetup = (prefix) => {
+  if (!prefix) {
+    return;
+  }
 
   // 调用 mock 模块
   let callMockModule = (req, res) => {
@@ -53,9 +55,10 @@ let devServerSetup = (prefix) => {
 };
 
 //  proxy 配置
-let devServerProxy = (prefix, target) => {
-  prefix = prefix ? prefix : '/proxy/'; // 默认前缀
-  target = target ? target : `${defaults.https ? 'https' : 'http'}://127.0.0.1:${defaults.port}/`; // 默认目标
+const devServerProxy = (prefix, target) => {
+  if (!(prefix && target)) {
+    return;
+  }
 
   // 代理含有 body 的请求
   let proxyReqBody = (proxyReq, req/*, res*/) => {
@@ -103,14 +106,18 @@ let devServerProxy = (prefix, target) => {
       logLevel: 'debug', // 修改日志等级
       secure: false, // 忽略检查代理目标的 SSL 证书
       changeOrigin: true, // 修改代理目标请求头中的 host 为目标源
-      // cookieDomainRewrite: false, // 修改 cookie 所属域
+      cookieDomainRewrite: false, // 修改 cookie 所属域
       onProxyReq: (proxyReq, req, res) => { // 代理目标请求发出前触发
         // 代理含有 body 的请求
         proxyReqBody(proxyReq, req, res);
       },
-      onProxyRes: (/*proxyRes, req, res*/) => { // 代理目标响应接收后触发
+      onProxyRes: (proxyRes, req, res) => { // 代理目标响应接收后触发
       },
-      onError: (/*err, req, res*/) => { // 代理目标出现错误后触发
+      onError: (err, req, res) => { // 代理目标出现错误后触发
+        res.writeHead(500, {
+          'Content-Type': 'text/plain'
+        });
+        res.end(err);
       }
     }
   };
@@ -122,17 +129,17 @@ module.exports = (cfg) => {
     inline: true,
     compress: true,
     disableHostCheck: true,
-    port: defaults.port,
+    port: cfg.port,
     publicPath: cfg.publicPath,
-    setup: devServerSetup(cfg.mockPrefix),
+    before: devServerSetup(cfg.mockPrefix),
     proxy: devServerProxy(cfg.proxyPrefix, cfg.proxyTarget),
-    contentBase: path.join(defaults.distPath, defaults.version),
+    contentBase: path.join(defaults.distPath/* , defaults.version */),
     stats: {
       colors: true,
-      children: false,
-      modules: false
+      modules: true,
+      children: false
     },
-    https: defaults.https ? {
+    https: cfg.https ? {
       key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem'), 'utf8'),
       cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'), 'utf8'),
       cacert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'), 'utf8')
