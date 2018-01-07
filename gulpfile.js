@@ -1,6 +1,7 @@
 let gulp = require('gulp');
-let gutil = require('gulp-util');
-let zip = require('gulp-zip');
+let gLog = require('fancy-log');
+let gError = require('plugin-error');
+let gZip = require('gulp-zip');
 let del = require('del');
 let open = require('open');
 let path = require('path');
@@ -20,24 +21,24 @@ let envEnum = {
 
 // 输出任务日志
 let taskLog = (name, ...message) => {
-  gutil.log(`Log in plugin '[Task] ${name}'`, '\nMessage:\n    ', ...message);
+  gLog(`Log in plugin '[Task] ${name}'`, '\nMessage:\n    ', ...message);
 };
-/*
+
 // 获取任务错误
 let getTaskError = (name, message) => {
-  return new gutil.PluginError(`[Task] ${name}`, message, {
+  return new gError(`[Task] ${name}`, message, {
     // showStack: true
   });
 };
-*/
+
 // 输出函数日志
 let funLog = (name, ...message) => {
-  gutil.log(`Log in plugin '[Funtion] ${name}'`, '\nMessage:\n    ', ...message);
+  gLog(`Log in plugin '[Funtion] ${name}'`, '\nMessage:\n    ', ...message);
 };
 
 // 获取函数错误
 let getFunError = (name, message) => {
-  return new gutil.PluginError(`[Funtion] ${name}`, message, {
+  return new gError(`[Funtion] ${name}`, message, {
     // showStack: true
   });
 };
@@ -164,7 +165,7 @@ let compress = () => {
   funLog('compress', src, dest);
 
   return gulp.src(src)
-    .pipe(zip(zipName))
+    .pipe(gZip(zipName))
     .pipe(gulp.dest(dest));
 };
 
