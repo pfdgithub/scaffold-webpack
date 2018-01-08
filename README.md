@@ -132,6 +132,17 @@ npm run build:prod 构建项目（生产环境）。
 [react-hot-loader 3 babel plugin cased to the bundle.js size increased.](https://github.com/gaearon/react-hot-loader/issues/357)  
 [contains file path in production build with webpack](https://github.com/gaearon/react-hot-loader/issues/630)  
 
+## webpack-dev-server 热更新
+
+当在 CLI 和 Node API 中使用 webpack-dev-server 时，根据使用方式不同，需要进行不同配置。  
+在 CLI 中，使用 --hot 会自动启用 HotModuleReplacementPlugin 插件，并在 entry 中添加热更新代码。  
+在 Node API 中，需手工配置插件，并添加热更新代码（或使用 webpackDevServer.addDevServerEntrypoints 添加热更新代码）。
+
+参考：  
+[Minimalize differences between CLI and Node.js API](https://github.com/webpack/webpack-dev-server/issues/616)  
+[Setting WDS Entry Points Manually](https://survivejs.com/webpack/appendices/hmr/#setting-wds-entry-points-manually)  
+[Via the Node.js API](https://webpack.js.org/guides/hot-module-replacement/#via-the-node-js-api)  
+
 # 其他资料
 
 ## hosts 文件

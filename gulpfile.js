@@ -8,7 +8,7 @@ let path = require('path');
 let shell = require('shelljs');
 let yargs = require('yargs');
 let webpack = require('webpack');
-let WebpackDevServer = require('webpack-dev-server');
+let webpackDevServer = require('webpack-dev-server');
 
 let pkg = require('./package.json');
 
@@ -175,9 +175,10 @@ let devServer = (cb) => {
   let devServer = config.devServer;
   let port = devServer.port;
 
-  funLog('devServer', `Listening at ${port}`);
+  funLog('devServer', `Listening at 0.0.0.0:${port}`);
 
-  new WebpackDevServer(webpack(config), devServer).listen(port, (err) => {
+  webpackDevServer.addDevServerEntrypoints(config, devServer);
+  new webpackDevServer(webpack(config), devServer).listen(port, '0.0.0.0', (err) => {
     if (err) {
       let gErr = getFunError('devServer', err);
       return cb(gErr);

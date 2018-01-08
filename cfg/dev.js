@@ -17,8 +17,6 @@ const _innerPrefix = scaffoldCfg.rpc && scaffoldCfg.rpc.innerPrefix;
 const mockPathPrefix = '/mocks/';
 // 本地代理路径前缀
 const proxyPathPrefix = '/proxy/';
-// 远程服务器地址前缀（如 //[domain]/ 等）
-const remoteServerPrefix = `${defaults.https ? 'https' : 'http'}://127.0.0.1:${defaults.port}/`;
 // 代理目标域名（如 [protocol]://[domain]/ 等）
 let proxyTargetDomain = '';
 // inner 接口路径
@@ -83,8 +81,6 @@ const getEntries = () => {
 
   for (let key in base.entry) {
     newEntries[key] = [
-      `webpack-dev-server/client?${_https ? 'https' : 'http'}://127.0.0.1:${_port}/`, // Automatic Refresh - Inline mode
-      'webpack/hot/only-dev-server', // Automatic Refresh - Hot Module Replacement
       'react-hot-loader/patch'
     ].concat(base.entry[key]);
   }

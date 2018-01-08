@@ -14,10 +14,10 @@ const homeNotFound = getAsyncCom(() => import(/* webpackChunkName: "chunk-home.n
 const AppRouter = () => (
   <Router>
     <Switch>
-      <Route path="/home.index" component={homeIndex} />
-      <Route path="/home.notFound" component={homeNotFound} />
+      <Route path="/home.index.html" component={homeIndex} />
+      <Route path="/home.notFound.html" component={homeNotFound} />
 
-      <Redirect exact from="/" to="/home.index" />
+      <Redirect exact from="/" to="/home.index.html" />
       <Route component={homeNotFound} />
     </Switch>
   </Router>

@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import config from 'commons/config';
 
 import EntryBase from '../Common/EntryBase';
 import styles from './styles/App.less';
@@ -42,6 +43,9 @@ class App extends EntryBase {
         <a onClick={this.loadView}>加载视图</a>
         <br />
         <a onClick={this.unloadView}>卸载视图</a>
+        <br />
+        <br />
+        <a onClick={this.goNotFound}>跳转至 404</a>
         <br />
         <br />
       </div>
@@ -96,6 +100,13 @@ class App extends EntryBase {
   unloadView = () => {
     this.replaceView(null);
   }
+
+  // 跳转至 404
+  goNotFound = () => {
+    this.gotoPage(config.public.pageFullname.home.notFound, {
+      backUrl: config.public.pageFullname.home.index
+    });
+  };
 
   // 替换视图
   activeView = null;

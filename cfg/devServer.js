@@ -125,9 +125,12 @@ const devServerProxy = (prefix, target) => {
 
 module.exports = (cfg) => {
   return {
-    hot: true,
     inline: true,
+    hotOnly: true,
+    overlay: true,
     compress: true,
+    progress: true,
+    useLocalIp: true,
     disableHostCheck: true,
     port: cfg.port,
     publicPath: cfg.publicPath,
