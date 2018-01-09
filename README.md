@@ -89,6 +89,7 @@ npm run build:prod 构建项目（生产环境）。
 [如何区分Babel中的stage-0,stage-1,stage-2以及stage-3（二）](http://www.cnblogs.com/flyingzl/p/5504203.html)  
 [ES6 + Webpack + React + Babel 如何在低版本浏览器上愉快的玩耍(上)](https://yq.aliyun.com/articles/59107)  
 [ES6 + Webpack + React + Babel 如何在低版本浏览器上愉快的玩耍(下)](https://yq.aliyun.com/articles/60724)  
+[Babel: configuring standard library and helpers](https://leanpub.com/setting-up-es6/read#ch_babel-helpers-standard-library)  
 
 ## 加载异常
 

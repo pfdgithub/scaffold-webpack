@@ -1,7 +1,7 @@
 {
   "presets": [
     [
-      "es2015",
+      "env",
       {
         "modules": false
       }
@@ -10,13 +10,13 @@
     "react"
   ],
   "plugins": [
-    "react-hot-loader/babel",
-    "transform-runtime",
     [
       "imports",
       {
         "ruleExtend": "babelImportRules.js"
       }
-    ]
+    ],
+    "transform-runtime",
+    "react-hot-loader/babel"
   ]
 }

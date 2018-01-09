@@ -139,7 +139,10 @@ module.exports = (cfg) => {
     contentBase: path.join(defaults.distPath/* , defaults.version */),
     stats: {
       colors: true,
-      modules: true,
+      assets: true,
+      entrypoints: false,
+      chunks: false,
+      modules: false,
       children: false
     },
     https: cfg.https ? {
