@@ -136,7 +136,7 @@ module.exports = (cfg) => {
     publicPath: cfg.publicPath,
     before: devServerSetup(cfg.mockPrefix),
     proxy: devServerProxy(cfg.proxyPrefix, cfg.proxyTarget),
-    contentBase: path.join(defaults.distPath/* , defaults.version */),
+    contentBase: defaults.portalPath,
     stats: {
       colors: true,
       assets: true,

@@ -43,9 +43,13 @@ npm run build:prod 构建项目（生产环境）。
 配置信息放置于 package.json 文件的 scaffoldConfig 节点。  
 ```javascript
 {
+  "deploy": { // 部署配置
+    "portalMultiVersion": false, // 是否将项目页面放置于版本目录
+    "assetMultiVersion": false // 是否将页面资源放置于版本目录
+  },
   "dev": { // 开发环境配置
     "port": 8000, // 服务器端口
-    "https": false, // 启用 HTTPS 模式
+    "https": false, // 是否启用 HTTPS 模式
     "rpc": { // 后端接口配置（包含协议和域名的绝对路径）
       "innerMode": "mock", // inner 接口模式 <mock|proxy|remote>
       "innerPrefix": "[protocol]://[domain]/[path]/" // inner 接口路径（ proxy 或 remote 模式下使用）

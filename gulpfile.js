@@ -132,7 +132,10 @@ let checkVersion = (cb) => {
 
 // 清理构建文件
 let cleanBuild = (cb) => {
-  del(['./dist/**', './node_modules/.cache/**'], {
+  let buildOutput = './dist/**'; // 编译输出目录
+  let buildCache = './node_modules/.cache/**'; // 编译缓存目录
+
+  del([buildOutput, buildCache], {
     dryRun: false
   }).then((paths) => {
     funLog('cleanBuild', paths.length);

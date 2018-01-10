@@ -15,18 +15,22 @@ const defaults = require('./defaults');
 const base = require('./base');
 
 // 脚手架配置
-const scaffoldCfg = (defaults.scaffoldConfig && defaults.scaffoldConfig.prod) || {};
-const _pagePrefix = scaffoldCfg.pagePrefix;
-const _assetPrefix = scaffoldCfg.assetPrefix;
-const _innerPrefix = scaffoldCfg.rpcPrefix && scaffoldCfg.rpcPrefix.inner;
+const cfg = (() => {
+  let config = (defaults.scaffoldConfig && defaults.scaffoldConfig.prod) || {};
+  return {
+    pagePrefix: config.pagePrefix,
+    assetPrefix: config.assetPrefix,
+    innerPrefix: config.rpcPrefix && config.rpcPrefix.inner
+  };
+})();
 
 // 项目页面路径
-const publicPagePath = _pagePrefix || '/';
+const publicPagePath = cfg.pagePrefix || '/';
 // 项目资源路径
-const publicAssetPath = `${_assetPrefix || '/'}${defaults.version}/${defaults.assetDir}/`;
+const publicAssetPath = `${cfg.assetPrefix || '/'}${defaults.assetUrl}/`;
 // 后端接口路径
 const publicRpcPath = {
-  inner: _innerPrefix || '/'
+  inner: cfg.innerPrefix || '/'
 };
 // 入口页面名称对象
 const publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
@@ -35,7 +39,6 @@ const publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
 const getPlugins = () => {
   let param = defaults.getDefinePluginParam({
     defineEnv: 'prod',
-    defineVer: defaults.version,
     publicPagePath,
     publicAssetPath,
     publicRpcPath,

@@ -16,7 +16,7 @@ const extractBundle = {
     'commons/base', 'commons/util', 'commons/config',
     'sources/db.global', 'sources/db.inner'
   ],
-  manifest: undefined
+  runtime: undefined // webpackBootstrap
 };
 
 // 获取入口配置
@@ -247,7 +247,7 @@ const getPlugins = () => {
   defaults.entryPages.forEach((entryPage) => {
     htmlPlugins.push(new HtmlWebpackPlugin({
       template: path.join(defaults.pagePath, entryPage + defaults.pageSuffix), // 指定 html 模版路径
-      filename: path.join(defaults.distPath/* , defaults.version */, entryPage + defaults.pageSuffix), // 指定 html 输出路径
+      filename: path.join(defaults.portalPath, entryPage + defaults.pageSuffix), // 指定 html 输出路径
       chunks: [].concat(Object.keys(extractBundle), entryPage), // 指定 html 中注入的资源。
       chunksSortMode: 'dependency', // 按照依赖顺序排序
       hash: false, // 在资源文件后追加 webpack 编译哈希
@@ -304,15 +304,14 @@ const getPlugins = () => {
       return chunk.mapModules(m => path.relative(m.context, m.resource)).join("_");
     }),
     new AssetsWebpackPlugin({
-      path: path.join(defaults.distPath, defaults.version),
+      path: defaults.assetPath,
       filename: 'assets.json',
       prettyPrint: true,
       fullPath: true,
       metadata: {
         name: defaults.name,
         version: defaults.version,
-        description: defaults.description,
-        timestamp: defaults.timestamp
+        description: defaults.description
       }
     })
   );
@@ -341,7 +340,7 @@ module.exports = {
     crossOriginLoading: "anonymous",
     filename: `[name].js`,
     chunkFilename: `[name].js`,
-    path: path.join(defaults.distPath, defaults.version, defaults.assetDir),
+    path: defaults.assetPath,
     pathinfo: undefined,
     publicPath: undefined
   },

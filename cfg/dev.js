@@ -6,12 +6,15 @@ const defaults = require('./defaults');
 const base = require('./base');
 
 // 脚手架配置
-const scaffoldCfg = (defaults.scaffoldConfig && defaults.scaffoldConfig.dev) || {};
-
-const _port = scaffoldCfg.port;
-const _https = scaffoldCfg.https;
-const _innerMode = scaffoldCfg.rpc && scaffoldCfg.rpc.innerMode;
-const _innerPrefix = scaffoldCfg.rpc && scaffoldCfg.rpc.innerPrefix;
+const cfg = (() => {
+  let config = (defaults.scaffoldConfig && defaults.scaffoldConfig.dev) || {};
+  return {
+    port: config.port,
+    https: config.https,
+    innerMode: config.rpc && config.rpc.innerMode,
+    innerPrefix: config.rpc && config.rpc.innerPrefix
+  };
+})();
 
 // 模拟数据路径前缀
 const mockPathPrefix = '/mocks/';
@@ -23,7 +26,7 @@ let proxyTargetDomain = '';
 let innerRpcPath = '';
 
 (() => {
-  switch (_innerMode) {
+  switch (cfg.innerMode) {
     /**
      * 访问 mocks 目录下的模拟接口（如 /mocks/[path]/ 等）
      * 使用 js/json 实现 动态/静态 数据模拟
@@ -39,7 +42,7 @@ let innerRpcPath = '';
     case 'proxy': {
       // 如 https://domain.org/path/
       let regExp = /^(((http|https):)?(\/\/([^\/]+)\/))(.*)$/;
-      let matchArr = _innerPrefix && _innerPrefix.match(regExp);
+      let matchArr = cfg.innerPrefix && cfg.innerPrefix.match(regExp);
 
       // 如 ["https://domain.org/path/", "https://domain.org/", "https:", "https", "//domain.org/", "domain.org", "path/"]
       if (matchArr) {
@@ -59,7 +62,7 @@ let innerRpcPath = '';
      * 根据实际情况，远程服务器可能需要支持跨域请求
      */
     case 'remote': {
-      innerRpcPath = _innerPrefix || '/';
+      innerRpcPath = cfg.innerPrefix || '/';
     } break;
   }
 })();
@@ -67,7 +70,7 @@ let innerRpcPath = '';
 // 项目页面路径
 const publicPagePath = '/';
 // 项目资源路径
-const publicAssetPath = `/${defaults.version}/${defaults.assetDir}/`;
+const publicAssetPath = `/${defaults.assetUrl}/`;
 // 后端接口路径
 const publicRpcPath = {
   inner: innerRpcPath
@@ -97,7 +100,6 @@ const getModules = () => {
 const getPlugins = () => {
   let param = defaults.getDefinePluginParam({
     defineEnv: 'dev',
-    defineVer: defaults.version,
     publicPagePath,
     publicAssetPath,
     publicRpcPath,
@@ -133,8 +135,8 @@ config.entry = getEntries();
 config.module = getModules();
 config.plugins = getPlugins();
 config.devServer = devServer({
-  port: _port,
-  https: _https,
+  port: cfg.port,
+  https: cfg.https,
   publicPath: publicAssetPath,
   mockPrefix: mockPathPrefix,
   proxyPrefix: proxyPathPrefix,
