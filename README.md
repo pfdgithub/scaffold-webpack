@@ -41,7 +41,8 @@ npm run build:prod 构建项目（生产环境）。
   "deploy": { // 部署配置
     "portalMultiVersion": false, // 是否将项目页面放置于版本目录
     "assetMultiVersion": false, // 是否将项目资源放置于版本目录
-    "assetNameHash": false // 是否在项目资源名中使用 Hash
+    "assetNameHash": false, // 是否在项目资源名中使用 Hash
+    "assetExtractCss": false // 是否提取项目资源中的 CSS
   },
   "dev": { // 开发环境配置
     "port": 8000, // 服务器端口

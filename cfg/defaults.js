@@ -34,6 +34,7 @@ const assetPath = deployConfig.assetMultiVersion ?
 const assetUrl = deployConfig.assetMultiVersion ?
   `${version}/${assetDir}` : `${assetDir}`; // 项目资源 URL
 const assetHash = !!deployConfig.assetNameHash; // 项目资源名中使用 Hash
+const assetCss = !!deployConfig.assetExtractCss; // 提取项目资源中的 CSS
 
 const entryPages = (() => { // 入口页面列表
   let pageList = [];
@@ -108,6 +109,7 @@ module.exports = {
   assetPath,
   assetUrl,
   assetHash,
+  assetCss,
 
   entryPages,
   getPublicPageFullname,

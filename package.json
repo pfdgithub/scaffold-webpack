@@ -16,7 +16,8 @@
     "deploy": {
       "portalMultiVersion": false,
       "assetMultiVersion": true,
-      "assetNameHash": false
+      "assetNameHash": false,
+      "assetExtractCss": true
     },
     "dev": {
       "port": 8000,
@@ -27,10 +28,10 @@
       }
     },
     "test": {
-      "pagePrefix": "//[domain]/[path]/",
-      "assetPrefix": "//[domain]/[path]/",
+      "pagePrefix": "/",
+      "assetPrefix": "/",
       "rpcPrefix": {
-        "inner": "//[domain]/[path]/"
+        "inner": "/"
       }
     },
     "prod": {

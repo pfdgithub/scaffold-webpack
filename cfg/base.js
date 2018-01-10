@@ -292,7 +292,7 @@ const getPlugins = () => {
     new ExtractTextWebpackPlugin({
       filename: defaults.assetHash ? '[name]-[contenthash].css' : '[name].css',
       allChunks: true, // 打包在异步模块中的依赖样式，会因丢失依赖项而在加载时抛出异常。
-      disable: false
+      disable: !defaults.assetCss
     }),
     new webpack.BannerPlugin({
       banner: `name: ${defaults.name}\nversion: ${defaults.version}\ndescription: ${defaults.description}`
