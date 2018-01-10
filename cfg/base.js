@@ -172,7 +172,7 @@ const getModules = () => {
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 1,
+                importLoaders: 2,
                 sourceMap: true,
                 modules: true,
                 localIdentName: '[name]-[local]-[hash:base64:5]'
@@ -210,7 +210,7 @@ const getModules = () => {
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 1,
+                importLoaders: 2,
                 sourceMap: true
               }
             },
@@ -290,7 +290,7 @@ const getPlugins = () => {
       names: Object.keys(extractBundle)
     }),
     new ExtractTextWebpackPlugin({
-      filename: `[name]-[contenthash].css`,
+      filename: defaults.assetHash ? '[name]-[contenthash].css' : '[name].css',
       allChunks: true, // 打包在异步模块中的依赖样式，会因丢失依赖项而在加载时抛出异常。
       disable: false
     }),

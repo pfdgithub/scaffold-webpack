@@ -58,8 +58,8 @@ const config = base;
 
 config.cache = false;
 config.devtool = 'source-map';
-config.output.filename = '[name]-[chunkhash].js';
-config.output.chunkFilename = '[name]-[chunkhash].js';
+config.output.filename = defaults.assetHash ? '[name]-[chunkhash].js' : '[name].js';
+config.output.chunkFilename = defaults.assetHash ? '[name]-[chunkhash].js' : '[name].js';
 config.output.pathinfo = true;
 config.output.publicPath = publicAssetPath;
 config.plugins = getPlugins();

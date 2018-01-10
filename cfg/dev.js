@@ -127,8 +127,8 @@ const config = base;
 
 config.cache = true;
 config.devtool = 'cheap-module-source-map';
-config.output.filename = '[name]-[hash].js'; // webpack-dev-server 不能使用 [chunkhash]
-config.output.chunkFilename = '[name]-[hash].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.output.filename = defaults.assetHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.output.chunkFilename = defaults.assetHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
 config.output.pathinfo = true;
 config.output.publicPath = publicAssetPath;
 config.entry = getEntries();

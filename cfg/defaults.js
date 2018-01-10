@@ -33,6 +33,7 @@ const assetPath = deployConfig.assetMultiVersion ?
   path.join(distPath, version, assetDir) : path.join(distPath, assetDir); // 项目资源路径
 const assetUrl = deployConfig.assetMultiVersion ?
   `${version}/${assetDir}` : `${assetDir}`; // 项目资源 URL
+const assetHash = !!deployConfig.assetNameHash; // 项目资源名中使用 Hash
 
 const entryPages = (() => { // 入口页面列表
   let pageList = [];
@@ -106,6 +107,7 @@ module.exports = {
   portalPath,
   assetPath,
   assetUrl,
+  assetHash,
 
   entryPages,
   getPublicPageFullname,

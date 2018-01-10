@@ -15,7 +15,8 @@
   "scaffoldConfig": {
     "deploy": {
       "portalMultiVersion": false,
-      "assetMultiVersion": true
+      "assetMultiVersion": true,
+      "assetNameHash": false
     },
     "dev": {
       "port": 8000,
