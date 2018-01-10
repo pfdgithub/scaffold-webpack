@@ -1,8 +1,8 @@
-let fs = require('fs');
-let path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 // 查找 REST 配置
-let findRestCfg = () => {
+const findRestCfg = () => {
   let restModule = null;
   let jsFilePath = path.join(__dirname, './rest.js');
   let jsonFilePath = path.join(__dirname, './rest.json');
@@ -20,7 +20,7 @@ let findRestCfg = () => {
 };
 
 // 解析 REST 配置
-let parseRestCfg = (restModule) => {
+const parseRestCfg = (restModule) => {
   // REST 风格的接口数组
   let restApiArr = restModule.apiList ? restModule.apiList : [];
 
@@ -53,7 +53,7 @@ let parseRestCfg = (restModule) => {
 };
 
 // 匹配请求接口
-let matchReqApi = (restApiObjArr, req) => {
+const matchReqApi = (restApiObjArr, req) => {
   let values = [];
 
   // 遍历接口对象数组，找到匹配当前请求的第一个对象
@@ -90,7 +90,7 @@ let matchReqApi = (restApiObjArr, req) => {
 };
 
 // 调用 mock 模块
-let callMockModule = (matchApiObj, req, res) => {
+const callMockModule = (matchApiObj, req, res) => {
   // 查找 mock 文件
   let pathObject = path.parse(matchApiObj.mock);
   let jsFilePath = path.join(__dirname, pathObject.dir, pathObject.name + '.js');

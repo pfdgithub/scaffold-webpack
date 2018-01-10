@@ -7,7 +7,7 @@ import nattyFetch from 'natty-fetch';
 
 // 日志
 /* eslint-disable */
-let log = (type, ...rest) => {
+const log = (type, ...rest) => {
   if (type == 'resolve') {
     // console.info('nattyFetch', type, rest);
   } else if (type == 'reject') {

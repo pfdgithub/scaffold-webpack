@@ -1,4 +1,4 @@
-let util = {};
+const util = {};
 
 // 解析URL查询参数
 util.parseQueryString = (search) => {

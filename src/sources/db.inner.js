@@ -1,7 +1,7 @@
 import nattyFetch from './db.global';
 import config from 'commons/config';
 
-let context = nattyFetch.context({
+const context = nattyFetch.context({
   withCredentials: true,
   urlPrefix: config.public.rpcPath.inner,
   urlSuffix: '.json',
@@ -67,6 +67,3 @@ context.create('rest', {
 
 // 输出上下文的所有接口
 export default context.api;
-
-// 输出上下文
-export let dbContext = context;

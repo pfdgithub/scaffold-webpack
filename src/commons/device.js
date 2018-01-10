@@ -1,8 +1,8 @@
-let device = {};
+const device = {};
 
-let userAgent = window.navigator.userAgent.toLowerCase();
+const userAgent = window.navigator.userAgent.toLowerCase();
 
-let find = (needle) => {
+const find = (needle) => {
   return userAgent.indexOf(needle) !== -1;
 };
 
