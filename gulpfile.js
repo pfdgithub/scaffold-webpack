@@ -236,12 +236,12 @@ gulp.task('compress', () => {
 });
 
 // 启动开发服务器
-gulp.task('serve', [/* 'check', */ 'clean'], (cb) => {
+gulp.task('serve', ['check', 'clean'], (cb) => {
   devServer(cb);
 });
 
 // 构建项目（客户端构建）
-gulp.task('clientBuild', [/* 'check', */ 'clean'], (cb) => {
+gulp.task('clientBuild', ['check', 'clean'], (cb) => {
   buildProject(cb);
 });
 

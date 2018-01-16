@@ -9,6 +9,7 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
+const HappyPack = require('happypack');
 
 const defaults = require('./defaults');
 const deployCfg = defaults.deployCfg || {};
@@ -21,6 +22,17 @@ const extractBundle = {
     'sources/db.global', 'sources/db.inner'
   ].concat(deployCfg.enablePwa ? ['sources/sw.boot'] : []),
   runtime: undefined // webpackBootstrap
+};
+
+// HappyPack 插件
+const happyPackPlugins = [];
+const createHappyPlugin = (id, loaders) => {
+  happyPackPlugins.push(new HappyPack({
+    id: id,
+    loaders: loaders
+  }));
+
+  return `happypack/loader?id=${id}`
 };
 
 // 获取入口配置
@@ -62,6 +74,7 @@ const getModules = () => {
         enforce: 'pre',
         test: /\.(js|jsx)$/,
         use: [
+          cacheLoader,
           {
             loader: 'eslint-loader',
             options: {
@@ -74,6 +87,7 @@ const getModules = () => {
       {
         test: /\.(js|jsx)$/,
         use: [
+          cacheLoader,
           {
             loader: 'babel-loader',
             options: {
@@ -99,7 +113,7 @@ const getModules = () => {
         include: defaults.srcPath
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(ico|png|jpg|gif)$/,
         use: [
           {
             loader: 'url-loader',
@@ -328,7 +342,9 @@ const getPlugins = () => {
   }
 
   return [].concat(
+    happyPackPlugins,
     htmlPlugins,
+    pwaPlugins,
     new HtmlWebpackEventPlugin(),
     new HtmlWebpackHarddiskPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
@@ -349,8 +365,7 @@ const getPlugins = () => {
     }),
     new webpack.BannerPlugin({
       banner: `name: ${defaults.name}\nversion: ${defaults.version}\ndescription: ${defaults.description}`
-    }),
-    pwaPlugins
+    })
   );
 };
 

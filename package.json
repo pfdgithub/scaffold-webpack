@@ -16,11 +16,11 @@
     "deploy": {
       "portalMultiVersion": false,
       "assetMultiVersion": true,
-      "assetNameHash": true,
+      "assetNameHash": false,
       "assetMinifyHtml": false,
-      "assetBeautifyHtml": false,
+      "assetBeautifyHtml": true,
       "assetDisableCss": false,
-      "enablePwa": true,
+      "enablePwa": false,
       "manifest": {
         "name": "Webpack 脚手架",
         "short_name": "脚手架",
@@ -33,21 +33,21 @@
       "devtool": "cheap-module-source-map",
       "rpc": {
         "innerMode": "mock",
-        "innerPrefix": "https://[domain]/[path]/"
+        "innerPrefix": "//[host]/[path]/"
       }
     },
     "test": {
-      "pagePrefix": "/",
-      "assetPrefix": "/",
+      "pagePrefix": "//[host]/[path]/",
+      "assetPrefix": "//[host]/[path]/",
       "rpcPrefix": {
-        "inner": "/"
+        "inner": "//[host]/[path]/"
       }
     },
     "prod": {
-      "pagePrefix": "https://[domain]/[path]/",
-      "assetPrefix": "https://[domain]/[path]/",
+      "pagePrefix": "//[host]/[path]/",
+      "assetPrefix": "//[host]/[path]/",
       "rpcPrefix": {
-        "inner": "https://[domain]/[path]/"
+        "inner": "//[host]/[path]/"
       }
     }
   },
@@ -83,6 +83,7 @@
     "file-loader": "^1.1.6",
     "gulp": "^3.9.1",
     "gulp-zip": "^4.1.0",
+    "happypack": "^4.0.0",
     "hash-all-modules-plugin": "^0.1.0",
     "html-loader": "^0.5.4",
     "html-webpack-event-plugin": "^0.1.1",

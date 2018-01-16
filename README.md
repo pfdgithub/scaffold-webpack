@@ -45,7 +45,7 @@ npm run build:prod 构建项目（生产环境）。
     "assetMinifyHtml": false, // 是否压缩 HTML 资源
     "assetBeautifyHtml": false, // 是否格式化 HTML 资源
     "assetDisableCss": false, // 是否禁止提取 CSS 资源
-    "enablePwa": true, // 是否启用 PWA 支持
+    "enablePwa": false, // 是否启用 PWA 支持
     "manifest": {} // Web App Manifest 配置
   },
   "dev": { // 开发环境配置
@@ -54,21 +54,21 @@ npm run build:prod 构建项目（生产环境）。
     "devtool": "cheap-module-eval-source-map", // source maps 选项
     "rpc": { // 后端接口配置（包含协议和域名的绝对路径）
       "innerMode": "mock", // inner 接口模式 <mock|proxy|remote>
-      "innerPrefix": "[protocol]://[domain]/[path]/" // inner 接口路径（ proxy 或 remote 模式下使用）
+      "innerPrefix": "//[host]/[path]/" // inner 接口路径（ proxy 或 remote 模式下使用）
     }
   },
   "test": { // 测试环境配置
-    "pagePrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
-    "assetPrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
+    "pagePrefix": "//[host]/[path]/", // 项目页面路径（绝对路径）
+    "assetPrefix": "//[host]/[path]/", // 项目页面路径（绝对路径）
     "rpcPrefix": { // 项目页面路径（绝对路径）
-      "inner": "//[domain]/[path]/" // inner 接口路径
+      "inner": "//[host]/[path]/" // inner 接口路径
     }
   },
   "prod": { // 生产环境配置
-    "pagePrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
-    "assetPrefix": "//[domain]/[path]/", // 项目页面路径（绝对路径）
+    "pagePrefix": "//[host]/[path]/", // 项目页面路径（绝对路径）
+    "assetPrefix": "//[host]/[path]/", // 项目页面路径（绝对路径）
     "rpcPrefix": { // 项目页面路径（绝对路径）
-      "inner": "//[domain]/[path]/" // inner 接口路径
+      "inner": "//[host]/[path]/" // inner 接口路径
     }
   }
 }

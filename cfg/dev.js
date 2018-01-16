@@ -11,7 +11,7 @@ const devCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.dev) || {};
 const mockPathPrefix = '/mocks/';
 // 本地代理路径前缀
 const proxyPathPrefix = '/proxy/';
-// 代理目标域名（如 [protocol]://[domain]/ 等）
+// 代理目标域名（如 [protocol]//[host]/ 等）
 let proxyTargetDomain = '';
 // inner 接口路径
 let innerRpcPath = '';
@@ -34,17 +34,17 @@ let innerRpcPath = '';
      * 此时 proxyTargetDomain 必须含有协议头（如 http:// 等）
      */
     case 'proxy': {
-      // 如 https://domain.org/path/
+      // 如 https://example.org/path/
       let regExp = /^(((http|https):)?(\/\/([^\/]+)\/))(.*)$/;
       let matchArr = innerPrefix && innerPrefix.match(regExp);
 
-      // 如 ['https://domain.org/path/', 'https://domain.org/', 'https:', 'https', '//domain.org/', 'domain.org', 'path/']
+      // 如 ['https://example.org/path/', 'https://example.org/', 'https:', 'https', '//example.org/', 'example.org', 'path/']
       if (matchArr) {
-        let protocol = matchArr[3] || (devCfg.https ? 'https' : 'http');
-        let domain = matchArr[5];
+        let protocol = matchArr[2] || (devCfg.https ? 'https:' : 'http:');
+        let host = matchArr[5];
         let path = matchArr[6];
 
-        proxyTargetDomain = `${protocol}://${domain}/`;
+        proxyTargetDomain = `${protocol}//${host}/`;
         innerRpcPath = `${proxyPathPrefix}${path}`;
       }
       else {
@@ -52,7 +52,7 @@ let innerRpcPath = '';
       }
     } break;
     /**
-     * 直接访问远程服务器的接口（如 //[domain]/[path]/ 等）
+     * 直接访问远程服务器的接口（如 //[host]/[path]/ 等）
      * 根据实际情况，远程服务器可能需要支持跨域请求
      */
     case 'remote': {
