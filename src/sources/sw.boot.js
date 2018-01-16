@@ -69,7 +69,7 @@ let subscribePush = (registration) => {
 let main = () => {
   checkFeature()
     .then(registerSW)
-    .then(subscribePush)
+    // .then(subscribePush)
     .catch((err) => {
       /* eslint-disable */
       console.error(err);

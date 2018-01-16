@@ -4,7 +4,7 @@
 
 favicon.ico 站点的 favicon 图标。  
 logo.png 站点的 logo 图标。  
-logo.svg 页面过渡动画图标。  
+fake.svg 页面过渡动画图标。  
 
 # 注意事项
 

@@ -13,7 +13,7 @@
     [
       "imports",
       {
-        "ruleExtend": "babelImportRules.js"
+        "ruleExtend": "importRules.js"
       }
     ],
     "transform-runtime",
