@@ -138,7 +138,7 @@ let cleanBuild = (cb) => {
   del([buildOutput, buildCache], {
     dryRun: false
   }).then((paths) => {
-    funLog('cleanBuild', paths.length);
+    funLog('cleanBuild', `'${buildOutput}' and '${buildCache}' has been cleaned`);
     cb();
   }).catch((err) => {
     let gErr = getFunError('cleanBuild', err);
@@ -161,7 +161,7 @@ let copyLatest = () => {
 // zip 压缩
 let compress = () => {
   let ver = getPkgVersion(); // 1.0.0
-  let src = `./dist/${ver}/**`;
+  let src = [`./dist/${ver}/**`, '!**/*.map'];
   let dest = `./dist/`;
   let zipName = `${ver}.zip`;
 
@@ -178,7 +178,7 @@ let devServer = (cb) => {
   let devServer = config.devServer;
   let port = devServer.port;
 
-  funLog('devServer', `Listening at 0.0.0.0:${port}`);
+  funLog('devServer', `Starting the server at 0.0.0.0:${port}`);
 
   webpackDevServer.addDevServerEntrypoints(config, devServer);
   new webpackDevServer(webpack(config), devServer).listen(port, '0.0.0.0', (err) => {
@@ -236,12 +236,12 @@ gulp.task('compress', () => {
 });
 
 // 启动开发服务器
-gulp.task('serve', ['check', 'clean'], (cb) => {
+gulp.task('serve', [/* 'check', */ 'clean'], (cb) => {
   devServer(cb);
 });
 
 // 构建项目（客户端构建）
-gulp.task('clientBuild', ['check', 'clean'], (cb) => {
+gulp.task('clientBuild', [/* 'check', */ 'clean'], (cb) => {
   buildProject(cb);
 });
 

@@ -124,6 +124,8 @@ const devServerProxy = (prefix, target) => {
 };
 
 module.exports = (cfg) => {
+  cfg = cfg || {};
+
   return {
     inline: true,
     hotOnly: true,

@@ -4,24 +4,16 @@ const HashAllModulesPlugin = require('hash-all-modules-plugin');
 const devServer = require('./devServer');
 const defaults = require('./defaults');
 const base = require('./base');
-
-// 脚手架配置
-const cfg = (() => {
-  let config = (defaults.scaffoldConfig && defaults.scaffoldConfig.test) || {};
-  return {
-    pagePrefix: config.pagePrefix,
-    assetPrefix: config.assetPrefix,
-    innerPrefix: config.rpcPrefix && config.rpcPrefix.inner
-  };
-})();
+const deployCfg = defaults.deployCfg || {};
+const testCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.test) || {};
 
 // 项目页面路径
-const publicPagePath = cfg.pagePrefix || '/';
+const publicPagePath = testCfg.pagePrefix || '/';
 // 项目资源路径
-const publicAssetPath = `${cfg.assetPrefix || '/'}${defaults.assetUrl}/`;
+const publicAssetPath = `${testCfg.assetPrefix || '/'}${defaults.assetUrl}/`;
 // 后端接口路径
 const publicRpcPath = {
-  inner: cfg.innerPrefix || '/'
+  inner: (testCfg.rpcPrefix && testCfg.rpcPrefix.inner) || '/'
 };
 // 入口页面名称对象
 const publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
@@ -42,6 +34,7 @@ const getPlugins = () => {
     new webpack.HashedModuleIdsPlugin(),
     new HashAllModulesPlugin(), // 需放置于 HashedModuleIdsPlugin 之后
     new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin(param),
     new webpack.LoaderOptionsPlugin({
       debug: true,
@@ -58,13 +51,11 @@ const config = base;
 
 config.cache = false;
 config.devtool = 'source-map';
-config.output.filename = defaults.assetHash ? '[name]-[chunkhash].js' : '[name].js';
-config.output.chunkFilename = defaults.assetHash ? '[name]-[chunkhash].js' : '[name].js';
+config.output.filename = deployCfg.assetNameHash ? '[name]-[chunkhash].js' : '[name].js';
+config.output.chunkFilename = deployCfg.assetNameHash ? '[name]-[chunkhash].js' : '[name].js';
 config.output.pathinfo = true;
 config.output.publicPath = publicAssetPath;
 config.plugins = getPlugins();
-config.devServer = devServer({
-  publicPath: publicAssetPath
-});
+config.devServer = devServer();
 
 module.exports = config;

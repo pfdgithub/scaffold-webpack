@@ -5,9 +5,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackEventPlugin = require('html-webpack-event-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
-const AssetsWebpackPlugin = require('assets-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
 
 const defaults = require('./defaults');
+const deployCfg = defaults.deployCfg || {};
 
 // 提取公共依赖
 const extractBundle = {
@@ -15,7 +19,7 @@ const extractBundle = {
   commonBundle: [
     'commons/base', 'commons/util', 'commons/config',
     'sources/db.global', 'sources/db.inner'
-  ],
+  ].concat(deployCfg.enablePwa ? ['sources/sw.boot'] : []),
   runtime: undefined // webpackBootstrap
 };
 
@@ -56,7 +60,7 @@ const getModules = () => {
   return {
     rules: [
       {
-        enforce: "pre",
+        enforce: 'pre',
         test: /\.(js|jsx)$/,
         use: [
           {
@@ -242,7 +246,7 @@ const getModules = () => {
 
 // 获取插件
 const getPlugins = () => {
-  // html-webpack-plugin 插件
+  // HtmlWebpackPlugin 插件
   let htmlPlugins = [];
   defaults.entryPages.forEach((entryPage) => {
     htmlPlugins.push(new HtmlWebpackPlugin({
@@ -252,14 +256,14 @@ const getPlugins = () => {
       chunksSortMode: 'dependency', // 按照依赖顺序排序
       hash: false, // 在资源文件后追加 webpack 编译哈希
       inject: true, // 将 js 文件注入 body 底部
-      // minify: { // 压缩 html 源码
-      //   removeComments: true,
-      //   collapseWhitespace: true,
-      //   conservativeCollapse: true,
-      //   minifyJS: true,
-      //   minifyCSS: true
-      // },
       alwaysWriteToDisk: true, // 将内存文件写入磁盘
+      minify: deployCfg.assetMinifyHtml ? { // 压缩 html 源码
+        removeComments: true,
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        minifyJS: true,
+        minifyCSS: true
+      } : undefined,
       alterAssetTags: (htmlPluginData) => { // 为插入的标签添加 crossorigin 属性，允许跨域脚本提供详细错误信息。
         let assetTags = [].concat(htmlPluginData.head).concat(htmlPluginData.body);
         assetTags.forEach((assetTag) => {
@@ -270,50 +274,77 @@ const getPlugins = () => {
         return htmlPluginData;
       },
       afterHtmlProcessing: (htmlPluginData) => { // 格式化 html 源码
-        let newHtml = beautify.html(htmlPluginData.html, {
-          indent_size: 2,
-          preserve_newlines: false
-        });
-        htmlPluginData.html = newHtml;
+        if (deployCfg.assetBeautifyHtml) {
+          let newHtml = beautify.html(htmlPluginData.html, {
+            indent_size: 2,
+            preserve_newlines: false
+          });
+          htmlPluginData.html = newHtml;
+        }
         return htmlPluginData;
       }
     }));
   });
+
+  // PWA 相关插件
+  let pwaPlugins = [];
+  if (deployCfg.enablePwa) {
+    pwaPlugins = [
+      new CopyWebpackPlugin([{
+        from: require.resolve('workbox-sw'),
+        to: path.join(defaults.portalPath, 'workbox-sw.js')
+      }]),
+      new WriteFileWebpackPlugin(), // 输出 CopyWebpackPlugin 复制的文件
+      new WorkboxPlugin({
+        globPatterns: ['**/*'],
+        globIgnores: ['**/*.map', 'sw.js', 'workbox-sw.js'],
+        globDirectory: defaults.portalPath,
+        swSrc: path.join(defaults.sourcePath, 'sw.template.js'),
+        swDest: path.join(defaults.portalPath, 'sw.js')
+      }),
+      new WebpackPwaManifest(Object.assign({ // 需放置于 HtmlWebpackPlugin 之后
+        name: defaults.name,
+        short_name: defaults.name,
+        description: defaults.description,
+        start_url: 'index.html',
+        display: 'standalone',
+        orientation: 'portrait',
+        theme_color: '#3DB1FA',
+        background_color: '#FFF',
+        ios: true,
+        icons: [{
+          ios: true,
+          sizes: [48, 96, 144, 192, 512, 1024],
+          src: path.resolve(path.join(defaults.imagePath, 'logo.png'))
+        }]
+      }, deployCfg.manifest))
+    ]
+  }
 
   return [].concat(
     htmlPlugins,
     new HtmlWebpackEventPlugin(),
     new HtmlWebpackHarddiskPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      return chunk.mapModules(m => path.relative(m.context, m.resource)).join('_');
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       minChunks: Infinity,
       names: Object.keys(extractBundle)
     }),
     new ExtractTextWebpackPlugin({
-      filename: defaults.assetHash ? '[name]-[contenthash].css' : '[name].css',
       allChunks: true, // 打包在异步模块中的依赖样式，会因丢失依赖项而在加载时抛出异常。
-      disable: !defaults.assetCss
+      disable: deployCfg.assetDisableCss,
+      filename: deployCfg.assetNameHash ? '[name]-[contenthash].css' : '[name].css'
     }),
     new webpack.BannerPlugin({
       banner: `name: ${defaults.name}\nversion: ${defaults.version}\ndescription: ${defaults.description}`
     }),
-    new webpack.NamedChunksPlugin((chunk) => {
-      if (chunk.name) {
-        return chunk.name;
-      }
-      return chunk.mapModules(m => path.relative(m.context, m.resource)).join("_");
-    }),
-    new AssetsWebpackPlugin({
-      path: defaults.assetPath,
-      filename: 'assets.json',
-      prettyPrint: true,
-      fullPath: true,
-      metadata: {
-        name: defaults.name,
-        version: defaults.version,
-        description: defaults.description
-      }
-    })
+    pwaPlugins
   );
 };
 
@@ -337,7 +368,7 @@ module.exports = {
     }
   },
   output: {
-    crossOriginLoading: "anonymous",
+    crossOriginLoading: 'anonymous',
     filename: `[name].js`,
     chunkFilename: `[name].js`,
     path: defaults.assetPath,

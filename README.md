@@ -42,11 +42,16 @@ npm run build:prod 构建项目（生产环境）。
     "portalMultiVersion": false, // 是否将项目页面放置于版本目录
     "assetMultiVersion": false, // 是否将项目资源放置于版本目录
     "assetNameHash": false, // 是否在项目资源名中使用 Hash
-    "assetExtractCss": false // 是否提取项目资源中的 CSS
+    "assetMinifyHtml": false, // 是否压缩 HTML 资源
+    "assetBeautifyHtml": false, // 是否格式化 HTML 资源
+    "assetDisableCss": false, // 是否禁止提取 CSS 资源
+    "enablePwa": true, // 是否启用 PWA 支持
+    "manifest": {} // Web App Manifest 配置
   },
   "dev": { // 开发环境配置
     "port": 8000, // 服务器端口
     "https": false, // 是否启用 HTTPS 模式
+    "devtool": "cheap-module-eval-source-map", // source maps 选项
     "rpc": { // 后端接口配置（包含协议和域名的绝对路径）
       "innerMode": "mock", // inner 接口模式 <mock|proxy|remote>
       "innerPrefix": "[protocol]://[domain]/[path]/" // inner 接口路径（ proxy 或 remote 模式下使用）
@@ -144,6 +149,52 @@ npm run build:prod 构建项目（生产环境）。
 [Minimalize differences between CLI and Node.js API](https://github.com/webpack/webpack-dev-server/issues/616)  
 [Setting WDS Entry Points Manually](https://survivejs.com/webpack/appendices/hmr/#setting-wds-entry-points-manually)  
 [Via the Node.js API](https://webpack.js.org/guides/hot-module-replacement/#via-the-node-js-api)  
+
+## Progressive Web Application
+
+参考：  
+[Progressive Web Apps(PWA)](https://developer.mozilla.org/zh-CN/Apps/Progressive)  
+[Progressive Web Apps](https://developers.google.com/web/progressive-web-apps/)  
+
+### Web App Manifest
+
+参考：  
+[Web App Manifest](https://developer.mozilla.org/zh-CN/docs/Web/Manifest)  
+[Web App Install Banners](https://developers.google.com/web/fundamentals/app-install-banners/)  
+
+### Service Workers
+
+使用此特性，需要站点运行在 https 环境或 localhost 域下。  
+使用 ```navigator.serviceWorker.register('/sw.js')``` 注册的 ```sw.js``` 文件，其所在的路径就它的作用域。  
+更新 ```sw.js``` 时，不能变更其加载路径，否则可能会陷入鸡生蛋怪圈，因为浏览器只会在同一路径检查更新。  
+
+参考：  
+[Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)  
+[Service Workers](https://developers.google.com/web/fundamentals/primers/service-workers/)  
+[The Offline Cookbook](https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/)  
+
+### Web Push Notifications
+
+参考：  
+[Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API)  
+[Notifications API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API)  
+[Web Push Notifications](https://developers.google.com/web/fundamentals/push-notifications/)  
+
+### webpack-pwa-manifest 插件
+
+参考：  
+[not support schemaless url](https://github.com/arthurbergmz/webpack-pwa-manifest/issues/33)  
+
+### workbox-webpack-plugin 插件
+
+当不指定 globDirectory 配置时，会离线 output.path 目录中资源，并记录资源**绝对**路径。当指定配置时，会离线指定目录中资源，并记录资源**相对**路径。  
+当不指定 swDest 配置时，会生成 sw 相关文件至 output.path 目录。当指定配置时，会生成至指定目录。  
+但在浏览器中运行时，加载**相对**路径的离线资源，是相对于 sw 相关文件所在目录，而非入口页面所在目录。  
+这就造成，如果想把入口页面纳入离线资源，就必须将 globDirectory 和 swDest 均指定为页面输出目录。  
+
+参考：  
+[Progressive Web Application](https://webpack.js.org/guides/progressive-web-application) 
+[Workbox](https://developers.google.com/web/tools/workbox/)  
 
 # 其他资料
 

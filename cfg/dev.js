@@ -4,17 +4,8 @@ const NameAllModulesPlugin = require('name-all-modules-plugin');
 const devServer = require('./devServer');
 const defaults = require('./defaults');
 const base = require('./base');
-
-// 脚手架配置
-const cfg = (() => {
-  let config = (defaults.scaffoldConfig && defaults.scaffoldConfig.dev) || {};
-  return {
-    port: config.port,
-    https: config.https,
-    innerMode: config.rpc && config.rpc.innerMode,
-    innerPrefix: config.rpc && config.rpc.innerPrefix
-  };
-})();
+const deployCfg = defaults.deployCfg || {};
+const devCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.dev) || {};
 
 // 模拟数据路径前缀
 const mockPathPrefix = '/mocks/';
@@ -26,7 +17,10 @@ let proxyTargetDomain = '';
 let innerRpcPath = '';
 
 (() => {
-  switch (cfg.innerMode) {
+  let innerMode = devCfg.rpc && devCfg.rpc.innerMode;
+  let innerPrefix = devCfg.rpc && devCfg.rpc.innerPrefix;
+
+  switch (innerMode) {
     /**
      * 访问 mocks 目录下的模拟接口（如 /mocks/[path]/ 等）
      * 使用 js/json 实现 动态/静态 数据模拟
@@ -42,11 +36,11 @@ let innerRpcPath = '';
     case 'proxy': {
       // 如 https://domain.org/path/
       let regExp = /^(((http|https):)?(\/\/([^\/]+)\/))(.*)$/;
-      let matchArr = cfg.innerPrefix && cfg.innerPrefix.match(regExp);
+      let matchArr = innerPrefix && innerPrefix.match(regExp);
 
-      // 如 ["https://domain.org/path/", "https://domain.org/", "https:", "https", "//domain.org/", "domain.org", "path/"]
+      // 如 ['https://domain.org/path/', 'https://domain.org/', 'https:', 'https', '//domain.org/', 'domain.org', 'path/']
       if (matchArr) {
-        let protocol = matchArr[3] || (defaults.https ? 'https' : 'http');
+        let protocol = matchArr[3] || (devCfg.https ? 'https' : 'http');
         let domain = matchArr[5];
         let path = matchArr[6];
 
@@ -62,7 +56,7 @@ let innerRpcPath = '';
      * 根据实际情况，远程服务器可能需要支持跨域请求
      */
     case 'remote': {
-      innerRpcPath = cfg.innerPrefix || '/';
+      innerRpcPath = innerPrefix || '/';
     } break;
   }
 })();
@@ -89,11 +83,6 @@ const getEntries = () => {
   }
 
   return newEntries;
-};
-
-// 获取加载器
-const getModules = () => {
-  return base.module;
 };
 
 // 获取插件
@@ -126,17 +115,16 @@ const getPlugins = () => {
 const config = base;
 
 config.cache = true;
-config.devtool = 'cheap-module-source-map';
-config.output.filename = defaults.assetHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
-config.output.chunkFilename = defaults.assetHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.devtool = devCfg.devtool || 'cheap-module-source-map';
+config.output.filename = deployCfg.assetNameHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.output.chunkFilename = deployCfg.assetNameHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
 config.output.pathinfo = true;
 config.output.publicPath = publicAssetPath;
 config.entry = getEntries();
-config.module = getModules();
 config.plugins = getPlugins();
 config.devServer = devServer({
-  port: cfg.port,
-  https: cfg.https,
+  port: devCfg.port,
+  https: devCfg.https,
   publicPath: publicAssetPath,
   mockPrefix: mockPathPrefix,
   proxyPrefix: proxyPathPrefix,

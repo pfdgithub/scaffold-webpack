@@ -9,7 +9,7 @@ const assetDir = 'assets'; // 资产文件夹
 const name = pkg.name; // 项目名称
 const version = pkg.version; // 项目版本
 const description = pkg.description; // 项目描述
-const scaffoldConfig = pkg.scaffoldConfig; // 脚手架配置
+const scaffoldCfg = pkg.scaffoldConfig; // 脚手架配置
 
 // 输入路径
 const srcPath = path.join(__dirname, '../src'); // 源文件路径
@@ -25,16 +25,14 @@ const stylePath = path.join(srcPath, 'styles'); // 公共样式路径
 const viewPath = path.join(srcPath, 'views'); // 单页视图路径
 
 // 输出路径
+const deployCfg = (scaffoldCfg && scaffoldCfg.deploy) || {};
 const distPath = path.join(__dirname, '../dist'); // 构建文件路径
-const deployConfig = (scaffoldConfig && scaffoldConfig.deploy) || {};
-const portalPath = deployConfig.portalMultiVersion ?
+const portalPath = deployCfg.portalMultiVersion ?
   path.join(distPath, version) : path.join(distPath); // 项目页面路径
-const assetPath = deployConfig.assetMultiVersion ?
+const assetPath = deployCfg.assetMultiVersion ?
   path.join(distPath, version, assetDir) : path.join(distPath, assetDir); // 项目资源路径
-const assetUrl = deployConfig.assetMultiVersion ?
+const assetUrl = deployCfg.assetMultiVersion ?
   `${version}/${assetDir}` : `${assetDir}`; // 项目资源 URL
-const assetHash = !!deployConfig.assetNameHash; // 项目资源名中使用 Hash
-const assetCss = !!deployConfig.assetExtractCss; // 提取项目资源中的 CSS
 
 const entryPages = (() => { // 入口页面列表
   let pageList = [];
@@ -90,7 +88,7 @@ module.exports = {
   name,
   version,
   description,
-  scaffoldConfig,
+  scaffoldCfg,
 
   srcPath,
   commonPath,
@@ -104,12 +102,11 @@ module.exports = {
   stylePath,
   viewPath,
 
+  deployCfg,
   distPath,
   portalPath,
   assetPath,
   assetUrl,
-  assetHash,
-  assetCss,
 
   entryPages,
   getPublicPageFullname,

@@ -47,7 +47,7 @@ context.on('error', (/*err, cfg*/) => {
 context.create('legacy', {
   // 状态检查
   'state': {
-    method: 'POST',
+    method: 'GET',
     url: 'legacy/state'
   }
 });
@@ -56,7 +56,7 @@ context.create('legacy', {
 context.create('rest', {
   // 状态检查
   'state': {
-    method: 'POST',
+    method: 'GET',
     url: 'rest/:state',
     rest: true,
     header: {

@@ -13,24 +13,16 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const devServer = require('./devServer');
 const defaults = require('./defaults');
 const base = require('./base');
-
-// 脚手架配置
-const cfg = (() => {
-  let config = (defaults.scaffoldConfig && defaults.scaffoldConfig.prod) || {};
-  return {
-    pagePrefix: config.pagePrefix,
-    assetPrefix: config.assetPrefix,
-    innerPrefix: config.rpcPrefix && config.rpcPrefix.inner
-  };
-})();
+const deployCfg = defaults.deployCfg || {};
+const prodCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.prod) || {};
 
 // 项目页面路径
-const publicPagePath = cfg.pagePrefix || '/';
+const publicPagePath = prodCfg.pagePrefix || '/';
 // 项目资源路径
-const publicAssetPath = `${cfg.assetPrefix || '/'}${defaults.assetUrl}/`;
+const publicAssetPath = `${prodCfg.assetPrefix || '/'}${defaults.assetUrl}/`;
 // 后端接口路径
 const publicRpcPath = {
-  inner: cfg.innerPrefix || '/'
+  inner: (prodCfg.rpcPrefix && prodCfg.rpcPrefix.inner) || '/'
 };
 // 入口页面名称对象
 const publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
@@ -51,7 +43,15 @@ const getPlugins = () => {
     new webpack.HashedModuleIdsPlugin(),
     new HashAllModulesPlugin(), // 需放置于 HashedModuleIdsPlugin 之后
     new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin(param),
+    new webpack.LoaderOptionsPlugin({
+      debug: false,
+      minimize: true,
+      options: {
+        context: __dirname
+      }
+    }),
     new UglifyJsPlugin({
       cache: true,
       parallel: true,
@@ -61,13 +61,6 @@ const getPlugins = () => {
           comments: `/${defaults.name}/`
         }
       }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      debug: false,
-      minimize: true,
-      options: {
-        context: __dirname
-      }
     })
   );
 };
@@ -76,14 +69,12 @@ const getPlugins = () => {
 const config = base;
 
 config.cache = false;
-config.devtool = 'hidden-source-map';
-config.output.filename = defaults.assetHash ? '[name]-[chunkhash].js' : '[name].js';
-config.output.chunkFilename = defaults.assetHash ? '[name]-[chunkhash].js' : '[name].js';
+config.devtool = 'nosources-source-map';
+config.output.filename = deployCfg.assetNameHash ? '[name]-[chunkhash].js' : '[name].js';
+config.output.chunkFilename = deployCfg.assetNameHash ? '[name]-[chunkhash].js' : '[name].js';
 config.output.pathinfo = false;
 config.output.publicPath = publicAssetPath;
 config.plugins = getPlugins();
-config.devServer = devServer({
-  publicPath: publicAssetPath
-});
+config.devServer = devServer();
 
 module.exports = config;
