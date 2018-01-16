@@ -5,6 +5,8 @@
 
 db.global.js 后端系统的全局接口配置。  
 db.inner.js 内部后端系统的上下文配置。  
+sw.boot.js 开启 PWA 支持时，注册 Service Worker 文件。  
+sw.template.js 被注册的 Service Worker 文件，不会被 webpack 解析。  
 webStorage.js 前端数据的存储配置。  
 
 # 注意事项

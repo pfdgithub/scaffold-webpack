@@ -1,13 +1,18 @@
 # 入口页面目录
 
-part/ 入口页面共享的代码片段。  
-part/fake.html 页面主区域占位，用于白屏过度动画等。  
-part/head.html 页头不可见区域，用于引入外部资源等。  
-part/header.html 页头可见区域，用于显示全站页头等。  
-part/foot.html 页脚不可见区域，用于部署统计脚本等。  
-part/footer.html 页脚可见区域，用于显示全站页脚等。  
-
-xxx.yyy.html 入口页面。其中xxx代表一级功能分类，yyy代表二级功能分类。  
+pages.js 使用 CommonJS 模块规范，导出一个对象。  
+用该对象作为配置，使用模版文件，生成多个入口页面。  
+```javascript
+{
+  entries: [
+    {
+      name: 'index', // 入口名称
+      title: '首页', // 页面标题
+      template: 'template.html' // 模版文件
+    }
+  ]
+}
+```
 
 # 注意事项
 

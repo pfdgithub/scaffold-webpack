@@ -42,28 +42,28 @@ let registerSW = () => {
 };
 
 // 订阅 push
-let subscribePush = (registration) => {
-  let options = {
-    userVisibleOnly: true,
-    applicationServerKey: null
-  };
+// let subscribePush = (registration) => {
+//   let options = {
+//     userVisibleOnly: true,
+//     applicationServerKey: null
+//   };
 
-  return registration.pushManager.subscribe(
-    options
-  ).then((subscription) => {
-    /* eslint-disable */
-    console.log('Subscription: ', subscription);
-    /* eslint-enable */
+//   return registration.pushManager.subscribe(
+//     options
+//   ).then((subscription) => {
+//     /* eslint-disable */
+//     console.log('Subscription: ', subscription);
+//     /* eslint-enable */
 
-    return Promise.resolve(subscription);
-  }).catch((subscriptionError) => {
-    /* eslint-disable */
-    console.error('Subscription failed: ', subscriptionError);
-    /* eslint-enable */
+//     return Promise.resolve(subscription);
+//   }).catch((subscriptionError) => {
+//     /* eslint-disable */
+//     console.error('Subscription failed: ', subscriptionError);
+//     /* eslint-enable */
 
-    return Promise.reject(subscriptionError);
-  });
-};
+//     return Promise.reject(subscriptionError);
+//   });
+// };
 
 // 入口
 let main = () => {

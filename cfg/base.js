@@ -26,12 +26,11 @@ const extractBundle = {
 // 获取入口配置
 const getEntries = () => {
   let entries = {};
-  let pages = defaults.entryPages;
 
   // 根据入口页面获取入口脚本配置
-  pages.forEach((page) => {
-    entries[page] = [
-      path.join(defaults.entryPath, page)
+  defaults.entryPages.forEach((entryPage) => {
+    entries[entryPage.name] = [
+      path.join(defaults.entryPath, entryPage.name)
     ];
   });
 
@@ -249,10 +248,14 @@ const getPlugins = () => {
   // HtmlWebpackPlugin 插件
   let htmlPlugins = [];
   defaults.entryPages.forEach((entryPage) => {
+    let resourceQuery = {
+      title: entryPage.title
+    };
+
     htmlPlugins.push(new HtmlWebpackPlugin({
-      template: path.join(defaults.pagePath, entryPage + defaults.pageSuffix), // 指定 html 模版路径
-      filename: path.join(defaults.portalPath, entryPage + defaults.pageSuffix), // 指定 html 输出路径
-      chunks: [].concat(Object.keys(extractBundle), entryPage), // 指定 html 中注入的资源。
+      template: path.join(defaults.pagePath, entryPage.template) + `?${JSON.stringify(resourceQuery)}`, // 指定 html 模版路径
+      filename: path.join(defaults.portalPath, entryPage.name + defaults.pageSuffix), // 指定 html 输出路径
+      chunks: [].concat(Object.keys(extractBundle), entryPage.name), // 指定 html 中注入的资源。
       chunksSortMode: 'dependency', // 按照依赖顺序排序
       hash: false, // 在资源文件后追加 webpack 编译哈希
       inject: true, // 将 js 文件注入 body 底部

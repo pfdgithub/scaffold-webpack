@@ -1,5 +1,4 @@
 const path = require('path');
-const glob = require('glob');
 
 const pkg = require('../package.json');
 
@@ -35,26 +34,20 @@ const assetUrl = deployCfg.assetMultiVersion ?
   `${version}/${assetDir}` : `${assetDir}`; // 项目资源 URL
 
 const entryPages = (() => { // 入口页面列表
-  let pageList = [];
-  let pattern = path.join(pagePath, '*' + pageSuffix);
+  let pages = require(path.join(pagePath, 'pages.js'));
 
-  glob.sync(pattern).forEach((fullFileName) => {
-    let name = path.parse(fullFileName).name;
-    pageList.push(name);
-  });
-
-  return pageList;
+  return pages.entries || [];
 })();
 
 // 获取入口页面对象
 const getPublicPageFullname = (publicPagePath) => { // 项目页面全名
   let pageObj = {};
   entryPages.forEach((entryPage) => {
-    let separators = entryPage.split('.');
+    let separators = entryPage.name.split('.');
     let temp = pageObj;
     separators.forEach((separator, index, array) => {
       if (index == array.length - 1) {
-        temp[separator] = publicPagePath + entryPage + pageSuffix;
+        temp[separator] = publicPagePath + entryPage.name + pageSuffix;
       }
       else {
         if (separator in temp) {
