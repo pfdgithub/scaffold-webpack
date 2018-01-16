@@ -24,19 +24,7 @@
       "manifest": {
         "name": "Webpack 脚手架",
         "short_name": "脚手架",
-        "description": "脚手架，基于 webpack 搭建。",
-        "prefer_related_applications": true,
-        "related_applications": [
-          {
-            "platform": "play",
-            "id": "com.renrun.aphone.app",
-            "url": "https://play.google.com/store/apps/details?id=com.renrun.aphone.app"
-          },
-          {
-            "platform": "itunes",
-            "url": "https://itunes.apple.com/cn/app/wei-dai-wang-hu-lian-wang/id914404898"
-          }
-        ]
+        "description": "脚手架，基于 webpack 搭建。"
       }
     },
     "dev": {
@@ -71,7 +59,7 @@
   },
   "homepage": "https://github.com/pfdgithub/scaffold-webpack",
   "devDependencies": {
-    "autoprefixer": "^7.2.4",
+    "autoprefixer": "^7.2.5",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
@@ -84,6 +72,7 @@
     "cache-loader": "^1.2.0",
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.3.1",
+    "cross-env": "^5.1.3",
     "css-loader": "^0.28.8",
     "del": "^3.0.0",
     "eslint": "^4.15.0",
@@ -105,18 +94,18 @@
     "multer": "^1.3.0",
     "name-all-modules-plugin": "^1.0.1",
     "open": "^0.0.5",
-    "plugin-error": "^0.1.2",
+    "plugin-error": "^1.0.0",
     "postcss-loader": "^2.0.10",
     "redbox-react": "^1.5.0",
     "run-sequence": "^2.2.1",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.0",
     "style-loader": "^0.19.1",
     "svg-inline-loader": "^0.8.0",
     "svg-sprite-loader": "^3.6.2",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "url-loader": "^0.6.2",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.10.0",
+    "webpack-dev-server": "^2.11.0",
     "webpack-pwa-manifest": "^3.4.1",
     "workbox-sw": "^2.1.2",
     "workbox-webpack-plugin": "^2.1.2",
@@ -128,7 +117,6 @@
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "core-js": "^2.5.3",
-    "cross-env": "^5.1.3",
     "natty-fetch": "^2.5.3",
     "natty-storage": "^2.2.0",
     "normalize.css": "^7.0.0",

@@ -253,6 +253,7 @@ const getPlugins = () => {
     };
 
     htmlPlugins.push(new HtmlWebpackPlugin({
+      favicon: path.join(defaults.imagePath, 'favicon.ico'),
       template: path.join(defaults.pagePath, entryPage.template) + `?${JSON.stringify(resourceQuery)}`, // 指定 html 模版路径
       filename: path.join(defaults.portalPath, entryPage.name + defaults.pageSuffix), // 指定 html 输出路径
       chunks: [].concat(Object.keys(extractBundle), entryPage.name), // 指定 html 中注入的资源。
@@ -293,12 +294,14 @@ const getPlugins = () => {
   let pwaPlugins = [];
   if (deployCfg.enablePwa) {
     pwaPlugins = [
-      new CopyWebpackPlugin([{
+      new CopyWebpackPlugin([{ // Service Worker 需要的文件，不能用 webpack 处理
         from: require.resolve('workbox-sw'),
         to: path.join(defaults.portalPath, 'workbox-sw.js')
       }]),
-      new WriteFileWebpackPlugin(), // 输出 CopyWebpackPlugin 复制的文件
-      new WorkboxPlugin({
+      new WriteFileWebpackPlugin({ // 输出 CopyWebpackPlugin 复制的文件
+        test: /workbox-sw.js/
+      }),
+      new WorkboxPlugin({ // 预加载 webpack 输出文件
         globPatterns: ['**/*'],
         globIgnores: ['**/*.map', 'sw.js', 'workbox-sw.js'],
         globDirectory: defaults.portalPath,
