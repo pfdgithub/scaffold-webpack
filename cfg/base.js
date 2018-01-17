@@ -326,6 +326,7 @@ const getPlugins = () => {
         name: defaults.name,
         short_name: defaults.name,
         description: defaults.description,
+        fingerprints: deployCfg.assetNameHash,
         start_url: 'index.html',
         display: 'standalone',
         orientation: 'portrait',
@@ -334,7 +335,7 @@ const getPlugins = () => {
         ios: true,
         icons: [{
           ios: true,
-          sizes: [48, 96, 144, 192, 512, 1024],
+          sizes: [48, 96, 144, 192],
           src: path.resolve(path.join(defaults.imagePath, 'logo.png'))
         }]
       }, deployCfg.manifest))

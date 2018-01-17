@@ -15,16 +15,17 @@
   "scaffoldConfig": {
     "deploy": {
       "portalMultiVersion": false,
-      "assetMultiVersion": true,
+      "assetMultiVersion": false,
       "assetNameHash": false,
       "assetMinifyHtml": false,
-      "assetBeautifyHtml": true,
+      "assetBeautifyHtml": false,
       "assetDisableCss": false,
       "enablePwa": false,
       "manifest": {
         "name": "Webpack 脚手架",
         "short_name": "脚手架",
-        "description": "脚手架，基于 webpack 搭建。"
+        "description": "脚手架，基于 webpack 搭建。",
+        "start_url": "//[host]/[path]/?launcher=homescreen"
       }
     },
     "dev": {
