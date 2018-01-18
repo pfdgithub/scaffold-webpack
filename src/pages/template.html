@@ -2,96 +2,17 @@
 <html lang="zh-CN">
 
 <head>
-  <meta charset="utf-8">
-
-  <meta http-equiv="Cache-Control" content="no-cache">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-ancestors 'self';"> -->
-
-  <meta name="format-detection" content="telephone=no, email=no, adress=no" />
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
+  ${require('./part/head.html')}
 
   <title>${JSON.parse(__resourceQuery.substring(1)).title}</title>
 </head>
 
 <body>
   <div id="app">
-    <style>
-      @-webkit-keyframes fake-keyframes {
-        0% {
-          -webkit-transform: rotateY(0deg);
-          transform: rotateY(0deg)
-        }
-        25% {
-          -webkit-transform: rotateY(180deg);
-          transform: rotateY(180deg)
-        }
-        50% {
-          -webkit-transform: rotateX(-180deg);
-          transform: rotateX(-180deg)
-        }
-        75% {
-          -webkit-transform: rotateY(360deg);
-          transform: rotateY(360deg)
-        }
-        100% {
-          -webkit-transform: rotateX(-360deg);
-          transform: rotateX(-360deg)
-        }
-      }
-
-      @keyframes fake-keyframes {
-        0% {
-          -webkit-transform: rotateY(0deg);
-          transform: rotateY(0deg)
-        }
-        25% {
-          -webkit-transform: rotateY(180deg);
-          transform: rotateY(180deg)
-        }
-        50% {
-          -webkit-transform: rotateX(-180deg);
-          transform: rotateX(-180deg)
-        }
-        75% {
-          -webkit-transform: rotateY(360deg);
-          transform: rotateY(360deg)
-        }
-        100% {
-          -webkit-transform: rotateX(-360deg);
-          transform: rotateX(-360deg)
-        }
-      }
-
-      #fake {
-        width: 200px;
-        height: 200px;
-        margin: 200px auto;
-        -webkit-animation: fake-keyframes 3s ease infinite;
-        animation: fake-keyframes 3s ease infinite
-      }
-    </style>
-    <div id="fake">
-      ${require('!!svg-inline-loader!images/fake.svg')}
-    </div>
+    ${require('./part/fake.html')}
   </div>
 
-  ${(__wd_define_env__ === 'dev' || __wd_define_env__ === 'test') ? `
-  <script type="text/javascript">
-    // 加载调试面板
-    (function () {
-      var keyword = 'vConsole';
-      var search = window.location.search;
-      if (search.indexOf(keyword) != -1) {
-        document.write("<sc" + "ript src=\"${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-        document.write("<sc" + "ript src=\"${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole-elements.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-        document.write("<sc" + "ript src=\"${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole-resources.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-        document.write("<sc" + "ript src=\"${require('!!file-loader?name=[name].[ext]!libraries/vConsole/vconsole-sources.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-      }
-    })();
-  </script>` : ''}
-
+  ${require('./part/foot.html')}
 </body>
 
 </html>

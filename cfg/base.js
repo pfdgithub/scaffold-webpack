@@ -119,7 +119,7 @@ const getModules = () => {
             loader: 'url-loader',
             options: {
               limit: 4096,
-              name: '[name]-[hash].[ext]'
+              name: '[name].[hash].[ext]'
             }
           }
         ],
@@ -131,7 +131,7 @@ const getModules = () => {
           {
             loader: 'file-loader',
             options: {
-              name: '[name]-[hash].[ext]'
+              name: '[name].[hash].[ext]'
             }
           }
         ],
@@ -145,7 +145,7 @@ const getModules = () => {
           {
             loader: 'svg-sprite-loader',
             options: {
-              name: '[name]-[hash]'
+              name: '[name].[hash]'
             }
           }
         ],

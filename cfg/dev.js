@@ -116,8 +116,8 @@ const config = base;
 
 config.cache = true;
 config.devtool = devCfg.devtool || 'cheap-module-source-map';
-config.output.filename = deployCfg.assetNameHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
-config.output.chunkFilename = deployCfg.assetNameHash ? '[name]-[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.output.filename = deployCfg.assetNameHash ? '[name].[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.output.chunkFilename = deployCfg.assetNameHash ? '[name].[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
 config.output.pathinfo = true;
 config.output.publicPath = publicAssetPath;
 config.entry = getEntries();
