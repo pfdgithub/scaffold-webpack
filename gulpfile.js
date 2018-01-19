@@ -115,13 +115,19 @@ let checkVersion = (cb) => {
   let pkgVersionArr = pkgVersionStr.match(/^(\d+)\.(\d+)\.(\d+)$/);
   let gitBranchArr = gitBranchStr.match(/^([\w-]+)-v((\d+)\.(\d+)\.(\d+))$/);
 
+  let ignoreBranch = 'master';
+  if (gitBranchStr === ignoreBranch) {
+    funLog('checkVersion', `Ignore check packageVersion when branchName is ${ignoreBranch}`);
+    return cb();
+  }
+
   if (pkgVersionArr && gitBranchArr) {
     let pkgVersion = pkgVersionArr[0]; // 1.0.0
-    // let gitBranchEnv = gitBranchArr[1]; // dev
+    let gitBranchEnv = gitBranchArr[1]; // dev
     let gitBranchVer = gitBranchArr[2]; // 1.0.0
 
     if (pkgVersion === gitBranchVer) {
-      funLog('checkVersion', `packageVersion (${pkgVersion}) branchName (${gitBranchVer})`);
+      funLog('checkVersion', `Current packageVersion (${pkgVersion}) branchName (${gitBranchVer})`);
       return cb();
     }
   }
@@ -240,13 +246,8 @@ gulp.task('serve', ['check', 'clean'], (cb) => {
   devServer(cb);
 });
 
-// 构建项目（客户端构建）
-gulp.task('clientBuild', ['check', 'clean'], (cb) => {
-  buildProject(cb);
-});
-
-// 构建项目（服务器构建）
-gulp.task('build', ['clean'], (cb) => {
+// 构建项目
+gulp.task('build', ['check', 'clean'], (cb) => {
   buildProject(cb);
 });
 

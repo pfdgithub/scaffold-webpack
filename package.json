@@ -8,9 +8,9 @@
     "latest": "gulp copyLatest",
     "compress": "gulp compress",
     "serve": "gulp serve --env=dev",
-    "build:dev": "gulp clientBuild --env=dev",
-    "build:test": "cross-env NODE_ENV=production gulp clientBuild --env=test",
-    "build:prod": "cross-env NODE_ENV=production gulp clientBuild --env=prod"
+    "build:dev": "gulp build --env=dev",
+    "build:test": "cross-env NODE_ENV=production gulp build --env=test",
+    "build:prod": "cross-env NODE_ENV=production gulp build --env=prod"
   },
   "scaffoldConfig": {
     "deploy": {
@@ -98,8 +98,6 @@
     "open": "^0.0.5",
     "plugin-error": "^1.0.0",
     "postcss-loader": "^2.0.10",
-    "redbox-react": "^1.5.0",
-    "run-sequence": "^2.2.1",
     "shelljs": "^0.8.0",
     "style-loader": "^0.19.1",
     "svg-inline-loader": "^0.8.0",
