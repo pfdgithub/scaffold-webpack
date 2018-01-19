@@ -16,10 +16,10 @@
     "deploy": {
       "portalMultiVersion": false,
       "portalMinifyHtml": false,
-      "portalBeautifyHtml": false,
-      "assetMultiVersion": false,
+      "portalBeautifyHtml": true,
+      "assetMultiVersion": true,
       "assetNameHash": false,
-      "assetExtractCss": false,
+      "assetExtractCss": true,
       "enablePwa": false,
       "manifest": {
         "name": "Webpack 脚手架",

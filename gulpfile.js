@@ -70,7 +70,7 @@ let getGitBranch = () => {
   }
   else if (stdout.length > 0) {
     branch = stdout.replace(/\n$/, ''); // 结尾含有\n字符
-    funLog('getGitBranch', stdout);
+    funLog('getGitBranch', branch);
   }
   else {
     funLog('getGitBranch', 'No output');
