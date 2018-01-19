@@ -40,11 +40,11 @@ npm run build:prod 构建项目（生产环境）。
 {
   "deploy": { // 部署配置
     "portalMultiVersion": false, // 是否将项目页面放置于版本目录
+    "portalMinifyHtml": false, // 是否压缩项目页面 HTML 代码
+    "portalBeautifyHtml": false, // 是否格式化项目页面 HTML 代码
     "assetMultiVersion": false, // 是否将项目资源放置于版本目录
     "assetNameHash": false, // 是否在项目资源名中使用 Hash
-    "assetMinifyHtml": false, // 是否压缩 HTML 资源
-    "assetBeautifyHtml": false, // 是否格式化 HTML 资源
-    "assetDisableCss": false, // 是否禁止提取 CSS 资源
+    "assetExtractCss": false, // 是否提取 CSS 资源
     "enablePwa": false, // 是否启用 PWA 支持
     "manifest": {} // Web App Manifest 配置
   },

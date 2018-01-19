@@ -275,7 +275,7 @@ const getPlugins = () => {
       hash: false, // 在资源文件后追加 webpack 编译哈希
       inject: true, // 将 js 文件注入 body 底部
       alwaysWriteToDisk: true, // 将内存文件写入磁盘
-      minify: deployCfg.assetMinifyHtml ? { // 压缩 html 源码
+      minify: deployCfg.portalMinifyHtml ? { // 压缩 html 源码
         removeComments: true,
         collapseWhitespace: true,
         conservativeCollapse: true,
@@ -292,7 +292,7 @@ const getPlugins = () => {
         return htmlPluginData;
       },
       afterHtmlProcessing: (htmlPluginData) => { // 格式化 html 源码
-        if (deployCfg.assetBeautifyHtml) {
+        if (deployCfg.portalBeautifyHtml) {
           let newHtml = beautify.html(htmlPluginData.html, {
             indent_size: 2,
             preserve_newlines: false
@@ -361,7 +361,7 @@ const getPlugins = () => {
     }),
     new ExtractTextWebpackPlugin({
       allChunks: true, // 打包在异步模块中的依赖样式，会因丢失依赖项而在加载时抛出异常。
-      disable: deployCfg.assetDisableCss,
+      disable: !deployCfg.assetExtractCss,
       filename: deployCfg.assetNameHash ? '[name]-[contenthash].css' : '[name].css'
     }),
     new webpack.BannerPlugin({

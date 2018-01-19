@@ -15,11 +15,11 @@
   "scaffoldConfig": {
     "deploy": {
       "portalMultiVersion": false,
+      "portalMinifyHtml": false,
+      "portalBeautifyHtml": false,
       "assetMultiVersion": false,
       "assetNameHash": false,
-      "assetMinifyHtml": false,
-      "assetBeautifyHtml": false,
-      "assetDisableCss": false,
+      "assetExtractCss": false,
       "enablePwa": false,
       "manifest": {
         "name": "Webpack 脚手架",
