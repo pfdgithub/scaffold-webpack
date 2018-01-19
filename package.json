@@ -10,7 +10,8 @@
     "serve": "gulp serve --env=dev",
     "build:dev": "gulp build --env=dev",
     "build:test": "cross-env NODE_ENV=production gulp build --env=test",
-    "build:prod": "cross-env NODE_ENV=production gulp build --env=prod"
+    "build:prod": "cross-env NODE_ENV=production gulp build --env=prod",
+    "deploy": "cross-env NODE_ENV=production gulp build"
   },
   "scaffoldConfig": {
     "deploy": {

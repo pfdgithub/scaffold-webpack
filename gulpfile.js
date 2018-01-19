@@ -16,7 +16,11 @@ let pkg = require('./package.json');
 let envEnum = {
   dev: 'dev',
   test: 'test',
-  prod: 'prod'
+  prod: 'prod',
+  // 兼容 npm run deploy -- --env 'XXX - YYY'
+  '综测 - uat': 'test',
+  '预发 - pre': 'prod',
+  '生产 - prd': 'prod'
 };
 
 // 输出任务日志
@@ -84,8 +88,9 @@ let getProcessEnv = () => {
   let env = undefined;
   let argv = yargs.argv;
 
-  if (argv.env && envEnum[argv.env]) {
-    env = envEnum[argv.env];
+  if (typeof (argv.env) !== 'undefined') {
+    let _env = argv.env.toString().trim();
+    env = envEnum[_env];
   }
 
   if (!env) {
