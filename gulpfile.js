@@ -2,6 +2,7 @@ let gulp = require('gulp');
 let gLog = require('fancy-log');
 let gError = require('plugin-error');
 let gZip = require('gulp-zip');
+let gImagemin = require('gulp-imagemin');
 let del = require('del');
 let open = require('open');
 let path = require('path');
@@ -157,23 +158,33 @@ let cleanBuild = (cb) => {
   });
 };
 
-// 复制最终版本
-let copyLatest = () => {
-  let ver = getPkgVersion(); // 1.0.0
-  let src = `./dist/${ver}/**`;
-  let dest = `./dist/latest/`;
+// 图片压缩
+let imagemin = () => {
+  let src = './src/**/*.{gif,jpg,png,svg}';
+  let dest = './src/';
 
-  funLog('copyLatest', src, dest);
+  let plugins = [
+    gImagemin.gifsicle(),
+    gImagemin.jpegtran(),
+    gImagemin.optipng(),
+    gImagemin.svgo()
+  ];
+  let options = {
+    verbose: true
+  };
+
+  funLog('imagemin', src, dest);
 
   return gulp.src(src)
+    .pipe(gImagemin(plugins, options))
     .pipe(gulp.dest(dest));
 };
 
 // zip 压缩
 let compress = () => {
   let ver = getPkgVersion(); // 1.0.0
-  let src = [`./dist/${ver}/**`, '!**/*.map'];
-  let dest = `./dist/`;
+  let src = ['./dist/**', '!**/*.map'];
+  let dest = './dist/';
   let zipName = `${ver}.zip`;
 
   funLog('compress', src, dest);
@@ -236,9 +247,9 @@ gulp.task('clean', (cb) => {
   cleanBuild(cb);
 });
 
-// 复制当前构建版本为最终版本
-gulp.task('copyLatest', () => {
-  return copyLatest();
+// 压缩图片文件
+gulp.task('imagemin', () => {
+  return imagemin();
 });
 
 // 压缩构建文件
@@ -247,12 +258,12 @@ gulp.task('compress', () => {
 });
 
 // 启动开发服务器
-gulp.task('serve', ['check', 'clean'], (cb) => {
+gulp.task('serve', [/* 'check', */ 'clean'], (cb) => {
   devServer(cb);
 });
 
 // 构建项目
-gulp.task('build', ['check', 'clean'], (cb) => {
+gulp.task('build', [/* 'check', */ 'clean'], (cb) => {
   buildProject(cb);
 });
 

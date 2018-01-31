@@ -106,7 +106,7 @@ const getModules = () => {
             options: {
               interpolate: true,
               minimize: false,
-              attrs: 'script:src link:href img:src a:href'
+              attrs: false
             }
           }
         ],
