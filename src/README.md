@@ -5,7 +5,6 @@ components/ 业务组件目录。
 entries/ 入口脚本目录。  
 images/ 公共图片目录。  
 libraries/ 第三方库目录。  
-mocks/ 模拟数据目录。  
 pages/ 入口页面目录。  
 sources/ 数据源目录。  
 styles/ 公共样式目录。  
@@ -18,7 +17,6 @@ components 中存放以较小颗粒度划分的功能块， views 目录存放�
 entries 目录中子目录的命名和数量，必须与 pages 目录中文件的命名和数量保持一致。  
 images styles 目录存放整个项目公用的资源文件。  
 libraries 目录存放未托管在 npm 中的第三方库。  
-mocks 目录存放接口模拟数据，使用 json/js 文件生成静态/动态数据。  
 sources 目录配置项目的数据来源，接口路径结构包装等。  
 components entries views 目录，将使用 css-loader 的 CSS Modules 模式处理样式文件。  
 

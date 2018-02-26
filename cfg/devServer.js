@@ -44,7 +44,7 @@ const devServerSetup = (prefix) => {
     app.use(multer().any()); // 解析 multipart/form-data
     app.use(cookieParser()); // 解析 cookie
 
-    // 拦截 mocks 目录
+    // 拦截 mock 目录
     app.use(prefix, (req, res, next) => {
       // 调用 mock 模块
       callMockModule(req, res);

@@ -12,6 +12,7 @@ react-antd-mobile 使用 [ant-design-mobile](https://github.com/ant-design/ant-d
 
 cfg/ webpack 配置文件目录。  
 dist/ 构建文件目录。  
+mock/ 模拟数据目录。  
 src/ 源文件目录。  
 .babelrc Babel 配置文件。  
 .eslintrc ESLint 配置文件。  

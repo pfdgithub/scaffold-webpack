@@ -8,7 +8,7 @@ const deployCfg = defaults.deployCfg || {};
 const devCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.dev) || {};
 
 // 模拟数据路径前缀
-const mockPathPrefix = '/mocks/';
+const mockPathPrefix = '/mock/';
 // 本地代理路径前缀
 const proxyPathPrefix = '/proxy/';
 // 代理目标域名（如 [protocol]//[host]/ 等）
@@ -22,7 +22,7 @@ let innerRpcPath = '';
 
   switch (innerMode) {
     /**
-     * 访问 mocks 目录下的模拟接口（如 /mocks/[path]/ 等）
+     * 访问 mock 目录下的模拟接口（如 /mock/[path]/ 等）
      * 使用 js/json 实现 动态/静态 数据模拟
      */
     default:

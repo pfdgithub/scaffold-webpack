@@ -382,7 +382,6 @@ module.exports = {
       entries: defaults.entryPath,
       images: defaults.imagePath,
       libraries: defaults.libraryPath,
-      mocks: defaults.mockPath,
       pages: defaults.pagePath,
       sources: defaults.sourcePath,
       styles: defaults.stylePath,

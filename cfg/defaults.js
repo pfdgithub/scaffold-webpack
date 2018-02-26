@@ -10,6 +10,9 @@ const version = pkg.version; // 项目版本
 const description = pkg.description; // 项目描述
 const scaffoldCfg = pkg.scaffoldConfig; // 脚手架配置
 
+// 模拟数据路径
+const mockPath = path.join(__dirname, '../mock');
+
 // 输入路径
 const srcPath = path.join(__dirname, '../src'); // 源文件路径
 const commonPath = path.join(srcPath, 'commons'); // 公共资源路径
@@ -17,7 +20,6 @@ const componentPath = path.join(srcPath, 'components'); // 业务组件路径
 const entryPath = path.join(srcPath, 'entries'); // 入口脚本路径
 const imagePath = path.join(srcPath, 'images'); // 公共图片路径
 const libraryPath = path.join(srcPath, 'libraries'); // 第三方库路径
-const mockPath = path.join(srcPath, 'mocks'); // 模拟数据路径
 const pagePath = path.join(srcPath, 'pages'); // 入口页面路径
 const sourcePath = path.join(srcPath, 'sources'); // 数据源路径
 const stylePath = path.join(srcPath, 'styles'); // 公共样式路径
@@ -83,13 +85,14 @@ module.exports = {
   description,
   scaffoldCfg,
 
+  mockPath,
+
   srcPath,
   commonPath,
   componentPath,
   entryPath,
   imagePath,
   libraryPath,
-  mockPath,
   pagePath,
   sourcePath,
   stylePath,
