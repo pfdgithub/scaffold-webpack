@@ -25,7 +25,7 @@ package.json 项目配置文件。
 
 建议以 package.json 文件的 scripts 节点作为命令行入口。  
 
-npm run check 检查 Git 分支名与 package.json 版本号是否一致。 
+npm run check 检查 Git 分支名与 package.json 版本号是否一致。  
 npm run clean 清理构建目录和临时文件。  
 npm run imagemin 压缩源文件的图片。  
 npm run compress 压缩构建目录为 zip 文件。  

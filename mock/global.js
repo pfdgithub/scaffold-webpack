@@ -90,7 +90,7 @@ const matchReqApi = (restApiObjArr, req) => {
 };
 
 // 调用 mock 模块
-const callMockModule = (matchApiObj, req, res) => {
+const callMockModule = (matchApiObj, req, res, next) => {
   // 查找 mock 文件
   let pathObject = path.parse(matchApiObj.mock);
   let jsFilePath = path.join(__dirname, pathObject.dir, pathObject.name + '.js');
@@ -98,7 +98,7 @@ const callMockModule = (matchApiObj, req, res) => {
   if (fs.existsSync(jsFilePath)) { // 检查 js 文件
     delete require.cache[require.resolve(jsFilePath)]; // 为了便利牺牲性能
     let jsModule = require(jsFilePath);
-    jsModule(req, res); // 执行函数
+    jsModule(req, res, next); // 执行函数
     return true;
   }
   else if (fs.existsSync(jsonFilePath)) { // 检查 json 文件
@@ -112,7 +112,7 @@ const callMockModule = (matchApiObj, req, res) => {
   }
 };
 
-module.exports = (req, res) => {
+module.exports = (req, res, next) => {
   // 查找 REST 配置
   let restModule = findRestCfg();
   if (restModule) {
@@ -124,7 +124,7 @@ module.exports = (req, res) => {
       // 保存请求路径中携带的参数
       res.locals.restParam = matchApiObj.restParam;
       // 调用 mock 模块
-      let callSuccess = callMockModule(matchApiObj, req, res);
+      let callSuccess = callMockModule(matchApiObj, req, res, next);
       if (!callSuccess) {
         res.status(404).send(`${req.path}\n${matchApiObj.api}\n已发现与该路径模式相匹配的 REST 风格接口配置，但未发现对应的 mock 文件。`);
       }

@@ -13,7 +13,7 @@ const devServerSetup = (prefix) => {
   }
 
   // 调用 mock 模块
-  let callMockModule = (req, res) => {
+  let callMockModule = (req, res, next) => {
     // 查找 mock 文件
     let pathObject = path.parse(req.path);
     let jsFilePath = path.join(defaults.mockPath, pathObject.dir, pathObject.name + '.js');
@@ -23,7 +23,7 @@ const devServerSetup = (prefix) => {
     if (fs.existsSync(jsFilePath)) { // 检查 js 文件
       delete require.cache[require.resolve(jsFilePath)]; // 为了便利牺牲性能
       let jsModule = require(jsFilePath);
-      jsModule(req, res); // 执行函数
+      jsModule(req, res, next); // 执行函数
     }
     else if (fs.existsSync(jsonFilePath)) { // 检查 json 文件
       delete require.cache[require.resolve(jsonFilePath)]; // 为了便利牺牲性能
@@ -33,7 +33,7 @@ const devServerSetup = (prefix) => {
     else if (fs.existsSync(globalFilePath)) { // 检查 global.js 文件
       delete require.cache[require.resolve(globalFilePath)]; // 为了便利牺牲性能
       let globalModule = require(globalFilePath);
-      globalModule(req, res); // 执行函数
+      globalModule(req, res, next); // 执行函数
     }
   };
 
@@ -47,9 +47,7 @@ const devServerSetup = (prefix) => {
     // 拦截 mock 目录
     app.use(prefix, (req, res, next) => {
       // 调用 mock 模块
-      callMockModule(req, res);
-      // 转交控制权
-      next();
+      callMockModule(req, res, next);
     });
   };
 };

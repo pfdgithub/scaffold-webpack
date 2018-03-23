@@ -1,4 +1,4 @@
-module.exports = (req, res) => {
+module.exports = (req, res, next) => {
   res.cookie('serverTime', Date.now());
 
   res.json({
