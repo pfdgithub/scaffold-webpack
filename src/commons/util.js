@@ -383,7 +383,7 @@ util.thousandSeparator = (number, len) => {
     if (match) {
       let symbol = match[1] ? match[1] : '';
       let integer = match[2] ? match[2] : '';
-      let fraction = match[3] ? match[3] : '';
+      let fraction = match[3] ? match[3] : '.';
 
       if (integer.length > 3) {
         let source = integer.split('');
