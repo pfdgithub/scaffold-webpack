@@ -24,7 +24,7 @@ util.parseQueryString = (search) => {
 };
 
 // 拼接URL查询参数
-util.joinQueryString = (query) => {
+util.joinQueryString = (query, noEncode) => {
   if (typeof (query) === 'undefined'
     || JSON.stringify(query) === '{}') {
     return '';
@@ -37,7 +37,8 @@ util.joinQueryString = (query) => {
     if (typeof (value) === 'undefined') {
       value = '';
     }
-    value = encodeURIComponent(value);
+    key = noEncode ? key : encodeURIComponent(key);
+    value = noEncode ? value : encodeURIComponent(value);
     search += key + '=' + value + '&';
   }
   if (search[search.length - 1] === '&'
