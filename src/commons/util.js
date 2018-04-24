@@ -14,7 +14,7 @@ util.parseQueryString = (search) => {
         let k = kv[0];
         let v = kv[1];
         if (k) {
-          query[k] = decodeURIComponent(v);
+          query[decodeURIComponent(k)] = decodeURIComponent(v);
         }
       }
     }
