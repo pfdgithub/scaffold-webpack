@@ -8,7 +8,7 @@ const assetDir = 'assets'; // 资产文件夹
 const name = pkg.name; // 项目名称
 const version = pkg.version; // 项目版本
 const description = pkg.description; // 项目描述
-const scaffoldCfg = pkg.scaffoldConfig; // 脚手架配置
+const scaffoldCfg = pkg.scaffold; // 脚手架配置
 
 // 模拟数据路径
 const mockPath = path.join(__dirname, '../mock');

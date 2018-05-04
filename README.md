@@ -36,7 +36,7 @@ npm run build:prod 构建项目（生产环境）。
 
 # 脚手架配置
 
-配置信息放置于 package.json 文件的 scaffoldConfig 节点。  
+配置信息放置于 package.json 文件的 scaffold 节点。  
 ```javascript
 {
   "deploy": { // 部署配置
