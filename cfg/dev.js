@@ -78,7 +78,7 @@ const getEntries = () => {
 
   for (let key in base.entry) {
     newEntries[key] = [
-      'react-hot-loader/patch'
+      // 'react-hot-loader/patch'
     ].concat(base.entry[key]);
   }
 

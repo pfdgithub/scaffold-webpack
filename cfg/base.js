@@ -262,18 +262,14 @@ const getPlugins = () => {
   // HtmlWebpackPlugin 插件
   let htmlPlugins = [];
   defaults.entryPages.forEach((entryPage) => {
-    let resourceQuery = {
-      title: entryPage.title
-    };
-
     htmlPlugins.push(new HtmlWebpackPlugin({
+      title: entryPage.title,
       favicon: path.join(defaults.imagePath, 'favicon.ico'),
-      template: path.join(defaults.pagePath, entryPage.template) + `?${JSON.stringify(resourceQuery)}`, // 指定 html 模版路径
+      template: path.join(defaults.pagePath, entryPage.template), // 指定 html 模版路径
       filename: path.join(defaults.portalPath, entryPage.name + defaults.pageSuffix), // 指定 html 输出路径
-      chunks: [].concat(Object.keys(extractBundle), entryPage.name), // 指定 html 中注入的资源。
+      chunks: [].concat(Object.keys(extractBundle), entryPage.name), // 指定 html 中注入的资源
+      hash: !!deployCfg.portalChunkHash, // 在资源文件后追加 webpack 编译哈希
       chunksSortMode: 'dependency', // 按照依赖顺序排序
-      hash: false, // 在资源文件后追加 webpack 编译哈希
-      inject: true, // 将 js 文件注入 body 底部
       alwaysWriteToDisk: true, // 将内存文件写入磁盘
       minify: deployCfg.portalMinifyHtml ? { // 压缩 html 源码
         removeComments: true,
@@ -282,7 +278,7 @@ const getPlugins = () => {
         minifyJS: true,
         minifyCSS: true
       } : undefined,
-      alterAssetTags: (htmlPluginData) => { // 为插入的标签添加 crossorigin 属性，允许跨域脚本提供详细错误信息。
+      alterAssetTags: (htmlPluginData) => { // 为插入的标签添加 crossorigin 属性，允许跨域脚本提供详细错误信息
         let assetTags = [].concat(htmlPluginData.head).concat(htmlPluginData.body);
         assetTags.forEach((assetTag) => {
           if (assetTag.tagName == 'script' || assetTag.tagName == 'link') {

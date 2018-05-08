@@ -43,6 +43,7 @@ npm run build:prod 构建项目（生产环境）。
     "portalMultiVersion": false, // 是否将项目页面放置于版本目录
     "portalMinifyHtml": false, // 是否压缩项目页面 HTML 代码
     "portalBeautifyHtml": false, // 是否格式化项目页面 HTML 代码
+    "portalChunkHash": false, // 是否在项目页面内的资源路径中使用 Hash
     "assetMultiVersion": false, // 是否将项目资源放置于版本目录
     "assetNameHash": false, // 是否在项目资源名中使用 Hash
     "assetExtractCss": false, // 是否提取 CSS 资源
