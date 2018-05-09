@@ -109,8 +109,8 @@ const devServerProxy = (prefix, target) => {
         // 代理含有 body 的请求
         proxyReqBody(proxyReq, req, res);
       },
-      onProxyRes: (proxyRes, req, res) => { // 代理目标响应接收后触发
-      },
+      /* onProxyRes: (proxyRes, req, res) => { // 代理目标响应接收后触发
+      }, */
       onError: (err, req, res) => { // 代理目标出现错误后触发
         res.writeHead(500, {
           'Content-Type': 'text/plain'

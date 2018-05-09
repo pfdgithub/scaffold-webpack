@@ -35,7 +35,7 @@ let innerRpcPath = '';
      */
     case 'proxy': {
       // 如 https://example.org/path/
-      let regExp = /^(((http|https):)?(\/\/([^\/]+)\/))(.*)$/;
+      let regExp = /^(((http|https):)?(\/\/([^/]+)\/))(.*)$/;
       let matchArr = innerPrefix && innerPrefix.match(regExp);
 
       // 如 ['https://example.org/path/', 'https://example.org/', 'https:', 'https', '//example.org/', 'example.org', 'path/']

@@ -9,7 +9,7 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
-const HappyPack = require('happypack');
+// const HappyPack = require('happypack');
 
 const defaults = require('./defaults');
 const deployCfg = defaults.deployCfg || {};
@@ -26,14 +26,14 @@ const extractBundle = {
 
 // HappyPack 插件
 const happyPackPlugins = [];
-const createHappyPlugin = (id, loaders) => {
-  happyPackPlugins.push(new HappyPack({
-    id: id,
-    loaders: loaders
-  }));
+// const createHappyPlugin = (id, loaders) => {
+//   happyPackPlugins.push(new HappyPack({
+//     id: id,
+//     loaders: loaders
+//   }));
 
-  return `happypack/loader?id=${id}`
-};
+//   return `happypack/loader?id=${id}`;
+// };
 
 // 获取入口配置
 const getEntries = () => {
@@ -281,7 +281,7 @@ const getPlugins = () => {
       alterAssetTags: (htmlPluginData) => { // 为插入的标签添加 crossorigin 属性，允许跨域脚本提供详细错误信息
         let assetTags = [].concat(htmlPluginData.head).concat(htmlPluginData.body);
         assetTags.forEach((assetTag) => {
-          if (assetTag.tagName == 'script' || assetTag.tagName == 'link') {
+          if (assetTag.tagName === 'script' || assetTag.tagName === 'link') {
             assetTag.attributes.crossorigin = 'anonymous';
           }
         });
@@ -335,7 +335,7 @@ const getPlugins = () => {
           src: path.resolve(path.join(defaults.imagePath, 'logo.png'))
         }]
       }, deployCfg.manifest))
-    ]
+    ];
   }
 
   return [].concat(

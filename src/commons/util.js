@@ -446,7 +446,9 @@ util.stringJsonFilter = (source, hideCode) => {
       return '\\u' + (m.charCodeAt(0) + 0x10000).toString(16).substring(1);
     }
   };
+  /* eslint-disable */
   let escRE = /[\\"\u0000-\u001F\u2028\u2029]/g;
+  /* eslint-enable */
 
   //只处理字符串类型
   if (typeof (source) !== 'string') {

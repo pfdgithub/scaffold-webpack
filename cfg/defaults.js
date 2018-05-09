@@ -48,7 +48,7 @@ const getPublicPageFullname = (publicPagePath) => { // 项目页面全名
     let separators = entryPage.name.split('.');
     let temp = pageObj;
     separators.forEach((separator, index, array) => {
-      if (index == array.length - 1) {
+      if (index === array.length - 1) {
         temp[separator] = publicPagePath + entryPage.name + pageSuffix;
       }
       else {
