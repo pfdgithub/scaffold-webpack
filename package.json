@@ -79,7 +79,7 @@
     "cache-loader": "^1.2.2",
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.5.1",
-    "cross-env": "^5.1.4",
+    "cross-env": "^5.1.5",
     "css-loader": "^0.28.11",
     "del": "^3.0.0",
     "eslint": "^4.19.1",

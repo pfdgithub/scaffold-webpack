@@ -25,8 +25,7 @@ util.parseQueryString = (search) => {
 
 // 拼接URL查询参数
 util.joinQueryString = (query, noEncode) => {
-  if (typeof (query) === 'undefined'
-    || JSON.stringify(query) === '{}') {
+  if (typeof (query) === 'undefined') {
     return '';
   }
 
