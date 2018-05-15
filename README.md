@@ -54,6 +54,7 @@ npm run build:prod 构建项目（生产环境）。
     "port": 8000, // 服务器端口
     "https": false, // 是否启用 HTTPS 模式
     "devtool": "cheap-module-eval-source-map", // source maps 选项
+    "historyApi": false, // historyApiFallback 选项
     "rpc": { // 后端接口配置（包含协议和域名的绝对路径）
       "innerMode": "mock", // inner 接口模式 <mock|proxy|remote>
       "innerPrefix": "//[host]/[path]/" // inner 接口路径（ proxy 或 remote 模式下使用）

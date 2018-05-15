@@ -5,6 +5,7 @@ const multer = require('multer');
 const cookieParser = require('cookie-parser');
 
 const defaults = require('./defaults');
+const devCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.dev) || {};
 
 // setup 配置
 const devServerSetup = (prefix) => {
@@ -125,6 +126,8 @@ module.exports = (cfg) => {
   cfg = cfg || {};
 
   return {
+    // open: true,
+    // openPage: 'index.html',
     inline: true,
     hotOnly: true,
     overlay: true,
@@ -134,17 +137,19 @@ module.exports = (cfg) => {
     disableHostCheck: true,
     port: cfg.port,
     publicPath: cfg.publicPath,
+    contentBase: defaults.portalPath,
+    historyApiFallback: devCfg.historyApi,
     before: devServerSetup(cfg.mockPrefix),
     proxy: devServerProxy(cfg.proxyPrefix, cfg.proxyTarget),
-    contentBase: defaults.portalPath,
-    stats: {
-      colors: true,
-      assets: true,
-      entrypoints: false,
-      chunks: false,
-      modules: false,
-      children: false
-    },
+    stats: 'normal',
+    // stats: {
+    //   colors: true,
+    //   assets: true,
+    //   entrypoints: false,
+    //   chunks: false,
+    //   modules: false,
+    //   children: false
+    // },
     https: cfg.https ? {
       key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem'), 'utf8'),
       cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'), 'utf8'),
