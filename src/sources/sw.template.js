@@ -123,6 +123,10 @@ self.addEventListener('activate', (event) => {
   log('Activate Event:', event);
 });
 
+self.addEventListener('error', (event) => {
+  error('Error Event:', event);
+});
+
 // #endregion
 
 // #region 缓存策略
@@ -197,7 +201,7 @@ self.addEventListener('push', (event) => {
 
   // 推送有延时，收到后可能已经过期了
   if (pushJson.expires && pushJson.expires < Date.now()) {
-    log('Push Expires:', pushJson.expires);
+    warn('Push Expires:', pushJson);
     return;
   }
 

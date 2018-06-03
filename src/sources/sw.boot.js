@@ -431,7 +431,13 @@ const swInit = () => {
     .then(() => {
       return registerSW(swPath);
     })
-    .then(handleSWChange);
+    .then(handleSWChange)
+    .then(() => {
+      // 监听错误事件
+      navigator.serviceWorker.addEventListener((event) => {
+        error('Error Event:', event);
+      });
+    });
 };
 
 // 销毁 service worker
