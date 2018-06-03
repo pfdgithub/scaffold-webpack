@@ -31,6 +31,28 @@ prod.js 生产环境配置。
 
 # 注意事项
 
+## CSS 处理
+
 启用 extract-text-webpack-plugin 后，将无法使用 Hot Module Replacement 和 runtime public path modification 特性。  
 通过 css-loader 的 [CSS Modules](https://github.com/webpack/css-loader#css-modules) 模式，模块化指定目录下的样式文件。  
 通过 less 的 [Modify Variables](http://lesscss.org/usage/#using-less-in-the-browser-modify-variables) 模式，覆盖外部样式的默认 Less 变量。  
+
+## react-hot-loader 生产环境配置
+
+生产环境打包文件中，含有本地磁盘路径，是由于 react-hot-loader 的 react-hot-loader/babel 配置中，需要检测 ```NODE_ENV=production``` 环境变量。  
+但 Babel 插件代码并未在 Webpack 的处理范围内，需要单独配置 node 环境变量 ```cross-env NODE_ENV=production```。  
+
+参考：  
+[react-hot-loader 3 babel plugin cased to the bundle.js size increased.](https://github.com/gaearon/react-hot-loader/issues/357)  
+[contains file path in production build with webpack](https://github.com/gaearon/react-hot-loader/issues/630)  
+
+## webpack-dev-server 热更新
+
+当在 CLI 和 Node API 中使用 webpack-dev-server 时，根据使用方式不同，需要进行不同配置。  
+在 CLI 中，使用 --hot 会自动启用 HotModuleReplacementPlugin 插件，并在 entry 中添加热更新代码。  
+在 Node API 中，需手工配置插件，并添加热更新代码（或使用 webpackDevServer.addDevServerEntrypoints 添加热更新代码）。
+
+参考：  
+[Minimalize differences between CLI and Node.js API](https://github.com/webpack/webpack-dev-server/issues/616)  
+[Setting WDS Entry Points Manually](https://survivejs.com/webpack/appendices/hmr/#setting-wds-entry-points-manually)  
+[Via the Node.js API](https://webpack.js.org/guides/hot-module-replacement/#via-the-node-js-api)  
