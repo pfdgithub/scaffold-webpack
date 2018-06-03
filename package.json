@@ -23,7 +23,7 @@
       "assetNameHash": true,
       "assetExtractCss": true,
       "enablePwa": true,
-      "enablePush": true,
+      "enablePush": false,
       "manifest": {
         "name": "Webpack 脚手架",
         "short_name": "脚手架",
