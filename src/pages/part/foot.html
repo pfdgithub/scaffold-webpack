@@ -1,16 +1,17 @@
 <!-- foot start -->
 ${(__wd_define_env__ === 'dev' || __wd_define_env__ === 'test') ? `
 <script type="text/javascript">
-  // 加载调试面板
+  // 加载 vConsole
   (function () {
     var keyword = 'vConsole';
     var search = window.location.search;
     if (search.indexOf(keyword) != -1) {
       document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!libraries/vConsole/vconsole.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-      document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!libraries/vConsole/vconsole-elements.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-      document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!libraries/vConsole/vconsole-resources.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-      document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!libraries/vConsole/vconsole-sources.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
     }
   })();
-</script>` : ''}
+</script>
+<script type="text/javascript">
+  // 实例化 vConsole
+  window.VConsole && new window.VConsole();
+</script> ` : ''}
 <!-- foot end -->
