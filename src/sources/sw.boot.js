@@ -80,13 +80,6 @@ const loadPromise = new Promise((resolve) => {
 const checkSW = () => {
   return new Promise((resolve, reject) => {
     if ('serviceWorker' in navigator) {
-      // 监听消息
-      listenSWCMsg(navigator.serviceWorker, (msgData) => {
-        let pushData = msgData.data;
-        log('ServerPush:', pushData);
-
-      }, { type: 'serverPush' });
-
       loadPromise.then(resolve);
     }
     else {
@@ -287,6 +280,22 @@ const handleSWChange = (registration) => {
 
 // #region 注册 push
 
+// 是否有通知权限
+const isAgreeNotice = () => {
+  // "default" | "denied" | "granted"
+  return ('Notification' in window) && (Notification.permission !== 'denied');
+};
+
+// 监听服务器推送
+const listenServerPush = (cb) => {
+  listenSWCMsg(navigator.serviceWorker, (msgData) => {
+    let pushData = msgData.data;
+    log('ServerPush:', pushData);
+
+    cb && cb(pushData);
+  }, { type: 'serverPush' });
+};
+
 // 字符串转换
 const urlB64ToUint8Array = (base64String) => {
   let padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -302,12 +311,6 @@ const urlB64ToUint8Array = (base64String) => {
   }
 
   return outputArray;
-};
-
-// 是否有通知权限
-const isAgreeNotice = () => {
-  // "default" | "denied" | "granted"
-  return ('Notification' in window) && (Notification.permission !== 'denied');
 };
 
 // 检查 push
@@ -463,16 +466,16 @@ const example = () => {
   if (config.sw.swName) {
     // 自定义刷新提示
     customPromptCreater(() => {
-      log('PromptCreater:', 'new');
+      log('customPromptCreater:', 'new');
       return new Promise((resolve, reject) => {
         // 延时处理，避免阻塞主线程
         setTimeout(() => {
           if (confirm('应用有更新，是否立即刷新？')) {
-            log('PromptCreater:', 'resolve');
+            log('customPromptCreater:', 'resolve');
             resolve();
           }
           else {
-            log('PromptCreater:', 'reject');
+            log('customPromptCreater:', 'reject');
             reject();
           }
         }, 5 * 1000);
@@ -484,6 +487,11 @@ const example = () => {
 
     // 如果启用推送
     if (config.sw.enablePush) {
+      // 监听推送消息
+      listenServerPush((pushData) => {
+        log('listenServerPush:', pushData);
+      });
+
       // 初始化 Push
       p = p.then(() => {
         return pushInit('default');
@@ -499,8 +507,9 @@ const example = () => {
 
 export default {
   updateSW,
-  isAgreeNotice,
   customPromptCreater,
+  isAgreeNotice,
+  listenServerPush,
 
   swInit,
   swDestroy,

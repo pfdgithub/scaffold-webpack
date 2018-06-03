@@ -195,6 +195,12 @@ self.addEventListener('push', (event) => {
     pushText = event.data.text();
   }
 
+  // 推送有延时，收到后可能已经过期了
+  if (pushJson.expires && pushJson.expires < Date.now()) {
+    log('Push Expires:', pushJson.expires);
+    return;
+  }
+
   // 有客户端开启，就给客户端发消息，否则发系统通知
   let scope = (appConfig && appConfig.public.pagePath) || '/';
   let p = filterClients('window', new RegExp(scope))
