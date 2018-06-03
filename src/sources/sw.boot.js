@@ -434,7 +434,7 @@ const swInit = () => {
     .then(handleSWChange)
     .then(() => {
       // 监听错误事件
-      navigator.serviceWorker.addEventListener((event) => {
+      navigator.serviceWorker.addEventListener('error', (event) => {
         error('Error Event:', event);
       });
     });
