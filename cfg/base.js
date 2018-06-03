@@ -4,36 +4,35 @@ const beautify = require('js-beautify');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackEventPlugin = require('html-webpack-event-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
-// const HappyPack = require('happypack');
+const HappyPack = require('happypack');
 
 const defaults = require('./defaults');
 const deployCfg = defaults.deployCfg || {};
 
 // 提取公共依赖
 const extractBundle = {
-  reactBundle: ['react', 'react-dom'],
+  runtime: undefined, // webpackBootstrap
   commonBundle: [
+    'react', 'react-dom',
     'commons/base', 'commons/util', 'commons/config',
     'sources/db.global', 'sources/db.inner'
-  ].concat(deployCfg.enablePwa ? ['sources/sw.boot'] : []),
-  runtime: undefined // webpackBootstrap
+  ]
 };
 
 // HappyPack 插件
 const happyPackPlugins = [];
-// const createHappyPlugin = (id, loaders) => {
-//   happyPackPlugins.push(new HappyPack({
-//     id: id,
-//     loaders: loaders
-//   }));
+const createHappyPlugin = (id, loaders) => {
+  happyPackPlugins.push(new HappyPack({
+    id: id,
+    loaders: loaders
+  }));
 
-//   return `happypack/loader?id=${id}`;
-// };
+  return `happypack/loader?id=${id}`;
+};
 
 // 获取入口配置
 const getEntries = () => {
@@ -46,16 +45,52 @@ const getEntries = () => {
     ];
   });
 
-  // 排除无效入口
+  // 排除运行时
   let validBundle = {};
   for (let key in extractBundle) {
     let val = extractBundle[key];
-    if (val && val.length > 0) {
+    if (typeof (val) !== 'undefined') {
       validBundle[key] = val;
     }
   }
 
   return Object.assign({}, validBundle, entries);
+};
+
+// 获取运行时配置
+const getRuntimeChunk = () => {
+  for (let key in extractBundle) {
+    let val = extractBundle[key];
+    if (typeof (val) === 'undefined') {
+      return {
+        name: key
+      };
+    }
+  }
+
+  return false;
+};
+
+// 获取分块配置
+const getSplitChunks = () => {
+  let groups = {};
+
+  // 排除运行时
+  for (let key in extractBundle) {
+    let val = extractBundle[key];
+    if (typeof (val) !== 'undefined') {
+      groups[key] = {
+        chunks: 'all',
+        enforce: true,
+        name: key,
+        test: key
+      };
+    }
+  }
+
+  return {
+    cacheGroups: groups
+  };
 };
 
 // 获取加载器
@@ -66,6 +101,11 @@ const getModules = () => {
     options: {
       cacheDirectory: path.resolve('node_modules/.cache/cache-loader')
     }
+  };
+
+  // mini-css-extract-plugin 配置
+  let cssExtractLoader = deployCfg.assetExtractCss ? MiniCssExtractPlugin.loader : {
+    loader: 'style-loader'
   };
 
   return {
@@ -119,7 +159,7 @@ const getModules = () => {
             loader: 'url-loader',
             options: {
               limit: 4096,
-              name: '[name].[hash].[ext]'
+              name: 'img/[name].[hash].[ext]'
             }
           }
         ],
@@ -131,7 +171,7 @@ const getModules = () => {
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[hash].[ext]'
+              name: 'font/[name].[hash].[ext]'
             }
           }
         ],
@@ -155,60 +195,53 @@ const getModules = () => {
       },
       {
         test: /\.css$/,
-        use: ExtractTextWebpackPlugin.extract({
-          fallback: {
-            loader: 'style-loader'
-          },
-          use: [
-            cacheLoader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                sourceMap: true
-              }
+        use: [
+          cacheLoader,
+          cssExtractLoader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              sourceMap: true
             }
-          ]
-        })
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
         // 不限制目录（包含 node_modules 目录）
       },
       {
         test: /\.less$/,
-        use: ExtractTextWebpackPlugin.extract({
-          fallback: {
-            loader: 'style-loader'
-          },
-          use: [
-            cacheLoader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2,
-                sourceMap: true,
-                modules: true,
-                localIdentName: '[name]-[local]-[hash:base64:5]'
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                sourceMap: true
-              }
+        use: [
+          cacheLoader,
+          cssExtractLoader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              sourceMap: true,
+              modules: true,
+              localIdentName: '[name]-[local]-[hash:base64:5]'
             }
-          ]
-        }),
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
+        ,
         // 业务组件、入口脚本、单页视图，启用 CSS Modules
         include: [
           defaults.componentPath,
@@ -218,33 +251,30 @@ const getModules = () => {
       },
       {
         test: /\.less$/,
-        use: ExtractTextWebpackPlugin.extract({
-          fallback: {
-            loader: 'style-loader'
-          },
-          use: [
-            cacheLoader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2,
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                sourceMap: true
-              }
+        use: [
+          cacheLoader,
+          cssExtractLoader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              sourceMap: true
             }
-          ]
-        }),
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
+        ,
         // 除业务组件、入口脚本、单页视图外，其他目录正常处理
         include: defaults.srcPath,
         exclude: [
@@ -264,7 +294,6 @@ const getPlugins = () => {
   defaults.entryPages.forEach((entryPage) => {
     htmlPlugins.push(new HtmlWebpackPlugin({
       title: entryPage.title,
-      favicon: path.join(defaults.imagePath, 'favicon.ico'),
       template: path.join(defaults.pagePath, entryPage.template), // 指定 html 模版路径
       filename: path.join(defaults.portalPath, entryPage.name + defaults.pageSuffix), // 指定 html 输出路径
       chunks: [].concat(Object.keys(extractBundle), entryPage.name), // 指定 html 中注入的资源
@@ -303,38 +332,47 @@ const getPlugins = () => {
   // PWA 相关插件
   let pwaPlugins = [];
   if (deployCfg.enablePwa) {
+    // 从资源到页面的 url 相对路径
+    let assetToportal = path.relative(defaults.assetPath, defaults.portalPath);
+    assetToportal = assetToportal.split('\\').join('/');
+
     pwaPlugins = [
-      new CopyWebpackPlugin([{ // Service Worker 需要的文件，不能用 webpack 处理
-        from: require.resolve('workbox-sw'),
-        to: path.join(defaults.portalPath, 'workbox-sw.js')
-      }]),
-      new WriteFileWebpackPlugin({ // 输出 CopyWebpackPlugin 复制的文件
-        test: /workbox-sw.js/
-      }),
-      new WorkboxPlugin({ // 预加载 webpack 输出文件
-        globPatterns: ['**/*'],
-        globIgnores: ['**/*.map', 'sw.js', 'workbox-sw.js'],
-        globDirectory: defaults.portalPath,
-        swSrc: path.join(defaults.sourcePath, 'sw.template.js'),
-        swDest: path.join(defaults.portalPath, 'sw.js')
-      }),
       new WebpackPwaManifest(Object.assign({ // 需放置于 HtmlWebpackPlugin 之后
         name: defaults.name,
         short_name: defaults.name,
         description: defaults.description,
         fingerprints: deployCfg.assetNameHash,
-        start_url: 'index.html',
+        start_url: `${assetToportal}/../index.html?_launcher=homescreen`,
         display: 'standalone',
         orientation: 'portrait',
         theme_color: '#3DB1FA',
         background_color: '#FFF',
         ios: true,
+        includeDirectory: true,
+        filename: 'pwa/app-manifest.[hash].json',
         icons: [{
           ios: true,
-          sizes: [48, 96, 144, 192],
+          sizes: [512],
+          destination: 'pwa',
           src: path.resolve(path.join(defaults.imagePath, 'logo.png'))
         }]
-      }, deployCfg.manifest))
+      }, deployCfg.manifest)),
+      new WorkboxPlugin.InjectManifest({
+        swSrc: path.join(defaults.sourcePath, 'sw.template.js'),
+        swDest: path.join(defaults.portalPath, defaults.swName),
+        importsDirectory: 'pwa',
+        importWorkboxFrom: 'local', // 将 workbox 放在本地，否则需要访问谷歌 CDN
+        precacheManifestFilename: 'precache-manifest.[manifestHash].js',
+        // 默认包含 webpack 中的全部资源，但由于直接使用 Asset 字符串拼接资源 url
+        // 造成部分资源路径错误无法正确加载，如 /assets/..\\index.html /assets/pwa\app-manifest.json
+        exclude: [/\.map$/, /\.html$/, /pwa[\\/]/],
+        // 添加 webpack 之外的资源，使用此方式添加正确的资源 url（相对路径），如 index.html
+        // globDirectory: defaults.portalPath,
+        // globPatterns: ['**/*.html']
+      }),
+      new WriteFileWebpackPlugin({ // 在 webpack-dev-server 环境中输出自定义 service-worker
+        test: new RegExp(defaults.swName)
+      })
     ];
   }
 
@@ -344,21 +382,9 @@ const getPlugins = () => {
     pwaPlugins,
     new HtmlWebpackEventPlugin(),
     new HtmlWebpackHarddiskPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.NamedChunksPlugin((chunk) => {
-      if (chunk.name) {
-        return chunk.name;
-      }
-      return chunk.mapModules(m => path.relative(m.context, m.resource)).join('_');
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      minChunks: Infinity,
-      names: Object.keys(extractBundle)
-    }),
-    new ExtractTextWebpackPlugin({
-      allChunks: true, // 打包在异步模块中的依赖样式，会因丢失依赖项而在加载时抛出异常。
-      disable: !deployCfg.assetExtractCss,
-      filename: deployCfg.assetNameHash ? '[name]-[contenthash].css' : '[name].css'
+    new MiniCssExtractPlugin({
+      filename: deployCfg.assetNameHash ? 'css/[name]-[contenthash].css' : 'css/[name].css',
+      chunkFilename: deployCfg.assetNameHash ? 'css/[name]-[contenthash].css' : 'css/[name].css'
     }),
     new webpack.BannerPlugin({
       banner: `name: ${defaults.name}\nversion: ${defaults.version}\ndescription: ${defaults.description}`
@@ -386,13 +412,21 @@ module.exports = {
   },
   output: {
     crossOriginLoading: 'anonymous',
-    filename: `[name].js`,
-    chunkFilename: `[name].js`,
+    sourceMapFilename: 'map/[file].map',
     path: defaults.assetPath,
+    filename: undefined,
+    chunkFilename: undefined,
     pathinfo: undefined,
     publicPath: undefined
   },
-  cache: undefined,
+  optimization: {
+    nodeEnv: false,
+    noEmitOnErrors: true,
+    runtimeChunk: getRuntimeChunk(),
+    splitChunks: getSplitChunks(),
+    minimize: undefined
+  },
+  mode: undefined,
   devtool: undefined,
   devServer: undefined
 };

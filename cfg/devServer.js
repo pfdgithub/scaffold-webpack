@@ -126,8 +126,6 @@ module.exports = (cfg) => {
   cfg = cfg || {};
 
   return {
-    // open: true,
-    // openPage: 'index.html',
     inline: true,
     hotOnly: true,
     overlay: true,
@@ -141,15 +139,12 @@ module.exports = (cfg) => {
     historyApiFallback: devCfg.historyApi,
     before: devServerSetup(cfg.mockPrefix),
     proxy: devServerProxy(cfg.proxyPrefix, cfg.proxyTarget),
-    stats: 'normal',
-    // stats: {
-    //   colors: true,
-    //   assets: true,
-    //   entrypoints: false,
-    //   chunks: false,
-    //   modules: false,
-    //   children: false
-    // },
+    stats: {
+      colors: true,
+      entrypoints: false,
+      modules: false,
+      children: false
+    },
     https: cfg.https ? {
       key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem'), 'utf8'),
       cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'), 'utf8'),

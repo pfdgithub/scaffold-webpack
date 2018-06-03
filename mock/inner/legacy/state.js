@@ -3,7 +3,7 @@ module.exports = (req, res, next) => {
 
   res.json({
     code: 0,
-    message: "",
+    message: '',
     data: {
       query: req.query,
       body: req.body,

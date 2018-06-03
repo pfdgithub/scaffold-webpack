@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const NameAllModulesPlugin = require('name-all-modules-plugin');
 
 const devServer = require('./devServer');
 const defaults = require('./defaults');
@@ -72,19 +71,6 @@ const publicRpcPath = {
 // 入口页面对象
 const publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
 
-// 获取入口配置
-const getEntries = () => {
-  let newEntries = {};
-
-  for (let key in base.entry) {
-    newEntries[key] = [
-      // 'react-hot-loader/patch'
-    ].concat(base.entry[key]);
-  }
-
-  return newEntries;
-};
-
 // 获取插件
 const getPlugins = () => {
   let param = defaults.getDefinePluginParam({
@@ -97,8 +83,6 @@ const getPlugins = () => {
 
   return [].concat(
     base.plugins,
-    new webpack.NamedModulesPlugin(),
-    new NameAllModulesPlugin(), // 需放置于 NamedModulesPlugin 之后
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin(param),
     new webpack.LoaderOptionsPlugin({
@@ -114,13 +98,13 @@ const getPlugins = () => {
 // 修改基础配置
 const config = base;
 
-config.cache = true;
-config.devtool = devCfg.devtool || 'cheap-module-source-map';
-config.output.filename = deployCfg.assetNameHash ? '[name].[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
-config.output.chunkFilename = deployCfg.assetNameHash ? '[name].[hash].js' : '[name].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.mode = 'development';
+config.devtool = devCfg.devtool || 'eval';
+config.output.filename = deployCfg.assetNameHash ? 'js/[name].[hash].js' : 'js/[name].js'; // webpack-dev-server 不能使用 [chunkhash]
+config.output.chunkFilename = deployCfg.assetNameHash ? 'js/[name].[hash].js' : 'js/[name].js'; // webpack-dev-server 不能使用 [chunkhash]
 config.output.pathinfo = true;
 config.output.publicPath = publicAssetPath;
-config.entry = getEntries();
+config.optimization.minimize = false;
 config.plugins = getPlugins();
 config.devServer = devServer({
   port: devCfg.port,

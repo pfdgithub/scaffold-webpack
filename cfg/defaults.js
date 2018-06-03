@@ -4,6 +4,7 @@ const pkg = require('../package.json');
 
 const pageSuffix = '.html'; // 入口页面后缀名
 const assetDir = 'assets'; // 资产文件夹
+const swName = 'service-worker.js'; // service worker 名称
 
 const name = pkg.name; // 项目名称
 const version = pkg.version; // 项目版本
@@ -72,13 +73,16 @@ const getDefinePluginParam = (param) => {
     '__wd_public_page_path__': JSON.stringify(param.publicPagePath),
     '__wd_public_asset_path__': JSON.stringify(param.publicAssetPath),
     '__wd_public_rpc_path__': JSON.stringify(param.publicRpcPath),
-    '__wd_public_page_fullname__': JSON.stringify(param.publicPageFullname)
+    '__wd_public_page_fullname__': JSON.stringify(param.publicPageFullname),
+    '__wd_service_worker_name__': JSON.stringify(deployCfg.enablePwa ? swName : ''),
+    '__wd_enable_web_push__': !!deployCfg.enablePush
   };
 };
 
 module.exports = {
   pageSuffix,
   assetDir,
+  swName,
 
   name,
   version,

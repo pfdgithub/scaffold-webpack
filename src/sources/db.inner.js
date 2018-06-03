@@ -65,5 +65,33 @@ context.create('rest', {
   }
 });
 
+// 推送接口
+context.create('push', {
+  // 获取订阅密钥
+  'getKey': {
+    method: 'POST',
+    url: 'push/getKey',
+    header: {
+      'Content-Type': 'application/json; charset=utf-8'
+    }
+  },
+  // 更新服务器订阅
+  'subscription': {
+    method: 'POST',
+    url: 'push/subscription',
+    header: {
+      'Content-Type': 'application/json; charset=utf-8'
+    }
+  },
+  // 推送消息
+  'sendMsg': {
+    method: 'POST',
+    url: 'push/sendMsg',
+    header: {
+      'Content-Type': 'application/json; charset=utf-8'
+    }
+  }
+});
+
 // 输出上下文的所有接口
 export default context.api;

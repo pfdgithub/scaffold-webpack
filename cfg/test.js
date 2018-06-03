@@ -34,7 +34,6 @@ const getPlugins = () => {
     new webpack.HashedModuleIdsPlugin(),
     new HashAllModulesPlugin(), // 需放置于 HashedModuleIdsPlugin 之后
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin(param),
     new webpack.LoaderOptionsPlugin({
       debug: true,
@@ -49,12 +48,13 @@ const getPlugins = () => {
 // 修改基础配置
 const config = base;
 
-config.cache = false;
+config.mode = 'production';
 config.devtool = 'source-map';
-config.output.filename = deployCfg.assetNameHash ? '[name]-[chunkhash].js' : '[name].js';
-config.output.chunkFilename = deployCfg.assetNameHash ? '[name]-[chunkhash].js' : '[name].js';
+config.output.filename = deployCfg.assetNameHash ? 'js/[name].[chunkhash].js' : 'js/[name].js';
+config.output.chunkFilename = deployCfg.assetNameHash ? 'js/[name].[chunkhash].js' : 'js/[name].js';
 config.output.pathinfo = true;
 config.output.publicPath = publicAssetPath;
+config.optimization.minimize = false;
 config.plugins = getPlugins();
 config.devServer = devServer();
 

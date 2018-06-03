@@ -17,11 +17,7 @@ let pkg = require('./package.json');
 let envEnum = {
   dev: 'dev',
   test: 'test',
-  prod: 'prod',
-  // 兼容 npm run deploy -- --env 'XXX - YYY'
-  '综测 - uat': 'test',
-  '预发 - pre': 'prod',
-  '生产 - prd': 'prod'
+  prod: 'prod'
 };
 
 // 输出任务日志

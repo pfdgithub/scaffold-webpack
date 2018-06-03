@@ -18,12 +18,6 @@ class AsyncCom extends React.Component {
     this.loadCom(this.props.getCom);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.getCom !== this.props.getCom) {
-      this.loadCom(nextProps.getCom);
-    }
-  }
-
   render() {
     /* eslint-disable */
     let { getCom, ...passProps } = this.props;
@@ -59,11 +53,6 @@ class AsyncCom extends React.Component {
 
   // 加载组件
   loadCom(getCom) {
-    this.setState({
-      component: null,
-      error: null
-    });
-
     getCom((component) => {
       // 加载成功
       this.setState({

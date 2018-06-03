@@ -1,48 +1,36 @@
 <!-- fake start -->
 <style>
   @-webkit-keyframes fake-keyframes {
-    0% {
-      -webkit-transform: rotateY(0deg);
-      transform: rotateY(0deg)
+    from {
+      -webkit-transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 1);
     }
-    25% {
-      -webkit-transform: rotateY(180deg);
-      transform: rotateY(180deg)
-    }
+
     50% {
-      -webkit-transform: rotateX(-180deg);
-      transform: rotateX(-180deg)
+      -webkit-transform: scale3d(1.05, 1.05, 1.05);
+      transform: scale3d(1.05, 1.05, 1.05);
     }
-    75% {
-      -webkit-transform: rotateY(360deg);
-      transform: rotateY(360deg)
-    }
-    100% {
-      -webkit-transform: rotateX(-360deg);
-      transform: rotateX(-360deg)
+
+    to {
+      -webkit-transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 1);
     }
   }
 
   @keyframes fake-keyframes {
-    0% {
-      -webkit-transform: rotateY(0deg);
-      transform: rotateY(0deg)
+    from {
+      -webkit-transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 1);
     }
-    25% {
-      -webkit-transform: rotateY(180deg);
-      transform: rotateY(180deg)
-    }
+
     50% {
-      -webkit-transform: rotateX(-180deg);
-      transform: rotateX(-180deg)
+      -webkit-transform: scale3d(1.05, 1.05, 1.05);
+      transform: scale3d(1.05, 1.05, 1.05);
     }
-    75% {
-      -webkit-transform: rotateY(360deg);
-      transform: rotateY(360deg)
-    }
-    100% {
-      -webkit-transform: rotateX(-360deg);
-      transform: rotateX(-360deg)
+
+    to {
+      -webkit-transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 1);
     }
   }
 
@@ -50,11 +38,17 @@
     width: 200px;
     height: 200px;
     margin: 200px auto;
-    -webkit-animation: fake-keyframes 3s ease infinite;
-    animation: fake-keyframes 3s ease infinite;
+    -webkit-animation: fake-keyframes 2s ease infinite;
+    animation: fake-keyframes 2s ease infinite;
+  }
+
+  .noscript {
+    display: block;
+    text-align: center;
   }
 </style>
 <div class="layout-fake">
   ${require('!!svg-inline-loader!images/fake.svg')}
 </div>
+<noscript class="noscript">请启用 JavaScript 功能，以便使用本应用。</noscript>
 <!-- fake end -->

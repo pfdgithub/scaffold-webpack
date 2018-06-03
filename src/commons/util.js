@@ -110,7 +110,7 @@ util.parseUrl = (url) => {
     username: a.username,
     password: a.password,
 
-    params: (function () {
+    params: (() => {
       let ret = {},
         seg = a.search.replace(/^\?/, '').split('&'),
         len = seg.length,
@@ -594,6 +594,104 @@ util.humanFriendlyNumber = (num) => {
   }
 
   return ret;
+};
+
+// 是否是对象
+util.isObject = (what) => {
+  return typeof what === 'object' && what !== null;
+};
+
+// 是否是错误
+util.isError = (value) => {
+  switch (Object.prototype.toString.call(value)) {
+    case '[object Error]':
+      return true;
+    case '[object Exception]':
+      return true;
+    case '[object DOMException]':
+      return true;
+    default:
+      return value instanceof Error;
+  }
+};
+
+// 是否是 undefined
+util.isUndefined = (what) => {
+  return what === void 0;
+};
+
+// 是否是函数
+util.isFunction = (what) => {
+  return typeof what === 'function';
+};
+
+// 是否是简单对象
+util.isPlainObject = (what) => {
+  return Object.prototype.toString.call(what) === '[object Object]';
+};
+
+// 是否是字符串
+util.isString = (what) => {
+  return Object.prototype.toString.call(what) === '[object String]';
+};
+
+// 是否是数组
+util.isArray = (what) => {
+  return Object.prototype.toString.call(what) === '[object Array]';
+};
+
+// 是否是空对象
+util.isEmptyObject = (what) => {
+  if (!util.isPlainObject(what)) return false;
+
+  for (let _ in what) {
+    if (what.hasOwnProperty(_)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// 生成 UUID
+util.uuid4 = () => {
+  let crypto = window.crypto || window.msCrypto;
+
+  if (!util.isUndefined(crypto) && crypto.getRandomValues) {
+    // Use window.crypto API if available
+    let arr = new Uint16Array(8);
+    crypto.getRandomValues(arr);
+
+    // set 4 in byte 7
+    arr[3] = (arr[3] & 0xfff) | 0x4000;
+    // set 2 most significant bits of byte 9 to '10'
+    arr[4] = (arr[4] & 0x3fff) | 0x8000;
+
+    let pad = (num) => {
+      let v = num.toString(16);
+      while (v.length < 4) {
+        v = '0' + v;
+      }
+      return v;
+    };
+
+    return (
+      pad(arr[0]) +
+      pad(arr[1]) +
+      pad(arr[2]) +
+      pad(arr[3]) +
+      pad(arr[4]) +
+      pad(arr[5]) +
+      pad(arr[6]) +
+      pad(arr[7])
+    );
+  } else {
+    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
+    return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      let r = (Math.random() * 16) | 0,
+        v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
 };
 
 export default util;

@@ -1,3 +1,5 @@
+import logo from 'images/logo.png';
+
 /* eslint-disable */
 // 定义环境类型
 const defineEnv = __wd_define_env__;
@@ -11,6 +13,10 @@ const publicAssetPath = __wd_public_asset_path__;
 const publicRpcPath = __wd_public_rpc_path__;
 // 项目页面名称
 const publicPageFullname = __wd_public_page_fullname__;
+// service worker 名称
+const serviceWorkerName = __wd_service_worker_name__;
+// 启用 web push
+const enableWebPush = __wd_enable_web_push__;
 /* eslint-enable */
 
 // 调试模式
@@ -30,5 +36,10 @@ export default {
   state: { // 状态相关
     isDebug: isDebug,
     isMock: isMock
+  },
+  sw: { // service worker 相关
+    swName: serviceWorkerName,
+    enablePush: enableWebPush,
+    noticeIcon: logo
   }
 };
