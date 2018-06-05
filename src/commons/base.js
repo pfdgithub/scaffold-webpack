@@ -1,6 +1,6 @@
 // 载入公共样式
 // import 'normalize.css/normalize.css';
-import 'antd/es/style/core/base.less'; // antd 自带修改过的 normalize.css
+import 'antd/es/style'; // antd-mobile 自带了 normalize.css
 import 'styles/base.less';
 
 // 载入公共脚本

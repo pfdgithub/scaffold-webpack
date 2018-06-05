@@ -236,6 +236,7 @@ const getModules = () => {
             loader: 'less-loader',
             options: {
               sourceMap: true,
+              javascriptEnabled: true, // node_modules/antd/es/style/color/ 目录下的 less 文件中存在内联 js 代码
               modifyVars: defaults.antdModify.lessVars
             }
           }

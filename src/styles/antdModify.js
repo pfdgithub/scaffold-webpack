@@ -9,7 +9,7 @@ let resolve = require.resolve(libName);
 let antdPath = resolve.substring(0, resolve.lastIndexOf(libName) + libName.length);
 
 let lessVars = {
-  'icon-url': '\'~styles/anticon/iconfont\''
+  '@icon-url': '"~styles/anticon/iconfont"'
 };
 
 module.exports = {
