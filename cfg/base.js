@@ -185,7 +185,7 @@ const getModules = () => {
           {
             loader: 'svg-sprite-loader',
             options: {
-              name: '[name].[hash]'
+              symbolId: '[name].[hash]'
             }
           }
         ],
