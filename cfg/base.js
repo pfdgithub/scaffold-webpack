@@ -240,8 +240,7 @@ const getModules = () => {
               sourceMap: true
             }
           }
-        ]
-        ,
+        ],
         // 业务组件、入口脚本、单页视图，启用 CSS Modules
         include: [
           defaults.componentPath,
@@ -273,8 +272,7 @@ const getModules = () => {
               sourceMap: true
             }
           }
-        ]
-        ,
+        ],
         // 除业务组件、入口脚本、单页视图外，其他目录正常处理
         include: defaults.srcPath,
         exclude: [
