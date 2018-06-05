@@ -2,6 +2,8 @@
 
 base.less 基础样式。  
 util.less 辅助功能。  
+antdHack.less 覆盖 Ant Design Mobile 的默认样式。  
+antdModify.js 覆盖 Ant Design Mobile 的默认 Less 变量。  
 
 # 注意事项
 

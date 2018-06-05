@@ -116,6 +116,7 @@
     "yargs": "^11.0.0"
   },
   "dependencies": {
+    "antd-mobile": "^2.1.11",
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
