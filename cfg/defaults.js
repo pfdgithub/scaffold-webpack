@@ -36,6 +36,8 @@ const assetPath = deployCfg.assetMultiVersion ?
 const assetUrl = deployCfg.assetMultiVersion ?
   `${version}/${assetDir}` : `${assetDir}`; // 项目资源 URL
 
+const antdModify = require(path.join(srcPath, 'styles', 'antdModify')); // 覆盖 antd 的变量
+
 const entryPages = (() => { // 入口页面列表
   let pages = require(path.join(pagePath, 'pages.js'));
 
@@ -108,6 +110,7 @@ module.exports = {
   assetPath,
   assetUrl,
 
+  antdModify,
   entryPages,
   getPublicPageFullname,
   getDefinePluginParam

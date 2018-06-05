@@ -223,6 +223,35 @@ const getModules = () => {
             loader: 'css-loader',
             options: {
               importLoaders: 2,
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true,
+              modifyVars: defaults.antdModify.lessVars
+            }
+          }
+        ],
+        // 覆盖 antd 目录的 less 变量
+        include: defaults.antdModify.antdPath
+      },
+      {
+        test: /\.less$/,
+        use: [
+          cacheLoader,
+          cssExtractLoader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
               sourceMap: true,
               modules: true,
               localIdentName: '[name]-[local]-[hash:base64:5]'
@@ -240,8 +269,7 @@ const getModules = () => {
               sourceMap: true
             }
           }
-        ]
-        ,
+        ],
         // 业务组件、入口脚本、单页视图，启用 CSS Modules
         include: [
           defaults.componentPath,
@@ -273,8 +301,7 @@ const getModules = () => {
               sourceMap: true
             }
           }
-        ]
-        ,
+        ],
         // 除业务组件、入口脚本、单页视图外，其他目录正常处理
         include: defaults.srcPath,
         exclude: [
