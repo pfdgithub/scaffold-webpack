@@ -107,7 +107,7 @@
     "url-loader": "^1.0.1",
     "web-push": "^3.3.1",
     "webpack": "^4.10.2",
-    "webpack-cli": "^3.0.1",
+    "webpack-cli": "^3.0.2",
     "webpack-dev-server": "^3.1.4",
     "webpack-pwa-manifest": "^3.6.2",
     "workbox-sw": "^3.2.0",
