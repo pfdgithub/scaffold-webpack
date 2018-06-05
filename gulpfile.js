@@ -4,7 +4,6 @@ let gError = require('plugin-error');
 let gZip = require('gulp-zip');
 let gImagemin = require('gulp-imagemin');
 let del = require('del');
-let open = require('open');
 let path = require('path');
 let shell = require('shelljs');
 let yargs = require('yargs');
