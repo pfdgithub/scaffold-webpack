@@ -14,6 +14,11 @@ module.exports = {
       name: 'home.notFound',
       title: '404',
       template: 'template.html'
+    },
+    {
+      name: 'redux.index',
+      title: 'redux',
+      template: 'template.html'
     }
   ]
 };

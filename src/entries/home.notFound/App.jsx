@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import EntryBase from '../Common/EntryBase';
 import styles from './styles/App.less';
 
-class NotFound extends EntryBase {
+class App extends EntryBase {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,4 +49,4 @@ class NotFound extends EntryBase {
   }
 }
 
-export default NotFound;
+export default App;

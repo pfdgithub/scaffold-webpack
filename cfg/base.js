@@ -434,6 +434,7 @@ module.exports = {
       libraries: defaults.libraryPath,
       pages: defaults.pagePath,
       sources: defaults.sourcePath,
+      states: defaults.statesPath,
       styles: defaults.stylePath,
       views: defaults.viewPath
     }
