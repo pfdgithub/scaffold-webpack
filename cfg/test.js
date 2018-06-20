@@ -31,6 +31,7 @@ const getPlugins = () => {
 
   return [].concat(
     base.plugins,
+    new webpack.NamedChunksPlugin(),
     new webpack.HashedModuleIdsPlugin(),
     new HashAllModulesPlugin(), // 需放置于 HashedModuleIdsPlugin 之后
     new webpack.optimize.AggressiveMergingPlugin(),

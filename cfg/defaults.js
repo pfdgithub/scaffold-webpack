@@ -23,6 +23,7 @@ const imagePath = path.join(srcPath, 'images'); // 公共图片路径
 const libraryPath = path.join(srcPath, 'libraries'); // 第三方库路径
 const pagePath = path.join(srcPath, 'pages'); // 入口页面路径
 const sourcePath = path.join(srcPath, 'sources'); // 数据源路径
+const statesPath = path.join(srcPath, 'states'); // 状态集路径
 const stylePath = path.join(srcPath, 'styles'); // 公共样式路径
 const viewPath = path.join(srcPath, 'views'); // 单页视图路径
 
@@ -101,6 +102,7 @@ module.exports = {
   libraryPath,
   pagePath,
   sourcePath,
+  statesPath,
   stylePath,
   viewPath,
 
