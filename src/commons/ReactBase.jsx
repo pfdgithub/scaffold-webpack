@@ -1,10 +1,5 @@
 import React from 'react';
 
-/**
- * ES6 有一个特别规定，就是通过super调用父类的方法时，super会绑定子类的this。
- * http://es6.ruanyifeng.com/#docs/class#super-关键字
- */
-
 let hidden, visibilityChange;
 if (typeof document.hidden !== "undefined") {
   hidden = "hidden";

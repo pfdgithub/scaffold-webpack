@@ -7,6 +7,7 @@ images/ 公共图片目录。
 libraries/ 第三方库目录。  
 pages/ 入口页面目录。  
 sources/ 数据源目录。  
+states/ Redux 目录。  
 styles/ 公共样式目录。  
 views/ 功能视图目录。  
 

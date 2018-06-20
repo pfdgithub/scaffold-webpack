@@ -1,11 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
 import config from 'commons/config';
+import db from 'sources/db.inner';
 
 import EntryBase from '../Common/EntryBase';
 import styles from './styles/App.less';
 import logo from './images/logo.png';
-import db from 'sources/db.inner';
 
 class App extends EntryBase {
   constructor(props) {

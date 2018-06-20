@@ -3,13 +3,9 @@ import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 
 import { getAsyncCom } from './AsyncCom';
 
-// 同步加载
-// import homeIndex from '../home.index/App';
-// import homeNotFound from '../home.notFound/App';
-
 // 异步加载
-const homeIndex = getAsyncCom(() => import(/* webpackChunkName: "chunk-home.index" */ '../home.index/App'));
-const homeNotFound = getAsyncCom(() => import(/* webpackChunkName: "chunk-home.notFound" */ '../home.notFound/App'));
+const homeIndex = getAsyncCom(() => import(/* webpackChunkName: "chunk-home.index" */ '../home.index/AppHot'));
+const homeNotFound = getAsyncCom(() => import(/* webpackChunkName: "chunk-home.notFound" */ '../home.notFound/AppHot'));
 
 const AppRouter = () => (
   <Router>
