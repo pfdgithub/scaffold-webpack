@@ -5,29 +5,27 @@
 
 // #region console
 
+/* eslint-disable */
+
 // 日志
 const log = (...rest) => {
-  /* eslint-disable */
   // https://github.com/GoogleChrome/workbox/blob/master/packages/workbox-core/models/LogLevels.mjs
   if (workbox.core.logLevel <= 1) {
     console.log('[SW]', ...rest);
   }
-  /* eslint-enable */
 };
 
 // 警告
 const warn = (...rest) => {
-  /* eslint-disable */
   console.warn('[SW]', ...rest);
-  /* eslint-enable */
 };
 
 // 错误
 const error = (...rest) => {
-  /* eslint-disable */
   console.error('[SW]', ...rest);
-  /* eslint-enable */
 };
+
+/* eslint-enable */
 
 // #endregion
 
