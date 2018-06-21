@@ -3,32 +3,29 @@
  */
 
 import config from 'commons/config';
-import db from 'sources/db.inner';
 
 // #region console
 
+/* eslint-disable */
+
 // 日志
 const log = (...rest) => {
-  /* eslint-disable */
   if (config.state.isDebug) {
     console.log('[APP]', ...rest);
   }
-  /* eslint-enable */
 };
 
 // 警告
 const warn = (...rest) => {
-  /* eslint-disable */
   console.warn('[APP]', ...rest);
-  /* eslint-enable */
 };
 
 // 错误
 const error = (...rest) => {
-  /* eslint-disable */
   console.error('[APP]', ...rest);
-  /* eslint-enable */
 };
+
+/* eslint-enable */
 
 // #endregion
 
@@ -336,6 +333,8 @@ const checkPush = () => {
 
 // 订阅 push
 const subscribePush = (key) => {
+  log('ApplicationServerKey:', key);
+
   let options = {
     userVisibleOnly: true,
     applicationServerKey: urlB64ToUint8Array(key)
@@ -390,33 +389,38 @@ const unsubscribePush = () => {
 
 // #region 密钥和端点
 
-// 获取订阅密钥
-const getAppServerKey = (identifier) => {
-  return db.push.getKey({
-    identifier: identifier
-  }).then((content) => {
-    let key = content.data.publicKey;
-    log('Subscription Key:', key);
-
-    return key;
-  });
+// 默认创建公钥
+let publicKeyCreater = () => {
+  // 默认创建失败
+  return Promise.reject();
 };
 
-// 更新服务器订阅
-const updateServerSubscription = (identifier, subscription) => {
-  let json = subscription.toJSON();
-  log('Subscription toJSON:', json);
+// 自定义创建公钥
+const customPublicKeyCreater = (creater) => {
+  if (typeof (creater) === 'function') {
+    log('CustomPublicKeyCreater:', creater);
+    publicKeyCreater = creater;
+  }
+  else {
+    error('CustomPublicKeyCreater:', 'creater must be a function that returns promise');
+  }
+};
 
-  return db.push.subscription({
-    identifier: identifier,
-    subscription: json
-  })
-    .then((content) => {
-      let ret = content.data;
-      log('Subscription updated:', ret);
+// 默认更新订阅
+let updateSubscribeCreater = (/* subscription */) => {
+  // 默认更新失败
+  return Promise.reject();
+};
 
-      return ret;
-    });
+// 自定义更新订阅
+const customUpdateSubscribeCreater = (creater) => {
+  if (typeof (creater) === 'function') {
+    log('CustomUpdateSubscribeCreater:', creater);
+    updateSubscribeCreater = creater;
+  }
+  else {
+    error('CustomUpdateSubscribeCreater:', 'creater must be a function that returns promise');
+  }
 };
 
 // #endregion
@@ -447,15 +451,11 @@ const swDestroy = () => {
 };
 
 // 初始化 push
-const pushInit = (identifier) => {
+const pushInit = () => {
   return checkPush()
-    .then(() => {
-      return getAppServerKey(identifier);
-    })
+    .then(publicKeyCreater)
     .then(subscribePush)
-    .then((subscription) => {
-      return updateServerSubscription(identifier, subscription);
-    });
+    .then(updateSubscribeCreater);
 };
 
 // 销毁 push
@@ -466,61 +466,17 @@ const pushDestroy = () => {
 
 // #endregion
 
-// 简单示例
-const example = () => {
-  // 无效名称认为禁用 PWA
-  if (config.sw.swName) {
-    // 自定义刷新提示
-    customPromptCreater(() => {
-      log('customPromptCreater:', 'new');
-      return new Promise((resolve, reject) => {
-        // 延时处理，避免阻塞主线程
-        setTimeout(() => {
-          if (confirm('应用有更新，是否立即刷新？')) {
-            log('customPromptCreater:', 'resolve');
-            resolve();
-          }
-          else {
-            log('customPromptCreater:', 'reject');
-            reject();
-          }
-        }, 5 * 1000);
-      });
-    });
-
-    // 初始化 SW
-    let p = swInit();
-
-    // 如果启用推送
-    if (config.sw.enablePush) {
-      // 监听推送消息
-      listenServerPush((pushData) => {
-        log('listenServerPush:', pushData);
-      });
-
-      // 初始化 Push
-      p = p.then(() => {
-        return pushInit('default');
-      });
-    }
-
-    // 处理异常
-    p.catch((err) => {
-      err && error(err);
-    });
-  }
-};
-
-export default {
-  updateSW,
+export {
   customPromptCreater,
+  customPublicKeyCreater,
+  customUpdateSubscribeCreater,
+
+  updateSW,
   isAgreeNotice,
   listenServerPush,
 
   swInit,
   swDestroy,
   pushInit,
-  pushDestroy,
-
-  example
+  pushDestroy
 };

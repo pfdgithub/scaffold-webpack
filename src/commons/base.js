@@ -9,6 +9,5 @@ import 'core-js/fn/promise'; // webpack natty-fetch
 // import 'core-js/fn/set'; // react 16
 // import 'raf/polyfill'; // react 16
 
-// 载入 service worker
-import sw from 'sources/sw.boot';
-sw.example();
+// 载入简单 SW 示例
+import 'sources/sw.simple';
