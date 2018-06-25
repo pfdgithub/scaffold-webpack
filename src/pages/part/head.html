@@ -24,9 +24,10 @@
     var deviceRatio = window.devicePixelRatio || 1; // 设备像素比例
     var scale = deviceWidth / designWidth; // 缩放比例
     var densitydpi = 'device-dpi'; // 旧版 Android 兼容
+    var viewprotFit = 'cover'; // iPhoneX 兼容
     var meta = '<meta name="viewport" content="user-scalable=no, width=' + designWidth
       + ', initial-scale=' + scale + ', minimum-scale=' + scale + ', maximum-scale=' + scale
-      + ', target-densitydpi=' + densitydpi + ', viewprot-fit=cover'
+      + ', target-densitydpi=' + densitydpi + ', viewprot-fit=' + viewprotFit
       + '">';
     document.write(meta);
   })();
