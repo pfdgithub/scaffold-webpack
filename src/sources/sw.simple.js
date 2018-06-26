@@ -5,6 +5,7 @@ import {
   customPromptCreater,
   customPublicKeyCreater,
   customUpdateSubscribeCreater,
+  listenSWError,
   listenServerPush,
   swInit,
   pushInit
@@ -17,26 +18,97 @@ import {
 // 日志
 const log = (...rest) => {
   if (config.state.isDebug) {
-    console.log('[APP]', ...rest);
+    console.log('[Simple]', ...rest);
   }
 };
 
 // 警告
 const warn = (...rest) => {
-  console.warn('[APP]', ...rest);
+  console.warn('[Simple]', ...rest);
 };
 
 // 错误
 const error = (...rest) => {
-  console.error('[APP]', ...rest);
+  console.error('[Simple]', ...rest);
 };
 
 /* eslint-enable */
 
 // #endregion
 
-// 无效名称认为禁用 PWA
-if (config.sw.swName) {
+// 自定义应用安装横幅事件
+const customInstallPrompt = () => {
+  // 拦截应用安装横幅事件
+  let installPrompt = (deferredPrompt) => {
+    // 提前询问以避免用户直接拒绝造成永远不再触发
+    if (confirm('是否将应用安装至桌面？')) {
+      log('InstallPrompt:', 'ok');
+
+      // 触发应用安装横幅
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        log('InstallPrompt:', choiceResult.outcome, deferredPrompt.platforms);
+      });
+    }
+    else {
+      log('InstallPrompt:', 'cancel');
+    }
+  };
+
+  // 监听应用安装横幅事件
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    // 延时处理，避免阻塞主线程
+    setTimeout(() => {
+      installPrompt(event);
+    }, 5 * 1000);
+    return false;
+  });
+};
+
+// 监听网络变化
+const networkHandler = () => {
+  // 检测在线/离线状态
+  let onlineHandler = () => {
+    let state = 'unknown';
+    if (typeof (navigator.onLine) !== 'undefined') {
+      state = navigator.onLine ? 'online' : 'offline';
+    }
+    log('NetworkState:', state);
+  };
+  window.addEventListener('online', onlineHandler);
+  window.addEventListener('offline', onlineHandler);
+
+  // 检测网络链接类型
+  let changeHandler = () => {
+    let type = 'unknown';
+    let downlinkMax = 'unknown';
+    let rtt = 'unknown';
+    if (navigator.connection) {
+      type = navigator.connection.type;
+      downlinkMax = navigator.connection.downlinkMax;
+      rtt = navigator.connection.rtt;
+    }
+    log('NetworkInformation:', type, downlinkMax, rtt);
+  };
+  if (navigator.connection) {
+    navigator.connection.addEventListener('change', changeHandler);
+  }
+
+  // 立即检查
+  onlineHandler();
+  changeHandler();
+};
+
+// 监听 SW 错误
+const swErrorHandler = () => {
+  listenSWError((type, event) => {
+    error(type, event);
+  });
+};
+
+// 初始化 SW
+const initSW = () => {
   // 自定义刷新提示
   customPromptCreater(() => {
     log('PromptCreater:', 'new');
@@ -59,64 +131,83 @@ if (config.sw.swName) {
   });
 
   // 初始化 SW
-  let p = swInit();
+  return swInit();
+};
+
+// 初始化 Push
+const initPush = () => {
+  // 用户标识
+  let identifier = 'default';
+
+  // 自定义创建公钥
+  customPublicKeyCreater(() => {
+    log('PublicKeyCreater:', 'new');
+
+    return new Promise((resolve, reject) => {
+      db.push.getKey({
+        identifier: identifier
+      }).then((content) => {
+        log('PublicKeyCreater:', 'resolve');
+
+        let key = content.data.publicKey;
+        resolve(key);
+      }).catch((error) => {
+        log('PublicKeyCreater:', 'reject');
+
+        reject(error);
+      });
+    });
+  });
+
+  // 自定义更新订阅
+  customUpdateSubscribeCreater((subscription) => {
+    log('UpdateSubscribeCreater:', 'new');
+
+    return new Promise((resolve, reject) => {
+      db.push.subscription({
+        identifier: identifier,
+        subscription: subscription.toJSON()
+      }).then((content) => {
+        log('UpdateSubscribeCreater:', 'resolve');
+
+        let ret = content.data;
+        log('Subscription updated:', ret);
+        resolve(ret);
+      }).catch((error) => {
+        log('UpdateSubscribeCreater:', 'reject');
+
+        reject(error);
+      });
+    });
+  });
+
+  // 监听推送消息
+  listenServerPush((pushData) => {
+    log('listenServerPush:', pushData);
+  });
+
+  // 初始化 Push
+  return pushInit();
+};
+
+// 无效名称认为禁用 PWA
+if (config.sw.swName) {
+  // 自定义应用安装横幅事件
+  customInstallPrompt();
+
+  // 监听网络变化
+  networkHandler();
+
+  // 初始化 SW
+  let p = initSW();
+
+  // 监听 SW 错误
+  p = p.then(swErrorHandler);
 
   // 如果启用推送
   if (config.sw.enablePush) {
-    // 用户标识
-    let identifier = 'default';
-
-    // 自定义创建公钥
-    customPublicKeyCreater(() => {
-      log('PublicKeyCreater:', 'new');
-
-      return new Promise((resolve, reject) => {
-        db.push.getKey({
-          identifier: identifier
-        }).then((content) => {
-          log('PublicKeyCreater:', 'resolve');
-
-          let key = content.data.publicKey;
-          resolve(key);
-        }).catch((error) => {
-          log('PublicKeyCreater:', 'reject');
-
-          reject(error);
-        });
-      });
-    });
-
-    // 自定义更新订阅
-    customUpdateSubscribeCreater((subscription) => {
-      log('UpdateSubscribeCreater:', 'new');
-
-      return new Promise((resolve, reject) => {
-        db.push.subscription({
-          identifier: identifier,
-          subscription: subscription.toJSON()
-        }).then((content) => {
-          log('UpdateSubscribeCreater:', 'resolve');
-
-          let ret = content.data;
-          log('Subscription updated:', ret);
-          resolve(ret);
-        }).catch((error) => {
-          log('UpdateSubscribeCreater:', 'reject');
-
-          reject(error);
-        });
-      });
-    });
-
-    // 监听推送消息
-    listenServerPush((pushData) => {
-      log('listenServerPush:', pushData);
-    });
-
     // 初始化 Push
-    p = p.then(() => {
-      return pushInit();
-    });
+    p = p.then(initPush);
   }
 
   // 处理异常

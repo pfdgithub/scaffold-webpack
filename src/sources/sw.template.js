@@ -125,6 +125,10 @@ self.addEventListener('error', (event) => {
   error('Error Event:', event);
 });
 
+self.addEventListener('unhandledrejection', (event) => {
+  error('UnhandledRejection Event:', event);
+});
+
 // #endregion
 
 // #region 缓存策略

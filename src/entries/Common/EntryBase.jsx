@@ -17,12 +17,12 @@ class EntryBase extends ReactBase {
 
   // 兼容单页路由的参数解析
   parseUrlParam = () => {
-    let { history } = this.props;
+    let { location } = this.props;
     let param = {};
 
-    if (history) { // 单页——解析路由
-      param.query = util.parseQueryString(history.location.search);
-      param.hash = util.parseHashString(history.location.hash);
+    if (location) { // 单页——解析路由
+      param.query = util.parseQueryString(location.search);
+      param.hash = util.parseHashString(location.hash);
     }
     else { // 多页——解析页面
       param.query = util.parseQueryString();

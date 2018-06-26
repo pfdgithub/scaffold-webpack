@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// 显示加载中占位符
 class AsyncCom extends React.Component {
   static propTypes = {
     getCom: PropTypes.func.isRequired
@@ -68,7 +69,7 @@ class AsyncCom extends React.Component {
 }
 
 // 传入 import 函数，获取异步组件
-const getAsyncCom = (importFun) => {
+const createAsyncCom = (importFun) => {
   // 包装异步组件（绕过未命名警告）
   let WrappedAsyncCom = (props) => {
     // 组件加载函数
@@ -88,5 +89,5 @@ const getAsyncCom = (importFun) => {
 
 export default AsyncCom;
 export {
-  getAsyncCom
+  createAsyncCom
 };
