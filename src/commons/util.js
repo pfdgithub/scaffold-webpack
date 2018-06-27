@@ -3,18 +3,19 @@ const util = {};
 // 解析URL查询参数
 util.parseQueryString = (search) => {
   let query = {};
-  search = search ? search : window.location.search;
 
-  if (search.indexOf('?') === 0) {
-    let parameters = search.slice(1).split('&');
-    for (let i = 0; i < parameters.length; i++) {
-      let p = parameters[i];
-      let kv = p.split('=');
-      if (kv.length === 2) {
-        let k = kv[0];
-        let v = kv[1];
-        if (k) {
-          query[decodeURIComponent(k)] = decodeURIComponent(v);
+  if (search) {
+    if (search.indexOf('?') === 0) {
+      let parameters = search.slice(1).split('&');
+      for (let i = 0; i < parameters.length; i++) {
+        let p = parameters[i];
+        let kv = p.split('=');
+        if (kv.length === 2) {
+          let k = kv[0];
+          let v = kv[1];
+          if (k) {
+            query[decodeURIComponent(k)] = decodeURIComponent(v);
+          }
         }
       }
     }
@@ -51,18 +52,19 @@ util.joinQueryString = (query, noEncode) => {
 // 解析hash查询参数
 util.parseHashString = (hash) => {
   let query = {};
-  hash = hash ? hash : window.location.hash;
 
-  if (hash.indexOf('#') === 0) {
-    let parameters = hash.slice(1).split('&');
-    for (let i = 0; i < parameters.length; i++) {
-      let p = parameters[i];
-      let kv = p.split('=');
-      if (kv.length === 2) {
-        let k = kv[0];
-        let v = kv[1];
-        if (k) {
-          query[k] = decodeURIComponent(v);
+  if (hash) {
+    if (hash.indexOf('#') === 0) {
+      let parameters = hash.slice(1).split('&');
+      for (let i = 0; i < parameters.length; i++) {
+        let p = parameters[i];
+        let kv = p.split('=');
+        if (kv.length === 2) {
+          let k = kv[0];
+          let v = kv[1];
+          if (k) {
+            query[k] = decodeURIComponent(v);
+          }
         }
       }
     }
