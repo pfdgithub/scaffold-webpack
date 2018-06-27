@@ -63,7 +63,7 @@
   },
   "homepage": "https://github.com/pfdgithub/scaffold-webpack",
   "devDependencies": {
-    "autoprefixer": "^8.6.3",
+    "autoprefixer": "^8.6.4",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.5",
     "babel-loader": "^7.1.4",

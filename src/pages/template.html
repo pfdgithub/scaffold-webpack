@@ -4,7 +4,7 @@
 <head>
   ${require('./part/head.html')}
 
-  <title>${__resourceQuery.substring(1)}</title>
+  <title>${decodeURIComponent(__resourceQuery.substring(1))}</title>
 </head>
 
 <body>

@@ -291,7 +291,7 @@ const getPlugins = () => {
   let htmlPlugins = [];
   defaults.entryPages.forEach((entryPage) => {
     htmlPlugins.push(new HtmlWebpackPlugin({
-      template: path.join(defaults.pagePath, entryPage.template) + `?${entryPage.title}`, // 指定 html 模版路径
+      template: path.join(defaults.pagePath, entryPage.template) + `?${encodeURIComponent(entryPage.title)}`, // 指定 html 模版路径
       filename: path.join(defaults.portalPath, entryPage.name + defaults.pageSuffix), // 指定 html 输出路径
       chunks: [].concat(Object.keys(extractBundle), entryPage.name), // 指定 html 中注入的资源
       hash: !!deployCfg.portalChunkHash, // 在资源文件后追加 webpack 编译哈希
