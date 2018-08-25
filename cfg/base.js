@@ -223,6 +223,36 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
               loader: 'css-loader',
               options: {
                 importLoaders: 2,
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'less-loader',
+              options: {
+                sourceMap: true,
+                javascriptEnabled: true, // node_modules/antd/es/style/color/ 目录下的 less 文件中存在内联 js 代码
+                modifyVars: pathsCfg.antdModify.lessVars
+              }
+            }
+          ],
+          // 覆盖 antd 目录的 less 变量
+          include: pathsCfg.antdModify.antdPath
+        },
+        {
+          test: /\.less$/,
+          use: [
+            cacheLoader,
+            cssExtractLoader,
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2,
                 sourceMap: true,
                 modules: true,
                 localIdentName: '[name]-[local]-[hash:base64:5]'

@@ -19,6 +19,23 @@ let camel2Underline = (name) => {
 };
 
 let rules = {
+  'antd': {
+    importSpecifier: (importType, moduleName, importedName, localName) => {
+      let dashName = camel2Dash(importedName);
+      return [
+        {
+          newImportType: 'ImportDefaultSpecifier',
+          newModuleName: `${moduleName}/es/${dashName}/style`,
+          newImportedName: `${importedName}Style`,
+          newLocalName: `${localName}Style`
+        },
+        {
+          newImportType: 'ImportDefaultSpecifier',
+          newModuleName: `${moduleName}/es/${dashName}`
+        }
+      ];
+    }
+  }
 };
 
 let ruleExtend = {
