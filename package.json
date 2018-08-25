@@ -126,7 +126,7 @@
     "gulp-imagemin": "^4.1.0"
   },
   "dependencies": {
-    "antd-mobile": "^2.2.0",
+    "antd-mobile": "^2.2.3",
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.6",

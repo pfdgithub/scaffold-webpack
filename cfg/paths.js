@@ -33,6 +33,8 @@ module.exports = (pkg, deployCfg) => {
   const assetUrlPart = deployCfg.assetMultiVersion ?
     `${version}/${assetDirName}` : `${assetDirName}`; // 项目资源 URL 片段
 
+  const antdModify = require(path.join(srcPath, 'styles', 'antdModify')); // 覆盖 antd-mobile 的变量
+
   // 入口页面列表
   const entryPages = (() => {
     let pages = require(path.join(pagePath, 'pages.js'));
@@ -68,6 +70,7 @@ module.exports = (pkg, deployCfg) => {
     assetPath,
     assetUrlPart,
 
+    antdModify,
     entryPages
   };
 };

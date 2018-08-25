@@ -1,0 +1,201 @@
+@import "~styles/util.less";
+@triangleWidth: 15px;
+@triangleBevel: @triangleWidth solid transparent;
+@triangleBase: @triangleWidth solid @bgColorDialog;
+@triangleBevelOffset: 10px;
+@triangleBaseHack: 1px;
+.triangleBorder(@arrow) when (@arrow=top) {
+  border-top: none;
+  border-bottom: @triangleBase;
+  border-left: @triangleBevel;
+  border-right: @triangleBevel;
+}
+
+.triangleBorder(@arrow) when (@arrow=bottom) {
+  border-top: @triangleBase;
+  border-bottom: none;
+  border-left: @triangleBevel;
+  border-right: @triangleBevel;
+}
+
+.triangleBorder(@arrow) when (@arrow=left) {
+  border-top: @triangleBevel;
+  border-bottom: @triangleBevel;
+  border-left: none;
+  border-right: @triangleBase;
+}
+
+.triangleBorder(@arrow) when (@arrow=right) {
+  border-top: @triangleBevel;
+  border-bottom: @triangleBevel;
+  border-left: @triangleBase;
+  border-right: none;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  .mask {
+    .fixedMask();
+    background-color: @bgColorMask;
+  }
+  .popup {
+    z-index: @zIndexBase + 1;
+    position: absolute;
+    display: inline-block;
+    .triangle {
+      position: absolute;
+      display: inline-block;
+      width: 0;
+      height: 0;
+    }
+    .content {
+      border-radius: @triangleBevelOffset;
+      background: @bgColorDialog;
+    }
+    &.top {
+      bottom: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      padding-bottom: @triangleWidth;
+      .triangle {
+        bottom: @triangleBaseHack;
+        left: 50%;
+        transform: translate(-50%, 0);
+        .triangleBorder(bottom);
+      }
+    }
+    &.bottom {
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      padding-top: @triangleWidth;
+      .triangle {
+        top: @triangleBaseHack;
+        left: 50%;
+        transform: translate(-50%, 0);
+        .triangleBorder(top);
+      }
+    }
+    &.left {
+      top: 50%;
+      right: 100%;
+      transform: translate(0, -50%);
+      padding-right: @triangleWidth;
+      .triangle {
+        top: 50%;
+        right: @triangleBaseHack;
+        transform: translate(0, -50%);
+        .triangleBorder(right);
+      }
+    }
+    &.right {
+      top: 50%;
+      left: 100%;
+      transform: translate(0, -50%);
+      padding-left: @triangleWidth;
+      .triangle {
+        top: 50%;
+        left: @triangleBaseHack;
+        transform: translate(0, -50%);
+        .triangleBorder(left);
+      }
+    }
+    &.topLeft {
+      bottom: 100%;
+      left: 0;
+      transform: translate(0, 0);
+      padding-bottom: @triangleWidth;
+      .triangle {
+        bottom: @triangleBaseHack;
+        left: @triangleBevelOffset;
+        transform: translate(0, 0);
+        .triangleBorder(bottom);
+      }
+    }
+    &.topRight {
+      bottom: 100%;
+      right: 0;
+      transform: translate(0, 0);
+      padding-bottom: @triangleWidth;
+      .triangle {
+        bottom: @triangleBaseHack;
+        right: @triangleBevelOffset;
+        transform: translate(0, 0);
+        .triangleBorder(bottom);
+      }
+    }
+    &.bottomLeft {
+      top: 100%;
+      left: 0;
+      transform: translate(0, 0);
+      padding-top: @triangleWidth;
+      .triangle {
+        top: @triangleBaseHack;
+        left: @triangleBevelOffset;
+        transform: translate(0, 0);
+        .triangleBorder(top);
+      }
+    }
+    &.bottomRight {
+      top: 100%;
+      right: 0;
+      transform: translate(0, 0);
+      padding-top: @triangleWidth;
+      .triangle {
+        top: @triangleBaseHack;
+        right: @triangleBevelOffset;
+        transform: translate(0, 0);
+        .triangleBorder(top);
+      }
+    }
+    &.leftTop {
+      top: 0;
+      right: 100%;
+      transform: translate(0, 0);
+      padding-right: @triangleWidth;
+      .triangle {
+        top: @triangleBevelOffset;
+        right: @triangleBaseHack;
+        transform: translate(0, 0);
+        .triangleBorder(right);
+      }
+    }
+    &.leftBottom {
+      bottom: 0;
+      right: 100%;
+      transform: translate(0, 0);
+      padding-right: @triangleWidth;
+      .triangle {
+        bottom: @triangleBevelOffset;
+        right: @triangleBaseHack;
+        transform: translate(0, 0);
+        .triangleBorder(right);
+      }
+    }
+    &.rightTop {
+      top: 0;
+      left: 100%;
+      transform: translate(0, 0);
+      padding-left: @triangleWidth;
+      .triangle {
+        top: @triangleBevelOffset;
+        left: @triangleBaseHack;
+        transform: translate(0, 0);
+        .triangleBorder(left);
+      }
+    }
+    &.rightBottom {
+      bottom: 0;
+      left: 100%;
+      transform: translate(0, 0);
+      padding-left: @triangleWidth;
+      .triangle {
+        bottom: @triangleBevelOffset;
+        left: @triangleBaseHack;
+        transform: translate(0, 0);
+        .triangleBorder(left);
+      }
+    }
+  }
+}

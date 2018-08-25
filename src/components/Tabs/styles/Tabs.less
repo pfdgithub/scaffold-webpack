@@ -1,0 +1,14 @@
+@import "~styles/util.less";
+.tabs {
+  .tabBar {
+    overflow: auto;
+    white-space: nowrap;
+    border-bottom: 1px solid @borderColorNormal;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .tabPanel {
+    display: block;
+  }
+}
