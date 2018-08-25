@@ -10,3 +10,6 @@ import 'core-js/fn/promise'; // webpack natty-fetch
 
 // 载入简单 SW 示例
 import 'sources/sw.simple';
+
+// 载入日志上报
+import './report';

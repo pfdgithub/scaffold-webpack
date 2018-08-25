@@ -7,7 +7,7 @@ import rootReducer from './reducers';
 
 // 创建唯一 Store
 const configureStore = (preloadedState) => {
-  let enhancer = applyMiddleware(thunk);
+  let enhancer;
   if (config.state.isDebug) {
     // 输出日志
     enhancer = applyMiddleware(thunk, logger);
@@ -15,6 +15,9 @@ const configureStore = (preloadedState) => {
     if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
       enhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(enhancer);
     }
+  }
+  else {
+    enhancer = applyMiddleware(thunk);
   }
 
   let store = createStore(rootReducer, preloadedState, enhancer);

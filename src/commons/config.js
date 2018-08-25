@@ -20,7 +20,7 @@ const enableWebPush = __wd_enable_web_push__;
 /* eslint-enable */
 
 // 环境枚举
-let envEnum = {
+const envEnum = {
   dev: 'dev',
   test: 'test',
   prod: 'prod'
@@ -30,6 +30,10 @@ let envEnum = {
 const isDebug = defineEnv === envEnum.dev || defineEnv === envEnum.test;
 // 模拟数据
 const isMock = defineEnv === envEnum.dev;
+// 启用日志上报
+const enabledRaven = defineEnv === envEnum.test || defineEnv === envEnum.prod;
+// 禁用信息级别日志
+const disableInfo = defineEnv === envEnum.prod;
 
 // 默认配置
 export default {
@@ -50,5 +54,10 @@ export default {
     swName: serviceWorkerName,
     enablePush: enableWebPush,
     noticeIcon: logo
+  },
+  raven: { // Raven 日志上报配置
+    enabledRaven: enabledRaven,
+    disableInfo: disableInfo,
+    dsn: ''
   }
 };

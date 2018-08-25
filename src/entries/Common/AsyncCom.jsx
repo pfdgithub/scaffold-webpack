@@ -21,14 +21,14 @@ class AsyncCom extends React.Component {
 
   render() {
     /* eslint-disable */
-    let { getCom, ...passProps } = this.props;
+    let { getCom, ...restProps } = this.props;
     /* eslint-enable */
 
     let Com = this.state.component;
     let placeholder = this.getPlaceholder();
 
     return (
-      Com ? <Com {...passProps} /> : placeholder
+      Com ? <Com {...restProps} /> : placeholder
     );
   }
 
@@ -45,9 +45,7 @@ class AsyncCom extends React.Component {
     else {
       // 加载中
       return (
-        <span>
-          loading...
-        </span>
+        <span></span>
       );
     }
   }
@@ -68,9 +66,11 @@ class AsyncCom extends React.Component {
   }
 }
 
+export default AsyncCom;
+
 // 传入 import 函数，获取异步组件
-const createAsyncCom = (importFun) => {
-  // 包装异步组件（绕过未命名警告）
+export const createAsyncCom = (importFun) => {
+  // 包装异步组件
   let WrappedAsyncCom = (props) => {
     // 组件加载函数
     let getComFun = (componentCb, errorCb) => {
@@ -85,9 +85,4 @@ const createAsyncCom = (importFun) => {
   };
 
   return WrappedAsyncCom;
-};
-
-export default AsyncCom;
-export {
-  createAsyncCom
 };

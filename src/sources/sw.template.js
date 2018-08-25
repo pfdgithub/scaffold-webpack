@@ -134,28 +134,30 @@ self.addEventListener('unhandledrejection', (event) => {
 // #region 缓存策略
 
 /**
+ * 检测请求参数中是否存在指定策略名
+ */
+let routeMatchHandler = (strategy) => {
+  let key = '_swStrategy';
+  return ({ url }) => {
+    let val = url.searchParams.get(key);
+    return val === strategy;
+  };
+};
+
+/**
  * 预缓存
  */
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {
-  ignoreUrlParametersMatching: [/^_/] // 忽略以 _ 开头的请求参数
+  ignoreUrlParametersMatching: [/.*/] // 忽略全部请求参数
 });
 
 /**
- * CacheFirst
- * 若有缓存则直接返回。若无缓存则发起请求，返回请求结果，并将结果写入缓存。
+ * StaleWhileRevalidate
+ * 若有缓存则直接返回，并在后台发起请求，将结果写入缓存。若无缓存则发起请求，返回请求结果，并将结果写入缓存。
  */
 workbox.routing.registerRoute(
-  /_strategies=cacheFirst/,
-  workbox.strategies.cacheFirst()
-);
-
-/**
- * CacheOnly
- * 只使用缓存
- */
-workbox.routing.registerRoute(
-  /_strategies=cacheOnly/,
-  workbox.strategies.cacheOnly()
+  routeMatchHandler('staleWhileRevalidate'),
+  workbox.strategies.staleWhileRevalidate()
 );
 
 /**
@@ -163,8 +165,19 @@ workbox.routing.registerRoute(
  * 直接发起请求。若请求成功则返回结果，并将结果写入缓存。若请求失败则返回缓存。
  */
 workbox.routing.registerRoute(
-  /_strategies=networkFirst/,
-  workbox.strategies.networkFirst()
+  routeMatchHandler('networkFirst'),
+  workbox.strategies.networkFirst({
+    networkTimeoutSeconds: 30
+  })
+);
+
+/**
+ * CacheFirst
+ * 若有缓存则直接返回。若无缓存则发起请求，返回请求结果，并将结果写入缓存。
+ */
+workbox.routing.registerRoute(
+  routeMatchHandler('cacheFirst'),
+  workbox.strategies.cacheFirst()
 );
 
 /**
@@ -172,17 +185,17 @@ workbox.routing.registerRoute(
  * 只使用网络
  */
 workbox.routing.registerRoute(
-  /_strategies=networkOnly/,
+  routeMatchHandler('networkOnly'),
   workbox.strategies.networkOnly()
 );
 
 /**
- * StaleWhileRevalidate
- * 若有缓存则直接返回，并在后台发起请求，将结果写入缓存。若无缓存则发起请求，返回请求结果，并将结果写入缓存。
+ * CacheOnly
+ * 只使用缓存
  */
 workbox.routing.registerRoute(
-  /_strategies=staleWhileRevalidate/,
-  workbox.strategies.staleWhileRevalidate()
+  routeMatchHandler('cacheOnly'),
+  workbox.strategies.cacheOnly()
 );
 
 // #endregion

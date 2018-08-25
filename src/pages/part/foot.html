@@ -1,17 +1,3 @@
 <!-- foot start -->
-${(__wd_define_env__ === 'dev' || __wd_define_env__ === 'test') ? `
-<script type="text/javascript">
-  // 加载 vConsole
-  (function () {
-    var keyword = 'vConsole';
-    var search = window.location.search;
-    if (search.indexOf(keyword) != -1) {
-      document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!libraries/vConsole/vconsole.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
-    }
-  })();
-</script>
-<script type="text/javascript">
-  // 实例化 vConsole
-  window.VConsole && new window.VConsole();
-</script> ` : ''}
+<!-- <script src="${require('!!file-loader?name=lib/[name].[ext]!libraries/raven/raven.min.js')}" crossorigin="anonymous"></script> -->
 <!-- foot end -->

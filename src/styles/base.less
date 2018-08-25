@@ -1,8 +1,32 @@
 @import "./util.less";
 html, body {
-  -webkit-overflow-scrolling: touch;
+  -webkit-touch-callout: none;
   -webkit-font-smoothing: antialiased;
+  // -webkit-overflow-scrolling: touch;
+  // -webkit-text-size-adjust: none;
+  margin: 0px;
+  padding: 0px;
+  user-select: none;
+  touch-action: manipulation;
   font-family: "Helvetica Neue", Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  color: @fontColorNormal;
+  line-height: @lineHeightReset;
+  background-color: @bgColorView;
+}
+
+*, *:focus, *:before, *:after {
+  outline: none;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+a {
+  text-decoration: none;
+  color: @fontColorLink;
+}
+
+input {
+  border: none;
 }
 
 

@@ -2,22 +2,12 @@ module.exports = {
   entries: [
     {
       name: 'index',
-      title: '首页',
+      title: '单页应用',
       template: 'template.html'
     },
     {
       name: 'home.index',
-      title: '首页',
-      template: 'template.html'
-    },
-    {
-      name: 'home.notFound',
-      title: '404',
-      template: 'template.html'
-    },
-    {
-      name: 'redux.index',
-      title: 'redux',
+      title: '多页应用',
       template: 'template.html'
     }
   ]

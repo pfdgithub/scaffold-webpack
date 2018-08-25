@@ -23,6 +23,11 @@
     "eslint:recommended",
     "plugin:react/recommended"
   ],
+  "settings": {
+    "react": {
+      "version": "999.999.999"
+    }
+  },
   "rules": {
     "block-scoped-var": 1,
     "comma-dangle": 1,

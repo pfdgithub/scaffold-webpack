@@ -1,8 +1,9 @@
 # webpack 配置文件目录
 
 cert/ https 自签名证书。  
+util.js 辅助函数。  
+paths.js 本地路径配置。  
 devServer.js 开发服务器配置。  
-defaults.js 与环境无关的配置。  
 base.js 基础环境配置。  
 dev.js 开发环境配置。  
 test.js 测试环境配置。  

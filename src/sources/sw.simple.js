@@ -61,7 +61,7 @@ const customInstallPrompt = () => {
     // 延时处理，避免阻塞主线程
     setTimeout(() => {
       installPrompt(event);
-    }, 5 * 1000);
+    }, 1 * 1000);
     return false;
   });
 };
@@ -126,7 +126,7 @@ const initSW = () => {
 
           reject();
         }
-      }, 5 * 1000);
+      }, 1 * 1000);
     });
   });
 

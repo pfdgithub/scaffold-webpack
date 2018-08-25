@@ -1,41 +1,56 @@
 const webpack = require('webpack');
 const HashAllModulesPlugin = require('hash-all-modules-plugin');
 
-const devServer = require('./devServer');
-const defaults = require('./defaults');
+const util = require('./util');
+const paths = require('./paths');
 const base = require('./base');
-const deployCfg = defaults.deployCfg || {};
-const testCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.test) || {};
+const devServer = require('./devServer');
+const pkg = require('../package.json');
 
-// 项目页面路径
-const publicPagePath = testCfg.pagePrefix || '/';
-// 项目资源路径
-const publicAssetPath = `${testCfg.assetPrefix || '/'}${defaults.assetUrl}/`;
-// 后端接口路径
-const publicRpcPath = {
-  inner: (testCfg.rpcPrefix && testCfg.rpcPrefix.inner) || '/'
+const defineEnv = util.envEnum.test; // 环境类型
+const pkgCfg = util.getPkgCfg(pkg, defineEnv); // 项目配置
+const envCfg = pkgCfg.envCfg; // 环境配置
+const deployCfg = pkgCfg.deployCfg; // 部署配置
+
+// 本地路径配置
+const pathsCfg = paths(pkg, deployCfg);
+
+// 远程 url 配置
+const publishCfg = {
+  // 项目页面路径
+  publicPagePath: envCfg.pagePrefix || '/',
+  // 项目资源路径
+  publicAssetPath: `${envCfg.assetPrefix || '/'}${pathsCfg.assetUrlPart}/`,
+  // 后端接口路径
+  publicRpcPath: Object.assign({
+    inner: '/' // 配置一个默认项
+  }, envCfg.rpcPrefix)
 };
-// 入口页面名称对象
-const publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
 
-// 获取插件
-const getPlugins = () => {
-  let param = defaults.getDefinePluginParam({
-    defineEnv: 'test',
-    publicPagePath,
-    publicAssetPath,
-    publicRpcPath,
-    publicPageFullname
-  });
-  param['process.env.NODE_ENV'] = JSON.stringify('production');
+// 开发服务器配置
+const devServerCfg = devServer(envCfg, pathsCfg, publishCfg);
 
-  return [].concat(
-    base.plugins,
+// 基础配置
+const baseCfg = base(deployCfg, pathsCfg, publishCfg);
+
+// 扩展配置
+const extendCfg = {
+  mode: 'production',
+  devtool: 'source-map',
+  devServer: devServerCfg,
+  optimization: {
+    minimize: false
+  },
+  output: {
+    pathinfo: true,
+    filename: deployCfg.assetNameHash ? 'js/[name].[chunkhash].js' : 'js/[name].js',
+    chunkFilename: deployCfg.assetNameHash ? 'js/[name].[chunkhash].js' : 'js/[name].js'
+  },
+  plugins: [
     new webpack.NamedChunksPlugin(),
     new webpack.HashedModuleIdsPlugin(),
     new HashAllModulesPlugin(), // 需放置于 HashedModuleIdsPlugin 之后
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.DefinePlugin(param),
     new webpack.LoaderOptionsPlugin({
       debug: true,
       minimize: false,
@@ -43,20 +58,9 @@ const getPlugins = () => {
         context: __dirname
       }
     })
-  );
+  ]
 };
 
-// 修改基础配置
-const config = base;
-
-config.mode = 'production';
-config.devtool = 'source-map';
-config.output.filename = deployCfg.assetNameHash ? 'js/[name].[chunkhash].js' : 'js/[name].js';
-config.output.chunkFilename = deployCfg.assetNameHash ? 'js/[name].[chunkhash].js' : 'js/[name].js';
-config.output.pathinfo = true;
-config.output.publicPath = publicAssetPath;
-config.optimization.minimize = false;
-config.plugins = getPlugins();
-config.devServer = devServer();
-
-module.exports = config;
+module.exports = util.deepAssign({}, baseCfg, extendCfg, {
+  plugins: [].concat(baseCfg.plugins, extendCfg.plugins)
+});
