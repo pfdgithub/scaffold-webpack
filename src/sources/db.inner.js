@@ -15,32 +15,18 @@ const context = nattyFetch.context({
       },
       content: {
         raw: response,
-        data: obj.data ? obj.data : {}
+        data: obj.data
       }
     };
   }
 });
 
 // 上下文事件
-context.on('resolve', (/*err, cfg*/) => {
+context.on('resolve', (/* err, cfg */) => {
 });
-context.on('reject', (err/*, cfg, vars*/) => {
-  // 处理网络层错误
-  let status = err.status;
-  let message = err.message;
-
-  if (typeof (status) !== 'undefined') {
-    if (status === 0) {
-      message = `当前网络不可用`;
-    }
-    else {
-      message = `操作失败，状态码 ${status}`;
-    }
-  }
-
-  err.message = message;
+context.on('reject', (/* err, cfg, vars */) => {
 });
-context.on('error', (/*err, cfg*/) => {
+context.on('error', (/* err, cfg */) => {
 });
 
 // 传统风格接口

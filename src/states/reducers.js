@@ -1,11 +1,9 @@
 import { combineReducers } from 'redux';
 
-import global from './global/reducers';
-import mock from './mock/reducers';
+import user from './user/reducers';
 
 const rootReducer = combineReducers({
-  global,
-  mock
+  user
 });
 
 export default rootReducer;

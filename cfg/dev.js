@@ -1,90 +1,120 @@
 const webpack = require('webpack');
 
-const devServer = require('./devServer');
-const defaults = require('./defaults');
+const util = require('./util');
+const paths = require('./paths');
 const base = require('./base');
-const deployCfg = defaults.deployCfg || {};
-const devCfg = (defaults.scaffoldCfg && defaults.scaffoldCfg.dev) || {};
+const devServer = require('./devServer');
+const pkg = require('../package.json');
 
-// 模拟数据路径前缀
-const mockPathPrefix = '/mock/';
-// 本地代理路径前缀
-const proxyPathPrefix = '/proxy/';
-// 代理目标域名（如 [protocol]//[host]/ 等）
-let proxyTargetDomain = '';
-// inner 接口路径
-let innerRpcPath = '';
+const defineEnv = util.envEnum.dev; // 环境类型
+const pkgCfg = util.getPkgCfg(pkg, defineEnv); // 项目配置
+const envCfg = pkgCfg.envCfg; // 环境配置
+const deployCfg = pkgCfg.deployCfg; // 部署配置
 
-(() => {
-  let innerMode = devCfg.rpc && devCfg.rpc.innerMode;
-  let innerPrefix = devCfg.rpc && devCfg.rpc.innerPrefix;
+// 本地路径配置
+const pathsCfg = paths(pkg, deployCfg);
 
-  switch (innerMode) {
-    /**
-     * 访问 mock 目录下的模拟接口（如 /mock/[path]/ 等）
-     * 使用 js/json 实现 动态/静态 数据模拟
-     */
-    default:
-    case 'mock': {
-      innerRpcPath = `${mockPathPrefix}inner/`;
-    } break;
-    /**
-     * 代理访问远程服务器的接口（如 /proxy/[path]/ 等）
-     * 此时 proxyTargetDomain 必须含有协议头（如 http:// 等）
-     */
-    case 'proxy': {
-      // 如 https://example.org/path/
-      let regExp = /^(((http|https):)?(\/\/([^/]+)\/))(.*)$/;
-      let matchArr = innerPrefix && innerPrefix.match(regExp);
+// 远程 url 配置
+const publishCfg = {
+  // 项目页面路径
+  publicPagePath: '/',
+  // 项目资源路径
+  publicAssetPath: `/${pathsCfg.assetUrlPart}/`,
+  // 后端接口路径
+  publicRpcPath: Object.assign({
+    inner: '/' // 配置一个默认项
+  }, envCfg.rpcPrefix)
+};
 
-      // 如 ['https://example.org/path/', 'https://example.org/', 'https:', 'https', '//example.org/', 'example.org', 'path/']
-      if (matchArr) {
-        let protocol = matchArr[2] || (devCfg.https ? 'https:' : 'http:');
-        let host = matchArr[5];
-        let path = matchArr[6];
+// 代理服务器配置
+const proxyCfg = (() => {
+  // 模拟数据路径前缀
+  const mockPathPrefix = '/mock/';
+  // 本地代理路径前缀
+  const proxyPathPrefix = '/proxy/';
+  // 本地代理路径前缀数组
+  const proxyPathPrefixs = [];
+  // 代理目标域名数组（如 [protocol]//[host]/ 等）
+  const proxyTargetDomains = [];
+  // 多后端接口支持
+  for (let key in publishCfg.publicRpcPath) {
+    let prefix = publishCfg.publicRpcPath[key];
+    let rpcPage = '';
 
-        proxyTargetDomain = `${protocol}//${host}/`;
-        innerRpcPath = `${proxyPathPrefix}${path}`;
-      }
-      else {
-        innerRpcPath = '/';
-      }
-    } break;
-    /**
-     * 直接访问远程服务器的接口（如 //[host]/[path]/ 等）
-     * 根据实际情况，远程服务器可能需要支持跨域请求
-     */
-    case 'remote': {
-      innerRpcPath = innerPrefix || '/';
-    } break;
+    switch (envCfg.rpcMode) {
+      /**
+       * 访问 mock 目录下的模拟接口（如 /mock/inner/[path]/ 等）
+       * 使用 js/json 实现 动态/静态 数据模拟
+       */
+      default:
+      case 'mock': {
+        rpcPage = `${mockPathPrefix}${key}/`;
+      } break;
+      /**
+       * 代理访问远程服务器的接口（如 /proxy/inner/[path]/ 等）
+       * 此时 proxyTargetDomain 必须含有协议头（如 http:// 等）
+       */
+      case 'proxy': {
+        // 如 https://example.org/path/
+        let regExp = /^(((http|https):)?(\/\/([^/]+)\/))(.*)$/;
+        let matchArr = prefix && prefix.match(regExp);
+
+        // 如 ['https://example.org/path/', 'https://example.org/', 'https:', 'https', '//example.org/', 'example.org', 'path/']
+        if (matchArr) {
+          let protocol = matchArr[2] || (envCfg.https ? 'https:' : 'http:');
+          let host = matchArr[5];
+          let path = matchArr[6];
+
+          rpcPage = `${proxyPathPrefix}${key}/${path}`;
+
+          proxyPathPrefixs.push(`${proxyPathPrefix}${key}/`);
+          proxyTargetDomains.push(`${protocol}//${host}/`);
+        }
+        else {
+          rpcPage = '/';
+        }
+      } break;
+      /**
+       * 直接访问远程服务器的接口（如 //[host]/[path]/ 等）
+       * 根据实际情况，远程服务器可能需要支持跨域请求
+       */
+      case 'remote': {
+        rpcPage = prefix || '/';
+      } break;
+    }
+
+    publishCfg.publicRpcPath[key] = rpcPage;
   }
+
+  return {
+    mockPathPrefix,
+    proxyPathPrefix,
+    proxyPathPrefixs,
+    proxyTargetDomains
+  };
 })();
 
-// 项目页面路径
-const publicPagePath = '/';
-// 项目资源路径
-const publicAssetPath = `/${defaults.assetUrl}/`;
-// 后端接口路径
-const publicRpcPath = {
-  inner: innerRpcPath
-};
-// 入口页面对象
-const publicPageFullname = defaults.getPublicPageFullname(publicPagePath);
+// 开发服务器配置
+const devServerCfg = devServer(envCfg, pathsCfg, publishCfg, proxyCfg);
 
-// 获取插件
-const getPlugins = () => {
-  let param = defaults.getDefinePluginParam({
-    defineEnv: 'dev',
-    publicPagePath,
-    publicAssetPath,
-    publicRpcPath,
-    publicPageFullname
-  });
+// 基础配置
+const baseCfg = base(deployCfg, pathsCfg, publishCfg);
 
-  return [].concat(
-    base.plugins,
+// 扩展配置
+const extendCfg = {
+  mode: 'development',
+  devtool: envCfg.devtool || 'eval',
+  devServer: devServerCfg,
+  optimization: {
+    minimize: false
+  },
+  output: {
+    pathinfo: true,
+    filename: deployCfg.assetNameHash ? 'js/[name].[hash].js' : 'js/[name].js', // webpack-dev-server 不能使用 [chunkhash]
+    chunkFilename: deployCfg.assetNameHash ? 'js/[name].[hash].js' : 'js/[name].js' // webpack-dev-server 不能使用 [chunkhash]
+  },
+  plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin(param),
     new webpack.LoaderOptionsPlugin({
       debug: true,
       minimize: false,
@@ -92,27 +122,9 @@ const getPlugins = () => {
         context: __dirname
       }
     })
-  );
+  ]
 };
 
-// 修改基础配置
-const config = base;
-
-config.mode = 'development';
-config.devtool = devCfg.devtool || 'eval';
-config.output.filename = deployCfg.assetNameHash ? 'js/[name].[hash].js' : 'js/[name].js'; // webpack-dev-server 不能使用 [chunkhash]
-config.output.chunkFilename = deployCfg.assetNameHash ? 'js/[name].[hash].js' : 'js/[name].js'; // webpack-dev-server 不能使用 [chunkhash]
-config.output.pathinfo = true;
-config.output.publicPath = publicAssetPath;
-config.optimization.minimize = false;
-config.plugins = getPlugins();
-config.devServer = devServer({
-  port: devCfg.port,
-  https: devCfg.https,
-  publicPath: publicAssetPath,
-  mockPrefix: mockPathPrefix,
-  proxyPrefix: proxyPathPrefix,
-  proxyTarget: proxyTargetDomain
+module.exports = util.deepAssign({}, baseCfg, extendCfg, {
+  plugins: [].concat(baseCfg.plugins, extendCfg.plugins)
 });
-
-module.exports = config;

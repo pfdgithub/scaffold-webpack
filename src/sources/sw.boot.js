@@ -66,6 +66,22 @@ const postSWMsg = (sw, message, transfer) => {
 
 // #region 注册 service worker
 
+// 监听 service worker 错误
+const listenSWError = (cb) => {
+  // 监听错误事件
+  navigator.serviceWorker.addEventListener('error', (event) => {
+    error('Error Event:', event);
+
+    cb && cb('error', event);
+  });
+  // 监听未处理的 Promise 错误事件
+  navigator.serviceWorker.addEventListener('unhandledrejection', (event) => {
+    error('UnhandledRejection Event:', event);
+
+    cb && cb('unhandledrejection', event);
+  });
+};
+
 // 保留 load 事件
 const loadPromise = new Promise((resolve) => {
   window.addEventListener('load', () => {
@@ -435,13 +451,7 @@ const swInit = () => {
     .then(() => {
       return registerSW(swPath);
     })
-    .then(handleSWChange)
-    .then(() => {
-      // 监听错误事件
-      navigator.serviceWorker.addEventListener('error', (event) => {
-        error('Error Event:', event);
-      });
-    });
+    .then(handleSWChange);
 };
 
 // 销毁 service worker
@@ -473,6 +483,7 @@ export {
 
   updateSW,
   isAgreeNotice,
+  listenSWError,
   listenServerPush,
 
   swInit,

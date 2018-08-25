@@ -1,0 +1,15 @@
+@import "~styles/util.less";
+.icon {
+  fill: currentColor;
+  background-size: cover;
+  width: 1em;
+  height: 1em;
+  &.loading {
+    animation: loading 1s linear infinite;
+  }
+  @keyframes loading {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

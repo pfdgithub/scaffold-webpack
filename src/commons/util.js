@@ -1,20 +1,21 @@
-const util = {};
+// #region URL处理
 
 // 解析URL查询参数
-util.parseQueryString = (search) => {
+export const parseQueryString = (search) => {
   let query = {};
-  search = search ? search : window.location.search;
 
-  if (search.indexOf('?') === 0) {
-    let parameters = search.slice(1).split('&');
-    for (let i = 0; i < parameters.length; i++) {
-      let p = parameters[i];
-      let kv = p.split('=');
-      if (kv.length === 2) {
-        let k = kv[0];
-        let v = kv[1];
-        if (k) {
-          query[decodeURIComponent(k)] = decodeURIComponent(v);
+  if (search) {
+    if (search.indexOf('?') === 0) {
+      let parameters = search.slice(1).split('&');
+      for (let i = 0; i < parameters.length; i++) {
+        let p = parameters[i];
+        let kv = p.split('=');
+        if (kv.length === 2) {
+          let k = kv[0];
+          let v = kv[1];
+          if (k) {
+            query[decodeURIComponent(k)] = decodeURIComponent(v);
+          }
         }
       }
     }
@@ -24,7 +25,7 @@ util.parseQueryString = (search) => {
 };
 
 // 拼接URL查询参数
-util.joinQueryString = (query, noEncode) => {
+export const joinQueryString = (query, noEncode) => {
   if (typeof (query) === 'undefined') {
     return '';
   }
@@ -49,20 +50,21 @@ util.joinQueryString = (query, noEncode) => {
 };
 
 // 解析hash查询参数
-util.parseHashString = (hash) => {
+export const parseHashString = (hash) => {
   let query = {};
-  hash = hash ? hash : window.location.hash;
 
-  if (hash.indexOf('#') === 0) {
-    let parameters = hash.slice(1).split('&');
-    for (let i = 0; i < parameters.length; i++) {
-      let p = parameters[i];
-      let kv = p.split('=');
-      if (kv.length === 2) {
-        let k = kv[0];
-        let v = kv[1];
-        if (k) {
-          query[k] = decodeURIComponent(v);
+  if (hash) {
+    if (hash.indexOf('#') === 0) {
+      let parameters = hash.slice(1).split('&');
+      for (let i = 0; i < parameters.length; i++) {
+        let p = parameters[i];
+        let kv = p.split('=');
+        if (kv.length === 2) {
+          let k = kv[0];
+          let v = kv[1];
+          if (k) {
+            query[k] = decodeURIComponent(v);
+          }
         }
       }
     }
@@ -72,7 +74,7 @@ util.parseHashString = (hash) => {
 };
 
 // 拼接hash查询参数
-util.joinHashString = (query) => {
+export const joinHashString = (query) => {
   if (typeof (query) === 'undefined') {
     return '';
   }
@@ -93,7 +95,7 @@ util.joinHashString = (query) => {
 };
 
 // 解析URL
-util.parseUrl = (url) => {
+export const parseUrl = (url) => {
   let a = document.createElement('a');
   a.href = url;
   return {
@@ -133,15 +135,31 @@ util.parseUrl = (url) => {
 };
 
 // 检查指定URL是否同域
-util.isEqOrigin = (url) => {
-  let remote = util.parseUrl(url);
+export const isEqOrigin = (url) => {
+  let remote = parseUrl(url);
   let local = window.location;
 
   return remote.origin.toLowerCase() === local.origin.toLowerCase();
 };
 
+// #endregion
+
+// #region 格式转换
+
+// UTF-8 转 BASE64
+export const utf8ToBase64 = (utf8) => {
+  let base64 = window.btoa(window.unescape(window.encodeURIComponent(utf8)));
+  return base64;
+};
+
+// BASE64 转 UTF-8
+export const base64ToUtf8 = (base64) => {
+  let utf8 = window.decodeURIComponent(window.escape(window.atob(base64)));
+  return utf8;
+};
+
 // 安全过滤
-util.safetyFilter = (unsafeString) => {
+export const safetyFilter = (unsafeString) => {
   if (unsafeString) {
     let text = document.createTextNode(unsafeString);
     let div = document.createElement('div');
@@ -153,7 +171,7 @@ util.safetyFilter = (unsafeString) => {
 };
 
 // 替换br为CRLF
-util.brToCrlf = (brString) => {
+export const brToCrlf = (brString) => {
   let reg = /<\s*br\s*\/?\s*>/ig;
 
   if (brString) {
@@ -164,7 +182,7 @@ util.brToCrlf = (brString) => {
 };
 
 // 替换CRLF为br
-util.crlfToBr = (crlfString) => {
+export const crlfToBr = (crlfString) => {
   let reg = /(\r\n)|(\n)/g;
 
   if (crlfString) {
@@ -174,59 +192,8 @@ util.crlfToBr = (crlfString) => {
   return crlfString;
 };
 
-// 检验身份证号码
-util.isIDNo = (cid) => {
-  let arrExp = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
-  let arrValid = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2];
-  if (/^\d{17}\d|x$/i.test(cid)) {
-    let sum = 0,
-      idx;
-    for (let i = 0; i < cid.length - 1; i++) {
-      sum += parseInt(cid.substr(i, 1), 10) * arrExp[i];
-    }
-    idx = sum % 11;
-    return (arrValid[idx] === cid.substr(17, 1).toUpperCase());
-  } else if (/^\d{15}$/.test(cid)) {
-    let year = cid.substring(6, 8);
-    let month = cid.substring(8, 10);
-    let day = cid.substring(10, 12);
-    let temp_date = new Date(year, parseInt(month) - 1, parseInt(day));
-    return (temp_date.getFullYear() === (parseInt(year) + 1900) &&
-      temp_date.getMonth() === (parseInt(month) - 1) && temp_date.getDate() === parseInt(day));
-  } else {
-    return false;
-  }
-};
-
-// 检验手机号
-util.isMobile = (mobile) => {
-  let reg = /^1\d{10}$/;
-  return reg.test(mobile);
-};
-
-// 检验邮箱
-util.isEmail = (email) => {
-  let reg = /^[.\w-]+@[\w-]+(\.[\w-]+)+$/;
-  return reg.test(email);
-};
-
-// 检验银行卡号
-util.isBankCard = (cardId) => {
-  let reg = /^\d{16,}$/;
-  return reg.test(cardId);
-};
-
-// 掩盖手机号码
-util.maskMobile = (mobile) => {
-  if (mobile && mobile.length === 11) {
-    return mobile.slice(0, 3) + '****' + mobile.slice(7);
-  }
-
-  return mobile;
-};
-
 // 字符串格式化
-util.stringFormat = (...rest) => {
+export const stringFormat = (...rest) => {
   let format = rest[0];
   let args = rest[1];
   let result = format;
@@ -251,7 +218,7 @@ util.stringFormat = (...rest) => {
 };
 
 // 毫秒转换为 yyyy-MM-dd HH:mm:ss
-util.msecToString = (timestamp, format) => {
+export const msecToString = (timestamp, format) => {
   let ret = '';
 
   if (timestamp && format) {
@@ -303,7 +270,7 @@ util.msecToString = (timestamp, format) => {
 };
 
 // yyyy-MM-dd HH:mm:ss 转换为Date
-util.stringToDate = (dateString) => {
+export const stringToDate = (dateString) => {
   let ret = undefined;
 
   let r = '([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})( ([0-9]{1,2}):([0-9]{1,2})(:([0-9]{1,2}))?)?';
@@ -326,9 +293,11 @@ util.stringToDate = (dateString) => {
   return ret;
 };
 
-// 日期进位 bit 可选为 yyyy MM dd HH mm ss
-// 如：bit 为 dd 可将 2017-01-01 00:00:00.000 转换为 2017-01-01 23:59:59.999
-util.dateCarryBit = (timestamp, bit) => {
+/**
+ * 日期进位 bit 可选为 yyyy MM dd HH mm ss
+ * 如：bit 为 dd 可将 2017-01-01 00:00:00.000 转换为 2017-01-01 23:59:59.999
+ */
+export const dateCarryBit = (timestamp, bit) => {
   let newTimestamp = timestamp;
 
   if (timestamp && bit) {
@@ -363,7 +332,7 @@ util.dateCarryBit = (timestamp, bit) => {
 };
 
 // 千分位分割数字
-util.thousandSeparator = (number, len) => {
+export const thousandSeparator = (number, len) => {
   let strNum = "";
   let decLen = 0;
 
@@ -415,7 +384,7 @@ util.thousandSeparator = (number, len) => {
 };
 
 // 过滤字符串中特殊字符，避免破坏JSON结构。
-util.stringJsonFilter = (source, hideCode) => {
+export const stringJsonFilter = (source, hideCode) => {
   /*
    * 参考资料：
    * http://blog.codemonkey.cn/archives/437
@@ -458,71 +427,8 @@ util.stringJsonFilter = (source, hideCode) => {
   }
 };
 
-// UTF-8 转 BASE64
-util.utf8ToBase64 = (utf8) => {
-  let base64 = window.btoa(window.unescape(window.encodeURIComponent(utf8)));
-  return base64;
-};
-
-// BASE64 转 UTF-8
-util.base64ToUtf8 = (base64) => {
-  let utf8 = window.decodeURIComponent(window.escape(window.atob(base64)));
-  return utf8;
-};
-
-// 节流 当调用动作触发一段时间后，才会执行该动作，若在这段时间间隔内又调用此动作则将重新计算时间间隔
-util.debounce = (idle, action) => {
-  let last = 0;
-  return (...rest) => {
-    clearTimeout(last);
-    last = setTimeout(() => {
-      action(...rest);
-    }, idle);
-  };
-};
-
-// 防抖 预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新的时间周期
-util.throttle = (delay, action) => {
-  let last = 0;
-  return (...rest) => {
-    let curr = Date.now();
-    if (curr - last >= delay) {
-      last = curr;
-      action(...rest);
-    }
-  };
-};
-
-// 是否支持 Web Storage
-util.supportStorage = () => {
-  if (window.sessionStorage) {
-    try {
-      let item = 'wd-sessionStorage-test';
-      window.sessionStorage.setItem(item, item);
-      window.sessionStorage.removeItem(item);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  else {
-    return false;
-  }
-};
-
-// 加载页面
-util.gotoPage = (url, query, hash) => {
-  let href = url + util.joinQueryString(query) + util.joinHashString(hash);
-  window.location.href = href;
-};
-
-// 返回页面
-util.backPage = () => {
-  window.history.back();
-};
-
 // 人类友好日期
-util.humanFriendlyDate = (timestamp) => {
+export const humanFriendlyDate = (timestamp) => {
   let ret = timestamp;
 
   if (typeof (timestamp) === 'number') {
@@ -551,7 +457,7 @@ util.humanFriendlyDate = (timestamp) => {
 };
 
 // 人类友好数字
-util.humanFriendlyNumber = (num) => {
+export const humanFriendlyNumber = (num) => {
   let ret = num;
 
   if (typeof (num) === 'number') {
@@ -596,13 +502,17 @@ util.humanFriendlyNumber = (num) => {
   return ret;
 };
 
+// #endregion
+
+// #region 类型检查
+
 // 是否是对象
-util.isObject = (what) => {
+export const isObject = (what) => {
   return typeof what === 'object' && what !== null;
 };
 
 // 是否是错误
-util.isError = (value) => {
+export const isError = (value) => {
   switch (Object.prototype.toString.call(value)) {
     case '[object Error]':
       return true;
@@ -616,33 +526,33 @@ util.isError = (value) => {
 };
 
 // 是否是 undefined
-util.isUndefined = (what) => {
+export const isUndefined = (what) => {
   return what === void 0;
 };
 
 // 是否是函数
-util.isFunction = (what) => {
+export const isFunction = (what) => {
   return typeof what === 'function';
 };
 
 // 是否是简单对象
-util.isPlainObject = (what) => {
+export const isPlainObject = (what) => {
   return Object.prototype.toString.call(what) === '[object Object]';
 };
 
 // 是否是字符串
-util.isString = (what) => {
+export const isString = (what) => {
   return Object.prototype.toString.call(what) === '[object String]';
 };
 
 // 是否是数组
-util.isArray = (what) => {
+export const isArray = (what) => {
   return Object.prototype.toString.call(what) === '[object Array]';
 };
 
 // 是否是空对象
-util.isEmptyObject = (what) => {
-  if (!util.isPlainObject(what)) return false;
+export const isEmptyObject = (what) => {
+  if (!isPlainObject(what)) return false;
 
   for (let _ in what) {
     if (what.hasOwnProperty(_)) {
@@ -652,11 +562,189 @@ util.isEmptyObject = (what) => {
   return true;
 };
 
+// #endregion
+
+// #region 业务检查
+
+// 检验身份证号码
+export const isIDNo = (cid) => {
+  let arrExp = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+  let arrValid = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2];
+  if (/^\d{17}(\d|x)$/i.test(cid)) {
+    let sum = 0,
+      idx;
+    for (let i = 0; i < cid.length - 1; i++) {
+      sum += parseInt(cid.substr(i, 1), 10) * arrExp[i];
+    }
+    idx = sum % 11;
+    return (arrValid[idx].toString() === cid.substr(17, 1).toUpperCase());
+  } else if (/^\d{15}$/.test(cid)) {
+    let year = cid.substring(6, 8);
+    let month = cid.substring(8, 10);
+    let day = cid.substring(10, 12);
+    let temp_date = new Date(year, parseInt(month) - 1, parseInt(day));
+    return (temp_date.getFullYear() === (parseInt(year) + 1900) &&
+      temp_date.getMonth() === (parseInt(month) - 1) && temp_date.getDate() === parseInt(day));
+  } else {
+    return false;
+  }
+};
+
+// 检验手机号
+export const isMobile = (mobile) => {
+  let reg = /^1\d{10}$/;
+  return reg.test(mobile);
+};
+
+// 检验邮箱
+export const isEmail = (email) => {
+  let reg = /^[.\w-]+@[\w-]+(\.[\w-]+)+$/;
+  return reg.test(email);
+};
+
+// 检验银行卡号
+export const isBankCard = (cardId) => {
+  let reg = /^\d{16,}$/;
+  return reg.test(cardId);
+};
+
+// 掩盖身份证号码
+export const maskIDNo = (cid) => {
+  if (cid && cid.length === 18) {
+    return cid.slice(0, 6) + '********' + cid.slice(14);
+  }
+
+  return cid;
+};
+
+// 掩盖手机号码
+export const maskMobile = (mobile) => {
+  if (mobile && mobile.length === 11) {
+    return mobile.slice(0, 3) + '****' + mobile.slice(7);
+  }
+
+  return mobile;
+};
+
+// #endregion
+
+// #region 枚举定义
+
+/**
+ * 从简单对象定义枚举，支持正向映射和反向映射。如：
+ * {
+ *    A: 1,
+ *    B: 2
+ * }
+ */
+export const defEnumWithObject = (object = {}) => {
+  let Enum = {};
+
+  for (let key in object) {
+    let val = object[key];
+    Enum[key] = val;
+    Enum[val] = key;
+  }
+
+  return Enum;
+};
+
+/**
+ * 从二维数组定义枚举，支持正向映射和反向映射。如：
+ * [
+ *    ['A', 1, '枚举项描述1'],
+ *    ['B', 2, '枚举项描述2']
+ * ]
+ */
+export const defEnumWith2DArray = (array = []) => {
+  let Enum = {};
+  Enum._text = {};
+
+  for (let i = 0; i < array.length; i++) {
+    let arr = array[i];
+    if (arr && arr.length >= 2) {
+      let key = arr[0];
+      let val = arr[1];
+      let text = arr[2];
+
+      Enum[key] = val;
+      Enum[val] = key;
+      Enum._text[key] = text;
+      Enum._text[val] = text;
+    }
+  }
+
+  return Enum;
+};
+
+// #endregion
+
+// #region 节流防抖
+
+// 节流 当调用动作触发一段时间后，才会执行该动作，若在这段时间间隔内又调用此动作则将重新计算时间间隔
+export const debounce = (idle, action) => {
+  let last = 0;
+  return (...rest) => {
+    clearTimeout(last);
+    last = setTimeout(() => {
+      action(...rest);
+    }, idle);
+  };
+};
+
+// 防抖 预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新的时间周期
+export const throttle = (delay, action) => {
+  let last = 0;
+  return (...rest) => {
+    let curr = Date.now();
+    if (curr - last >= delay) {
+      last = curr;
+      action(...rest);
+    }
+  };
+};
+
+// #endregion
+
+// #region 环境支持
+
+// 是否支持 Web Storage
+export const supportStorage = () => {
+  if (window.sessionStorage) {
+    try {
+      let item = 'wd-sessionStorage-test';
+      window.sessionStorage.setItem(item, item);
+      window.sessionStorage.removeItem(item);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  else {
+    return false;
+  }
+};
+
+// 加载页面
+export const gotoPage = (url, query, hash) => {
+  let href = url + joinQueryString(query) + joinHashString(hash);
+  window.location.href = href;
+};
+
+// 返回页面
+export const backPage = () => {
+  window.history.back();
+};
+
+// #endregion
+
+// #region 其它
+
 // 生成 UUID
-util.uuid4 = () => {
+export const uuid4 = () => {
   let crypto = window.crypto || window.msCrypto;
 
-  if (!util.isUndefined(crypto) && crypto.getRandomValues) {
+  if (!isUndefined(crypto) && crypto.getRandomValues) {
     // Use window.crypto API if available
     let arr = new Uint16Array(8);
     crypto.getRandomValues(arr);
@@ -694,4 +782,37 @@ util.uuid4 = () => {
   }
 };
 
-export default util;
+// 深度递归 Object.assign
+export const deepAssign = (target, ...sources) => {
+  let to = Object(target);
+
+  // 遍历来源对象数组
+  for (let i = 0; i < sources.length; i++) {
+    let source = sources[i];
+    // 检查是否为简单对象
+    if (Object.prototype.toString.call(source) !== '[object Object]') {
+      to = Object.assign(to, source);
+      continue;
+    }
+
+    // 遍历来源对象
+    for (let key in source) {
+      // 是否为自身属性
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        let val = source[key];
+        // 检查是否为简单对象
+        if (Object.prototype.toString.call(val) !== '[object Object]') {
+          to[key] = val;
+          continue;
+        }
+
+        // 递归调用
+        to[key] = deepAssign(to[key], val);
+      }
+    }
+  }
+
+  return to;
+};
+
+// #endregion
