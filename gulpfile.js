@@ -1,50 +1,49 @@
-let gulp = require('gulp');
-let gLog = require('fancy-log');
-let gError = require('plugin-error');
-let gZip = require('gulp-zip');
-let gImagemin = require('gulp-imagemin');
-let del = require('del');
-let path = require('path');
-let shell = require('shelljs');
-let yargs = require('yargs');
-let webpack = require('webpack');
-let webpackDevServer = require('webpack-dev-server');
+const gulp = require('gulp');
+const gLog = require('fancy-log');
+const gError = require('plugin-error');
+const gZip = require('gulp-zip');
+const del = require('del');
+const path = require('path');
+const shell = require('shelljs');
+const yargs = require('yargs');
+const webpack = require('webpack');
+const webpackDevServer = require('webpack-dev-server');
 
-let pkg = require('./package.json');
+const pkg = require('./package.json');
 
 // 环境枚举
-let envEnum = {
+const envEnum = {
   dev: 'dev',
   test: 'test',
   prod: 'prod'
 };
 
 // 输出任务日志
-let taskLog = (name, ...message) => {
+const taskLog = (name, ...message) => {
   gLog(`Log in plugin '[Task] ${name}'`, '\nMessage:\n    ', ...message);
 };
 
 // 获取任务错误
-let getTaskError = (name, message) => {
+const getTaskError = (name, message) => {
   return new gError(`[Task] ${name}`, message, {
     // showStack: true
   });
 };
 
 // 输出函数日志
-let funLog = (name, ...message) => {
+const funLog = (name, ...message) => {
   gLog(`Log in plugin '[Funtion] ${name}'`, '\nMessage:\n    ', ...message);
 };
 
 // 获取函数错误
-let getFunError = (name, message) => {
+const getFunError = (name, message) => {
   return new gError(`[Funtion] ${name}`, message, {
     // showStack: true
   });
 };
 
 // 获取 package 中版本号
-let getPkgVersion = () => {
+const getPkgVersion = () => {
   let ver = pkg && pkg.version;
 
   funLog('getPkgVersion', ver);
@@ -53,7 +52,7 @@ let getPkgVersion = () => {
 };
 
 // 获取当前分支名
-let getGitBranch = () => {
+const getGitBranch = () => {
   let branch = '';
 
   // http://stackoverflow.com/questions/6245570/how-to-get-the-current-branch-name-in-git/12142066
@@ -80,7 +79,7 @@ let getGitBranch = () => {
 };
 
 // 获取环境参数
-let getProcessEnv = () => {
+const getProcessEnv = () => {
   let env = undefined;
   let argv = yargs.argv;
 
@@ -99,7 +98,7 @@ let getProcessEnv = () => {
 };
 
 // 获取 webpack 配置
-let getWebpackConfig = () => {
+const getWebpackConfig = () => {
   let env = getProcessEnv();
   let uri = path.join(__dirname, 'cfg', env);
   let config = require(uri);
@@ -110,7 +109,7 @@ let getWebpackConfig = () => {
 };
 
 // 检查分支名与版本号是否匹配
-let checkVersion = (cb) => {
+const checkVersion = (cb) => {
   let pkgVersionStr = getPkgVersion(); // 1.0.0
   let gitBranchStr = getGitBranch(); // dev-v1.0.0
   let pkgVersionArr = pkgVersionStr.match(/^(\d+)\.(\d+)\.(\d+)$/);
@@ -138,7 +137,7 @@ let checkVersion = (cb) => {
 };
 
 // 清理构建文件
-let cleanBuild = (cb) => {
+const cleanBuild = (cb) => {
   let buildOutput = './dist/**'; // 编译输出目录
   let buildCache = './node_modules/.cache/**'; // 编译缓存目录
 
@@ -154,7 +153,24 @@ let cleanBuild = (cb) => {
 };
 
 // 图片压缩
-let imagemin = () => {
+const imagemin = () => {
+  /**
+   * gulp-imagemin 依赖的部分图片处理库，需要外部资源。
+   * 会在安装时从 github 下载编译后的文件，或从外部站点下载源码后进行编译。
+   * 为避免依赖安装耗时过长，将其作为 peerDependencies 依赖，需要自行安装。
+   */
+  let gImagemin;
+  try {
+    gImagemin = require('gulp-imagemin');
+  } catch (error) {
+    gImagemin = null;
+  }
+
+  if (!gImagemin) {
+    let gErr = getFunError('imagemin', 'Please manually execute "npm i gulp-imagemin"');
+    throw gErr;
+  }
+
   let src = './src/**/*.{gif,jpg,png,svg}';
   let dest = './src/';
 
@@ -176,7 +192,7 @@ let imagemin = () => {
 };
 
 // zip 压缩
-let compress = () => {
+const compress = () => {
   let ver = getPkgVersion(); // 1.0.0
   let src = ['./dist/**', '!**/*.map'];
   let dest = './dist/';
@@ -190,7 +206,7 @@ let compress = () => {
 };
 
 // 开发服务器
-let devServer = (cb) => {
+const devServer = (cb) => {
   let config = getWebpackConfig();
   let devServer = config.devServer;
   let port = devServer.port;
@@ -209,10 +225,12 @@ let devServer = (cb) => {
 };
 
 // 构建项目
-let buildProject = (cb) => {
+const buildProject = (cb) => {
   let config = getWebpackConfig();
   let devServer = config.devServer;
   let statsCfg = devServer.stats;
+
+  funLog('buildProject', 'Building...');
 
   webpack(config, (err, stats) => {
     if (err) {
@@ -228,6 +246,7 @@ let buildProject = (cb) => {
     }
 
     funLog('buildProject', stats.toString(statsCfg));
+
     cb();
   });
 };

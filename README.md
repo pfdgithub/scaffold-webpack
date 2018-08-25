@@ -60,24 +60,27 @@ npm run build:prod 构建项目（生产环境）。
     "https": false, // 是否启用 HTTPS 模式
     "devtool": "cheap-module-eval-source-map", // source maps 选项
     "historyApi": false, // historyApiFallback 选项
-    "rpc": { // 后端接口配置（包含协议和域名的绝对路径）
-      "innerMode": "mock", // inner 接口模式 <mock|proxy|remote>
-      "innerPrefix": "https://[host]/[path]/" // inner 接口路径（ proxy 或 remote 模式下使用）
-    }
+    "rpcMode": "mock", // 接口模式 <mock|proxy|remote>
+    "rpcPrefix": { // 后端接口路径（在 proxy 或 remote 模式下使用，必须为包含协议和域名的绝对路径）
+      "inner": "https://[host]/[path]/" // inner 接口路径
+    },
+    "deploy": {} // 覆盖部署配置
   },
   "test": { // 测试环境配置
     "pagePrefix": "https://[host]/[path]/", // 项目页面路径（绝对路径）
-    "assetPrefix": "https://[host]/[path]/", // 项目页面路径（绝对路径）
-    "rpcPrefix": { // 项目页面路径（绝对路径）
+    "assetPrefix": "https://[host]/[path]/", // 项目资源路径（绝对路径）
+    "rpcPrefix": { // 后端接口路径（绝对路径）
       "inner": "https://[host]/[path]/" // inner 接口路径
-    }
+    },
+    "deploy": {} // 覆盖部署配置
   },
   "prod": { // 生产环境配置
     "pagePrefix": "https://[host]/[path]/", // 项目页面路径（绝对路径）
-    "assetPrefix": "https://[host]/[path]/", // 项目页面路径（绝对路径）
-    "rpcPrefix": { // 项目页面路径（绝对路径）
+    "assetPrefix": "https://[host]/[path]/", // 项目资源路径（绝对路径）
+    "rpcPrefix": { // 后端接口路径（绝对路径）
       "inner": "https://[host]/[path]/" // inner 接口路径
-    }
+    },
+    "deploy": {} // 覆盖部署配置
   }
 }
 ```

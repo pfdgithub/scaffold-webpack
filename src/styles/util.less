@@ -4,9 +4,175 @@
  * --------------------------------
  */
 
+// 背景颜色 - 加重
+@bgColorWeight: #F6F6F6;
+// 背景颜色 - 标准
+@bgColorNormal: #FFFFFF;
+// 背景颜色 - 视图
+@bgColorView: #FFFFFF;
+// 背景颜色 - 弹窗
+@bgColorDialog: #FFFFFF;
+// 背景颜色 - 遮蔽罩
+@bgColorMask: rgba(0, 0, 0, 0.3);
+// 字体颜色 - 反色
+@fontColorInvert: #FFFFFF;
+// 字体颜色 - 加重
+@fontColorWeight: #000000;
+// 字体颜色 - 标准
+@fontColorNormal: #333333;
+// 字体颜色 - 减轻
+@fontColorLight: #666666;
+// 字体颜色 - 更轻
+@fontColorLighter: #999999;
+// 字体颜色 - 主操作
+@fontColorMainAction: #FA5E59;
+// 字体颜色 - 链接
+@fontColorLink: #5E97D7;
+// 字体颜色 - 高亮 - 橘色
+@fontColorHighlightOrange: #FA5E59;
+// 字体颜色 - 高亮 - 蓝色
+@fontColorHighlightBlue: #5E97D7;
+// 边框颜色 - 标准
+@borderColorNormal: #EAEAEA;
+// 边距 - 圆角
+@dialogRadius: 20px;
+// 边距 - 视图
+@distanceView: 30px;
+// 边距 - 图标
+@distanceIcon: 10px;
+// 行高 - 段落
+@lineHeightParagraph: 1.4;
+// 行高 - 重置
+@lineHeightReset: 1;
+// 基准 z-index
+@zIndexBase: 1;
+// 状态 - 信息
+@stateInfo: #10AEFF;
+// 状态 - 成功
+@stateSuccess: #6ABF47;
+// 状态 - 警告
+@stateWarn: #FFBE00;
+// 状态 - 错误
+@stateError: #F43530;
 
 /**
  * --------------------------------
  * Mixins
  * --------------------------------
  */
+
+// 清除浮动
+.clear() {
+  zoom: 1;
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+// 单行超出截断
+.ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行超出截断
+.ellipsis(@line) when (isnumber(@line)) and (@line > 1) {
+  overflow: hidden;
+  word-break: break-all;
+  display: -webkit-inline-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @line;
+}
+
+// 图标
+.icon(@w, @h) {
+  display: inline-block;
+  vertical-align: middle;
+  width: unit(@w, px);
+  height: unit(@h, px);
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+// 操作
+.action(@w, @h, @s) {
+  min-width: unit(@w, px);
+  height: unit(@h, px);
+  line-height: unit(@h, px);
+  border-radius: unit(@h / 2, px);
+  padding: 0 unit(@h / 2, px);
+  font-size: unit(@s, px);
+  display: inline-block;
+  text-align: center;
+}
+
+// 操作 - 橘色 - 无投影
+.actionOrange() {
+  background-color: #FF534D;
+  background: linear-gradient(to right, #FF534D, #FF7950) no-repeat;
+}
+
+// 操作 - 橘色 - 有投影
+.actionOrange(@shadow) when (@shadow) {
+  .actionOrange();
+  box-shadow: 5px 5px 5px 0px rgba(255, 83, 77, 0.3);
+}
+
+// 操作 - 蓝色 - 无投影
+.actionBlue() {
+  background-color: #2096FE;
+  background: linear-gradient(to right, #2096FE, #21C4FF) no-repeat;
+}
+
+// 操作 - 蓝色 - 有投影
+.actionBlue(@shadow) when (@shadow) {
+  .actionBlue();
+  box-shadow: 5px 5px 5px 0px rgba(32, 150, 254, 0.3);
+}
+
+// 按钮
+.button(@w, @h, @s) {
+  .actionOrange(true);
+  .action(@w, @h, @s);
+  color: @fontColorInvert;
+}
+
+// 按钮 - 大
+.buttonLarge() {
+  .button(690, 90, 32);
+}
+
+// 按钮 - 小
+.buttonSmall() {
+  .button(240, 76, 28);
+}
+
+// 按钮 - 禁用
+.buttonDisabled() {
+  opacity: 0.7;
+}
+
+// 固定定位 - 遮蔽罩
+.fixedMask() {
+  z-index: @zIndexBase + 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+// 固定定位 - 居中容器
+.fixedCenter() {
+  z-index: @zIndexBase + 1;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
