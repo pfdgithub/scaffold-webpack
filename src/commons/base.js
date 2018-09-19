@@ -1,13 +1,16 @@
 // 载入公共样式
 // import 'normalize.css/normalize.css';
-import 'antd-mobile/es/style'; // antd-mobile 中依赖 normalize.css
+import 'antd-mobile/es/style'; // antd-mobile 中内置 normalize.css
 import 'styles/base.less';
 
 // 载入公共脚本
-import 'core-js/fn/promise'; // webpack natty-fetch
-// import 'core-js/fn/map'; // react 16
-// import 'core-js/fn/set'; // react 16
-// import 'raf/polyfill'; // react 16
+import promise from 'core-js/library/fn/promise'; // webpack natty-fetch
+window.Promise || (window.Promise = promise);
+import map from 'core-js/library/fn/map'; // react 16
+window.Map || (window.Map = map);
+import set from 'core-js/library/fn/set'; // react 16
+window.Set || (window.Set = set);
+import 'raf/polyfill'; // react 16
 
 // 载入简单 SW 示例
 import 'sources/sw.simple';

@@ -26,28 +26,13 @@
     line-height: 1;
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-    border-width: 1px;
-    border-style: solid;
-    border-color: @defaultBorderColor;
-    background-color: @defaultBackgroundColor;
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAzMCI+PHBhdGggZD0iTTE1IDI5YzcuNzMyIDAgMTQtNi4yNjggMTQtMTRTMjIuNzMyIDEgMTUgMSAxIDcuMjY4IDEgMTVzNi4yNjggMTQgMTQgMTR6bTAgMUM2LjcxNiAzMCAwIDIzLjI4NCAwIDE1IDAgNi43MTYgNi43MTYgMCAxNSAwYzguMjg0IDAgMTUgNi43MTYgMTUgMTUgMCA4LjI4NC02LjcxNiAxNS0xNSAxNXoiLz48L3N2Zz4=);
   }
   .input:checked + .cover {
-    border-color: @checkedBorderColor;
-    background-color: @checkedBackgroundColor;
-    &:after {
-      transform: rotate(45deg);
-      position: absolute;
-      right: 32%;
-      bottom: 25%;
-      width: 40%;
-      height: 70%;
-      display: block;
-      content: " ";
-      border-style: solid;
-      border-width: 0 2px 2px 0;
-      border-color: @checkedContentColor;
-    }
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAzMCI+PHBhdGggZD0iTTE1IDMwQzYuNzE2IDMwIDAgMjMuMjg0IDAgMTUgMCA2LjcxNiA2LjcxNiAwIDE1IDBjOC4yODQgMCAxNSA2LjcxNiAxNSAxNSAwIDguMjg0LTYuNzE2IDE1LTE1IDE1em0wLTFjNy43MzIgMCAxNC02LjI2OCAxNC0xNFMyMi43MzIgMSAxNSAxIDEgNy4yNjggMSAxNXM2LjI2OCAxNCAxNCAxNHptNi4yOTItMTguNzA3YTEgMSAwIDEgMSAxLjQxNiAxLjQxNGwtOC45ODUgOWExIDEgMCAwIDEtMS4zODYuMDI3TDcuMzIgMTYuMTAxYTEgMSAwIDAgMSAxLjM1OC0xLjQ3bDQuMzA4IDMuOTgyIDguMzA1LTguMzJ6Ii8+PC9zdmc+);
   }
   .input:disabled + .cover {
     opacity: @disabledOpacity;

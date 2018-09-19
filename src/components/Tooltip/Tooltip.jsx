@@ -98,7 +98,7 @@ class Tooltip extends ComponentBase {
         );
       }
 
-      let positionClass = styles[popupPosition];
+      let positionClass = stl[popupPosition];
       content.push(
         <div key="popup" className={cls(stl.popup, {
           [positionClass]: positionClass

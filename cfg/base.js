@@ -19,7 +19,7 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
     runtime: undefined, // webpackBootstrap
     commonBundle: [
       'react', 'react-dom',
-      'commons/base', 'commons/config'
+      'commons/base', 'commons/config', 'commons/util'
     ]
   };
 

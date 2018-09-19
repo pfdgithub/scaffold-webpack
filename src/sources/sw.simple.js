@@ -2,6 +2,7 @@ import config from 'commons/config';
 import db from 'sources/db.inner';
 
 import {
+  SWError,
   customPromptCreater,
   customPublicKeyCreater,
   customUpdateSubscribeCreater,
@@ -42,7 +43,7 @@ const customInstallPrompt = () => {
   let installPrompt = (deferredPrompt) => {
     // 提前询问以避免用户直接拒绝造成永远不再触发
     if (confirm('是否将应用安装至桌面？')) {
-      log('InstallPrompt:', 'ok');
+      log('InstallPrompt:', 'resolve');
 
       // 触发应用安装横幅
       deferredPrompt.prompt();
@@ -51,7 +52,7 @@ const customInstallPrompt = () => {
       });
     }
     else {
-      log('InstallPrompt:', 'cancel');
+      log('InstallPrompt:', 'reject');
     }
   };
 
@@ -102,8 +103,8 @@ const networkHandler = () => {
 
 // 监听 SW 错误
 const swErrorHandler = () => {
-  listenSWError((type, event) => {
-    error(type, event);
+  listenSWError((type, err) => {
+    error(type, err);
   });
 };
 
@@ -124,7 +125,7 @@ const initSW = () => {
         else {
           log('PromptCreater:', 'reject');
 
-          reject();
+          reject(new SWError('PromptCreater:reject'));
         }
       }, 1 * 1000);
     });
@@ -212,6 +213,12 @@ if (config.sw.swName) {
 
   // 处理异常
   p.catch((err) => {
-    err && error(err);
+    // 当  Promise.reject() 时 err 不存在
+    if (err) {
+      // 非 SWError 异常进行提示
+      if (!(err instanceof SWError)) {
+        error(err);
+      }
+    }
   });
 }

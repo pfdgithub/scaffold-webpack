@@ -14,8 +14,17 @@ class DocTitle extends ComponentBase {
   static defaultProps = {
   }
 
+  static getDerivedStateFromProps(props) {
+    if (props.title && (props.title !== document.title)) {
+      document.title = props.title;
+    }
+
+    return null;
+  }
+
   constructor(props) {
     super(props);
+    this.state = {};
   }
 
   componentDidMount() {
@@ -29,18 +38,9 @@ class DocTitle extends ComponentBase {
   render() {
     const { children } = this.props;
 
-    this.updateTitle();
-
     return children;
   }
 
-  updateTitle = () => {
-    const { title } = this.props;
-
-    if (title && title !== document.title) {
-      document.title = title;
-    }
-  }
 }
 
 export default DocTitle;

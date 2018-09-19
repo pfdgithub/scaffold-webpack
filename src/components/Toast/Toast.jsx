@@ -43,7 +43,22 @@ class Toast extends ComponentBase {
     }
   }
 
-  static addNotice = (type, content, duration, onClose, mask) => {
+  static addNotice = (type, content, options) => {
+    let {
+      delay, // 延时显示（秒）
+      duration, // 持续时间（秒）
+      mask, // 开启遮蔽罩
+      single, // 只显示每个 (type+content) 中 (delay+duration) 最长的那个实例，其他隐藏
+      onClose // 关闭回调
+    } = (options || {});
+
+    // 设置默认默认参数值
+    if (typeof (content) === 'undefined') {
+      content = '';
+    }
+    if (typeof (delay) === 'undefined') {
+      delay = 0;
+    }
     if (typeof (duration) === 'undefined') {
       duration = 3;
     }
@@ -53,35 +68,58 @@ class Toast extends ComponentBase {
 
     // 初始化 notice
     let notice = {
-      idx: Toast.noticeCounter++,
-      type,
-      content,
-      duration,
-      onClose,
-      mask
+      _idx: Toast.noticeCounter++,
+      _timmer: 0,
+      _type: type,
+      _content: content,
+      _options: {
+        delay,
+        duration,
+        mask,
+        single,
+        onClose
+      },
+      hide: () => { }
     };
 
     // 隐藏 notice
     notice.hide = () => {
-      clearTimeout(notice.timmer);
-      notice.onClose && notice.onClose();
+      clearTimeout(notice._timmer); // 清理定时器
+      notice._options.onClose && notice._options.onClose(); // 触发回调
 
-      Toast.removeNotice(notice);
+      Toast.removeNotice(notice); // 移除实例
     };
 
-    // 延时隐藏 notice
-    if (notice.duration > 0) {
-      notice.timmer = setTimeout(notice.hide, notice.duration * 1000);
+    // 持续显示后隐藏 notice
+    if (notice._options.duration > 0) {
+      // 延时 (delay+duration) 后隐藏
+      notice._timmer = setTimeout(
+        notice.hide,
+        1000 * (notice._options.duration +
+          (notice._options.delay > 0 ? notice._options.delay : 0)
+        )
+      );
     }
 
-    // 添加当前 notice
+    // 显示 notice
+    let show = () => {
+      // 第一次添加 notice ，初始化组件
+      if (!Toast.container) {
+        Toast.init();
+      }
+
+      // 触发组件更新
+      Toast.forceUpdate();
+    };
+
+    // 延时或立即显示 notice
+    setTimeout(
+      show,
+      1000 * (notice._options.delay > 0 ? notice._options.delay : 0)
+    );
+
+    // 添加 notice
     Toast.noticeList = Toast.noticeList.concat(notice);
-
-    // 第一次添加 notice ，初始化
-    if (Toast.noticeList.length === 1) {
-      Toast.init();
-    }
-    Toast.forceUpdate();
 
     return notice;
   }
@@ -91,6 +129,8 @@ class Toast extends ComponentBase {
     Toast.noticeList = Toast.noticeList.filter((item) => {
       return item !== notice;
     });
+
+    // 触发组件更新
     Toast.forceUpdate();
 
     // 全部 notice 已移除，销毁
@@ -99,26 +139,29 @@ class Toast extends ComponentBase {
     }
   }
 
-  static info = (content, duration, onClose, mask) => {
-    return Toast.addNotice('info', content, duration, onClose, mask);
+  static loading = (content, options) => {
+    return Toast.addNotice('loading', content, Object.assign({
+      delay: 200,
+      duration: 0,
+      mask: true,
+      single: true
+    }, options));
   }
 
-  static loading = (content, duration, onClose, mask) => {
-    // 加载中默认使用遮蔽罩
-    mask = typeof (mask) === 'undefined' ? true : mask;
-    return Toast.addNotice('loading', content, duration, onClose, mask);
+  static info = (content, options) => {
+    return Toast.addNotice('info', content, options);
   }
 
-  static success = (content, duration, onClose, mask) => {
-    return Toast.addNotice('success', content, duration, onClose, mask);
+  static success = (content, options) => {
+    return Toast.addNotice('success', content, options);
   }
 
-  static fail = (content, duration, onClose, mask) => {
-    return Toast.addNotice('fail', content, duration, onClose, mask);
+  static fail = (content, options) => {
+    return Toast.addNotice('fail', content, options);
   }
 
-  static offline = (content, duration, onClose, mask) => {
-    return Toast.addNotice('offline', content, duration, onClose, mask);
+  static offline = (content, options) => {
+    return Toast.addNotice('offline', content, options);
   }
 
   static propTypes = {
@@ -155,10 +198,7 @@ class Toast extends ComponentBase {
       [className]: className
     });
 
-    // 遮蔽罩是唯一的，有任意 notice 需要就显示
-    let mask = Toast.noticeList.find((item) => {
-      return item.mask;
-    });
+    let { mask, list } = this.filterNotices();
 
     return (
       <div className={toastClass}>
@@ -168,7 +208,7 @@ class Toast extends ComponentBase {
         }
         <div className={stl.containers}>
           {
-            Toast.noticeList.map((item) => {
+            list.map((item) => {
               let { idx, type, content } = item;
               let icon = this.typeIcon[type];
               icon = typeof (icon) === 'undefined' ? type : icon;
@@ -192,6 +232,67 @@ class Toast extends ComponentBase {
         </div>
       </div>
     );
+  }
+
+  filterNotices = () => {
+    let lastMask = false;
+    let singleNoticeObj = {};
+    let singleNoticeList = [];
+    let multiNoticeList = [];
+
+    // 遍历待显示 notice 数组
+    Toast.noticeList.forEach((notice) => {
+      let { _idx, _type, _content, _options } = notice;
+      let { delay, duration, mask, single } = _options;
+
+      // 遮蔽罩是唯一的，有任意 notice 需要就显示
+      lastMask = lastMask || mask;
+
+      if (single) {
+        // 如果启用 single 则只显示每个 (type+content) 中 (delay+duration) 最长的那个实例
+        let singleKey = `${_type}-${_content}`;
+        let singleNotice = singleNoticeObj[singleKey];
+        if (singleNotice) {
+          // 已存在，对比后保留 (delay+duration) 最长的那个
+          let s_delay = singleNotice._options.delay;
+          let s_duration = singleNotice._options.duration;
+
+          if ((delay + duration) >= (s_delay + s_duration)) {
+            // 替换为当前 notice
+            singleNoticeObj[singleKey] = notice;
+          }
+        }
+        else {
+          // 还不存在，保存当前 notice
+          singleNoticeObj[singleKey] = notice;
+        }
+      }
+      else {
+        // 未启用 single 则直接显示
+        multiNoticeList.push({
+          idx: _idx,
+          type: _type,
+          content: _content
+        });
+      }
+    });
+
+    // 遍历启用 single 的通知
+    for (let type in singleNoticeObj) {
+      let singleNotice = singleNoticeObj[type];
+      let { _idx, _type, _content } = singleNotice;
+
+      singleNoticeList.push({
+        idx: _idx,
+        type: _type,
+        content: _content
+      });
+    }
+
+    return {
+      mask: lastMask,
+      list: [].concat(singleNoticeList, multiNoticeList)
+    };
   }
 
 }

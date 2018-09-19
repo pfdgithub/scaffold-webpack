@@ -9,7 +9,8 @@ let resolve = require.resolve(libName);
 let antdPath = resolve.substring(0, resolve.lastIndexOf(libName) + libName.length);
 
 let lessVars = {
-  '@hd': '2px'
+  '@hd': '2px',
+  '@fill-body': '#FFFFFF'
 };
 
 module.exports = {

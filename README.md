@@ -16,12 +16,12 @@ cfg/ webpack 配置文件目录。
 dist/ 构建文件目录。  
 mock/ 模拟数据目录。  
 src/ 源文件目录。  
-.babelrc Babel 配置文件。  
 .browserslistrc Browserslist 配置文件。  
 .editorconfig 编辑器配置文件。  
 .eslintrc ESLint 配置文件。  
 .gitignore Git 配置文件。  
 .postcssrc PostCSS 配置。  
+babel.config.js Babel 配置文件。  
 gulpfile.js Gulp 配置文件。  
 package.json 项目配置文件。  
 
