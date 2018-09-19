@@ -167,7 +167,7 @@ workbox.routing.registerRoute(
 workbox.routing.registerRoute(
   routeMatchHandler('networkFirst'),
   workbox.strategies.networkFirst({
-    networkTimeoutSeconds: 30
+    networkTimeoutSeconds: 10
   })
 );
 

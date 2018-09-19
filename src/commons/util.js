@@ -706,7 +706,7 @@ export const throttle = (delay, action) => {
 
 // #endregion
 
-// #region 环境支持
+// #region 环境检查
 
 // 是否支持 Web Storage
 export const supportStorage = () => {
@@ -725,6 +725,237 @@ export const supportStorage = () => {
   }
 };
 
+// 待对比版本是否大于（等于）基础版本
+export const gtVer = (baseVer, compareVer, eq = true) => {
+  if ((baseVer && baseVer.length > 0) && (compareVer && compareVer.length > 0)) {
+    let maxLength = baseVer.length > compareVer.length ? baseVer.length : compareVer.length;
+
+    for (let i = 0; i < maxLength; i++) {
+      let base = baseVer[i];
+      let compare = compareVer[i];
+
+      if (compare > base) {
+        return true;
+      }
+      else if (compare < base) {
+        return false;
+      }
+      else {
+        // 检测最后一位是否相等
+        if ((i + 1) === maxLength) {
+          return eq;
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
+// 是否为 Windows
+export const isWindows = () => {
+  return !!window.navigator.userAgent.match(/Windows/i);
+};
+
+// 是否为 Mac
+export const isMac = () => {
+  return !!window.navigator.userAgent.match(/Macintosh/i);
+};
+
+// 是否为 Android
+export const isAndroid = () => {
+  return !!window.navigator.userAgent.match(/Android/i);
+};
+
+// 是否为 IOS
+export const isIOS = () => {
+  return !!window.navigator.userAgent.match(/(iPhone)|(iPad)|(iPod)/i);
+};
+
+// 是否为 Android WebView
+export const isAndroidWebView = () => {
+  // https://developer.chrome.com/multidevice/user-agent
+  let userAgent = window.navigator.userAgent;
+  let android = userAgent.match(/Android/i);
+  let wv = userAgent.match(/wv/i);
+
+  return android && wv;
+};
+
+// 是否为 IOS WebView
+export const isIOSWebView = () => {
+  // https://stackoverflow.com/questions/4460205/detect-ipad-iphone-webview-via-javascript
+  let standalone = window.navigator.standalone;
+  let userAgent = window.navigator.userAgent;
+  let ios = userAgent.match(/(iPhone)|(iPad)|(iPod)/i);
+  let safari = userAgent.match(/Safari/i);
+
+  return ios && !safari && !standalone;
+};
+
+// IOS 设备
+export const iosDevice = () => {
+  let match = window.navigator.userAgent.match(/Mobile\/(\w+)/i);
+  if (match) {
+    return match[1] || '';
+  }
+
+  return null;
+};
+
+// Windows 版本
+export const windowsVer = () => {
+  let match = window.navigator.userAgent.match(/Windows NT (\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// Mac 版本
+export const macVer = () => {
+  let match = window.navigator.userAgent.match(/Mac OS X (\d+)(_(\d+))?(_(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// Android 版本
+export const androidVer = () => {
+  let match = window.navigator.userAgent.match(/Android (\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// IOS 版本
+export const iosVer = () => {
+  let match = window.navigator.userAgent.match(/OS (\d+)(_(\d+))?(_(\d+))? like Mac OS X/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// Chrome 版本
+export const chromeVer = () => {
+  let match = window.navigator.userAgent.match(/Chrome\/(\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// Firefox 版本
+export const firefoxVer = () => {
+  let match = window.navigator.userAgent.match(/Firefox\/(\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// IE 版本
+export const ieVer = () => {
+  let match = window.navigator.userAgent.match(/MSIE (\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  let match2 = window.navigator.userAgent.match(/rv:(\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match2) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// Edge 版本
+export const edgeVer = () => {
+  let match = window.navigator.userAgent.match(/Edge\/(\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// Safari 技术版本
+export const safariTechVer = () => {
+  let match = window.navigator.userAgent.match(/Safari\/(\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// Safari 用户版本
+export const safariUserVer = () => {
+  let match = window.navigator.userAgent.match(/Version\/(\d+)(\.(\d+))?(\.(\d+))?/i);
+  if (match) {
+    return [
+      parseInt(match[1] ? match[1] : 0),
+      parseInt(match[3] ? match[3] : 0),
+      parseInt(match[5] ? match[5] : 0)
+    ];
+  }
+
+  return null;
+};
+
+// #endregion
+
+// #region 其它
+
 // 加载页面
 export const gotoPage = (url, query, hash) => {
   let href = url + joinQueryString(query) + joinHashString(hash);
@@ -735,10 +966,6 @@ export const gotoPage = (url, query, hash) => {
 export const backPage = () => {
   window.history.back();
 };
-
-// #endregion
-
-// #region 其它
 
 // 生成 UUID
 export const uuid4 = () => {
