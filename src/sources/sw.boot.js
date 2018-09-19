@@ -4,6 +4,14 @@
 
 import config from 'commons/config';
 
+class SWError extends Error {
+  constructor(message, level) {
+    super(message);
+
+    this.level = level;
+  }
+}
+
 // #region console
 
 /* eslint-disable */
@@ -97,7 +105,7 @@ const checkSW = () => {
     }
     else {
       warn('Unsupported serviceWorker');
-      reject();
+      reject(new SWError('Unsupported serviceWorker'));
     }
   });
 };
@@ -337,12 +345,12 @@ const checkPush = () => {
       }
       else {
         warn('Notification permission denied');
-        reject();
+        reject(new SWError('Notification permission denied'));
       }
     }
     else {
       warn('Unsupported PushManager or Notification');
-      reject();
+      reject(new SWError('Unsupported PushManager or Notification'));
     }
   });
 };
@@ -477,6 +485,8 @@ const pushDestroy = () => {
 // #endregion
 
 export {
+  SWError,
+
   customPromptCreater,
   customPublicKeyCreater,
   customUpdateSubscribeCreater,
