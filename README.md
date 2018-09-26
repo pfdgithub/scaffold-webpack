@@ -20,8 +20,8 @@ src/ 源文件目录。
 .editorconfig 编辑器配置文件。  
 .eslintrc ESLint 配置文件。  
 .gitignore Git 配置文件。  
-.postcssrc PostCSS 配置。  
 babel.config.js Babel 配置文件。  
+postcss.config.js PostCSS 配置。  
 gulpfile.js Gulp 配置文件。  
 package.json 项目配置文件。  
 
