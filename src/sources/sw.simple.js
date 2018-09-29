@@ -58,6 +58,7 @@ const customInstallPrompt = () => {
 
   // 监听应用安装横幅事件
   window.addEventListener('beforeinstallprompt', (event) => {
+    // 阻止 Chrome 67 及其之前的版本弹出安装提示
     event.preventDefault();
     // 延时处理，避免阻塞主线程
     setTimeout(() => {
