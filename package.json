@@ -66,9 +66,9 @@
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pfdgithub/scaffold-webpack"
+    "url": "http://git.weidai.work/liping/scaffold-webpack"
   },
-  "homepage": "https://github.com/pfdgithub/scaffold-webpack",
+  "homepage": "http://git.weidai.work/liping/scaffold-webpack",
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
