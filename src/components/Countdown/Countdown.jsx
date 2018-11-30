@@ -79,7 +79,7 @@ class Countdown extends ComponentBase {
       disabledClick && disabledClick();
     }
     else if (!locked) {
-      let p = Promise.resolve();
+      let p = Promise.resolve(true);
 
       if (allowTrigger) {
         p = p.then(() => {
