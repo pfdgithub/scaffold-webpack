@@ -141,7 +141,7 @@ class Toast extends ComponentBase {
 
   static loading = (content, options) => {
     return Toast.addNotice('loading', content, Object.assign({
-      delay: 200,
+      delay: 0.2,
       duration: 0,
       mask: true,
       single: true
