@@ -8,19 +8,21 @@ export const updateAccount = (account) => {
 };
 
 // 获取用户信息
-export const fetchAccount = (cb) => {
+export const fetchAccount = (resolve, reject) => {
   return (dispatch/* , getState */) => {
     setTimeout(() => {
-      let state;
       if (Math.random() >= 0.5) {
-        state = {
+        let state = {
           mobile: '12345678901',
           userName: '张三'
         };
-      }
 
-      dispatch(updateAccount(state));
-      cb && cb(state);
+        dispatch(updateAccount(state));
+        resolve && resolve(state);
+      }
+      else {
+        reject && reject();
+      }
     }, 1000);
   };
 };
