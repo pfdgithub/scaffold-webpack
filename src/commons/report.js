@@ -2,6 +2,12 @@ import config from './config';
 
 const Raven = window.Raven;
 
+// 设置用户信息
+const setUserContext = (opt) => {
+  // opt 不存在将删除所有用户信息
+  Raven && Raven.setUserContext(opt);
+};
+
 // 设置全局 Tags
 const setTagsContext = (opt) => {
   opt = opt ? opt : {}; // opt 不存在将删除所有 Tags
@@ -120,6 +126,7 @@ if (config.raven.dsn && config.raven.enabledRaven) {
 }
 
 export default {
+  setUserContext,
   setTagsContext,
   setExtraContext,
   captureMessage,
