@@ -202,7 +202,8 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
-                sourceMap: true
+                sourceMap: true,
+                modules: 'global'
               }
             },
             {
@@ -224,7 +225,7 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
               options: {
                 importLoaders: 2,
                 sourceMap: true,
-                modules: true,
+                modules: 'local',
                 localIdentName: '[name]-[local]-[hash:base64:5]'
               }
             },
@@ -257,7 +258,8 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
               loader: 'css-loader',
               options: {
                 importLoaders: 2,
-                sourceMap: true
+                sourceMap: true,
+                modules: 'global'
               }
             },
             {
