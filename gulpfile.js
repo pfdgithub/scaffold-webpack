@@ -152,8 +152,8 @@ const cleanBuild = (cb) => {
   });
 };
 
-// 图片压缩
-const imagemin = () => {
+// 压缩图片源文件
+const imageminSrc = () => {
   /**
    * gulp-imagemin 依赖的部分图片处理库，需要外部资源。
    * 会在安装时从 github 下载编译后的文件，或从外部站点下载源码后进行编译。
@@ -178,7 +178,12 @@ const imagemin = () => {
     gImagemin.gifsicle(),
     gImagemin.jpegtran(),
     gImagemin.optipng(),
-    gImagemin.svgo()
+    gImagemin.svgo({
+      plugins: [
+        { removeViewBox: false },
+        { removeDimensions: true }
+      ]
+    })
   ];
   let options = {
     verbose: true
@@ -191,8 +196,8 @@ const imagemin = () => {
     .pipe(gulp.dest(dest));
 };
 
-// zip 压缩
-const compress = () => {
+// 压缩构建输出目录
+const compressDist = () => {
   let ver = getPkgVersion(); // 1.0.0
   let src = ['./dist/**', '!**/*.map'];
   let dest = './dist/';
@@ -252,36 +257,25 @@ const buildProject = (cb) => {
 };
 
 // 检查版本号
-gulp.task('check', (cb) => {
-  checkVersion(cb);
-});
+exports.check = gulp.series(checkVersion);
 
 // 清理目录
-gulp.task('clean', (cb) => {
-  cleanBuild(cb);
-});
+exports.clean = gulp.series(cleanBuild);
 
-// 压缩图片文件
-gulp.task('imagemin', () => {
-  return imagemin();
-});
+// 压缩图片源文件
+exports.imagemin = gulp.series(imageminSrc);
 
-// 压缩构建文件
-gulp.task('compress', () => {
-  return compress();
-});
+// 压缩构建输出目录
+exports.compress = gulp.series(compressDist);
 
 // 启动开发服务器
-gulp.task('serve', [/* 'check', */ 'clean'], (cb) => {
-  devServer(cb);
-});
+exports.serve = gulp.series(checkVersion, cleanBuild, devServer);
 
 // 构建项目
-gulp.task('build', [/* 'check', */ 'clean'], (cb) => {
-  buildProject(cb);
-});
+exports.build = gulp.series(checkVersion, cleanBuild, buildProject);
 
 // 默认任务
-gulp.task('default', () => {
+exports.default = (cb) => {
   taskLog('default', 'Please use npm script');
-});
+  cb();
+};

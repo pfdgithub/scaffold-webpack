@@ -141,6 +141,8 @@ nattyFetch.setGlobal({
   },
   // 自定义ajax请求的头部信息。
   header: {
+    // 'Content-Type': 'application/json; charset=utf-8'
+    // 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
   },
   // 是否忽略接口自身的并发请求，即是否开启请求锁。
   ignoreSelfConcurrent: false,

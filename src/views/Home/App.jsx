@@ -27,7 +27,9 @@ class App extends ViewBase {
       <React.Fragment>
         <Switch>
           <Route path={routes.home.index.path} render={(props) => (
-            <DocTitle title={routes.home.index.title}><Main {...this.props} {...props} /></DocTitle>
+            <DocTitle title={routes.home.index.title}>
+              <Main {...this.props} {...props} />
+            </DocTitle>
           )} />
           <Route component={Notfound} />
         </Switch>
