@@ -10,10 +10,11 @@ import map from 'core-js/library/fn/map'; // react 16
 window.Map || (window.Map = map);
 import set from 'core-js/library/fn/set'; // react 16
 window.Set || (window.Set = set);
-import 'raf/polyfill'; // react 16
+import raf from 'raf'; // react 16
+window.requestAnimationFrame || (raf.polyfill());
 
-// 载入简单 SW 示例
-import 'sources/sw.simple';
+// // 载入简单 SW 示例
+// import 'sources/sw.simple';
 
 // 载入日志上报
 import './report';

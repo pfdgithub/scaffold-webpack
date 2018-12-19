@@ -1,4 +1,32 @@
 <!-- foot start -->
+<script>
+  // 全局垫片
+  (function () {
+    var shim = true;
+    var userAgent = window.navigator.userAgent;
+    var iosMatch = userAgent.match(/OS (\\d+)/i); // 绕过 html-loader 转义
+    var androidMatch = userAgent.match(/Android (\\d+)/i);
+    if (iosMatch) {
+      var iosVer = parseInt(iosMatch[1] ? iosMatch[1] : 0);
+      shim = iosVer < 11; // 小于 IOS 11
+    }
+    else if (androidMatch) {
+      var chromeMatch = userAgent.match(/Chrome\\\/(\\d+)/i);
+      var firefoxMatch = userAgent.match(/Firefox\\\/(\\d+)/i);
+      if (chromeMatch) {
+        var chromeVer = parseInt(chromeMatch[1] ? chromeMatch[1] : 0);
+        shim = chromeVer < 57; // 小于 Chrome 57 （X5/UC 最新内核）
+      }
+      else if (firefoxMatch) {
+        var firefoxVer = parseInt(firefoxMatch[1] ? firefoxMatch[1] : 0);
+        shim = firefoxVer < 60; // 小于 Firefox 60 （ESR 最新版本）
+      }
+    }
+    if (shim) {
+      document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!@babel/polyfill/dist/polyfill.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
+    }
+  })();
+</script>
 ${(__wd_define_env__ === 'dev' || __wd_define_env__ === 'test') ? `
 <script>
   // 加载 vConsole
