@@ -138,14 +138,16 @@ module.exports = (envCfg, pathsCfg, publishCfg, proxyCfg = {}) => {
   };
 
   return {
+    hot: true,
+    hotOnly: false,
     inline: true,
-    hotOnly: true,
     overlay: true,
     compress: true,
     progress: true,
     useLocalIp: true,
     disableHostCheck: true,
     port: envCfg.port,
+    headers: envCfg.headers,
     publicPath: publishCfg.publicAssetPath,
     contentBase: pathsCfg.portalPath,
     historyApiFallback: envCfg.historyApi,
