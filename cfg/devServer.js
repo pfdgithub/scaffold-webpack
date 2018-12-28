@@ -143,7 +143,6 @@ module.exports = (envCfg, pathsCfg, publishCfg, proxyCfg = {}) => {
     inline: true,
     overlay: true,
     compress: true,
-    progress: true,
     useLocalIp: true,
     disableHostCheck: true,
     port: envCfg.port,
