@@ -4,7 +4,7 @@ const gError = require('plugin-error');
 const gZip = require('gulp-zip');
 const del = require('del');
 const path = require('path');
-const yargs = require('yargs');
+const parser = require('yargs-parser');
 const iconv = require('iconv-lite');
 const process = require('process');
 const childProcess = require('child_process');
@@ -103,7 +103,7 @@ const getGitBranch = () => {
 // 获取环境参数
 const getProcessEnv = () => {
   let env = undefined;
-  let argv = yargs.argv;
+  let argv = parser(process.argv.slice(2));
 
   if (typeof (argv.env) !== 'undefined') {
     let _env = argv.env.toString().trim();
