@@ -4,8 +4,10 @@ const gError = require('plugin-error');
 const gZip = require('gulp-zip');
 const del = require('del');
 const path = require('path');
-const shell = require('shelljs');
-const yargs = require('yargs');
+const parser = require('yargs-parser');
+const iconv = require('iconv-lite');
+const process = require('process');
+const childProcess = require('child_process');
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
 
@@ -42,6 +44,24 @@ const getFunError = (name, message) => {
   });
 };
 
+// 同步 shell
+const syncShell = (command) => {
+  // 中文 Windows 下 CMD 默认使用 GBK 代码页
+  let isWin = process.platform === 'win32';
+
+  try {
+    let stdout = childProcess.execSync(command, {
+      stdio: 'pipe'
+    });
+
+    return isWin ? iconv.decode(stdout, 'gbk') : stdout.toString();
+  } catch (error) {
+    let stderr = isWin ? iconv.decode(error.stderr, 'gbk') : error.stderr.toString();
+
+    throw new Error(stderr);
+  }
+};
+
 // 获取 package 中版本号
 const getPkgVersion = () => {
   let ver = pkg && pkg.version;
@@ -53,27 +73,29 @@ const getPkgVersion = () => {
 
 // 获取当前分支名
 const getGitBranch = () => {
+  // http://stackoverflow.com/questions/6245570/how-to-get-the-current-branch-name-in-git
   let branch = '';
+  let command_1 = 'git symbolic-ref --short HEAD';
+  let command_2 = 'git describe --all --exact-match';
 
-  // http://stackoverflow.com/questions/6245570/how-to-get-the-current-branch-name-in-git/12142066
-  let shellObj = shell.exec('git symbolic-ref --short HEAD', {
-    async: false,
-    silent: true
-  });
+  // 尝试方案一
+  try {
+    branch = syncShell(command_1);
+  } catch (error) {
+    // 尝试方案二
+    try {
+      branch = syncShell(command_2);
 
-  let code = shellObj.code;
-  let stderr = shellObj.stderr;
-  let stdout = shellObj.stdout;
-  if (code !== 0 && stderr.length > 0) {
-    throw getFunError('getGitBranch', stderr);
+      // 分离 heads/dev-v1.0.0
+      let dirs = branch.split('/');
+      branch = dirs[dirs.length - 1];
+    } catch (error) {
+      throw getFunError('getGitBranch', error.message);
+    }
   }
-  else if (stdout.length > 0) {
-    branch = stdout.replace(/\n$/, ''); // 结尾含有\n字符
-    funLog('getGitBranch', branch);
-  }
-  else {
-    funLog('getGitBranch', 'No output');
-  }
+
+  branch = branch.replace(/(\r\n)|(\n)$/, ''); // 结尾含有换行字符
+  funLog('getGitBranch', branch);
 
   return branch;
 };
@@ -81,7 +103,7 @@ const getGitBranch = () => {
 // 获取环境参数
 const getProcessEnv = () => {
   let env = undefined;
-  let argv = yargs.argv;
+  let argv = parser(process.argv.slice(2));
 
   if (typeof (argv.env) !== 'undefined') {
     let _env = argv.env.toString().trim();
@@ -115,9 +137,9 @@ const checkVersion = (cb) => {
   let pkgVersionArr = pkgVersionStr.match(/^(\d+)\.(\d+)\.(\d+)$/);
   let gitBranchArr = gitBranchStr.match(/^([\w-]+)-v((\d+)\.(\d+)\.(\d+))$/);
 
-  let ignoreBranch = 'master';
-  if (gitBranchStr === ignoreBranch) {
-    funLog('checkVersion', `Ignore check packageVersion when branchName is ${ignoreBranch}`);
+  let ignoreBranchs = ['master', 'react', 'react-antd', 'react-antd-mobile', 'react-antd-mobile-auth'];
+  if (ignoreBranchs.includes(gitBranchStr)) {
+    funLog('checkVersion', `Ignore check packageVersion when branchName is "${ignoreBranchs.join('" "')}"`);
     return cb();
   }
 
@@ -167,7 +189,7 @@ const imageminSrc = () => {
   }
 
   if (!gImagemin) {
-    let gErr = getFunError('imagemin', 'Please manually execute "npm i gulp-imagemin"');
+    let gErr = getFunError('imagemin', 'Please manually execute "npm i gulp-imagemin --no-save"');
     throw gErr;
   }
 
@@ -269,10 +291,10 @@ exports.imagemin = gulp.series(imageminSrc);
 exports.compress = gulp.series(compressDist);
 
 // 启动开发服务器
-exports.serve = gulp.series(/* checkVersion,  */cleanBuild, devServer);
+exports.serve = gulp.series(checkVersion, cleanBuild, devServer);
 
 // 构建项目
-exports.build = gulp.series(/* checkVersion,  */cleanBuild, buildProject);
+exports.build = gulp.series(checkVersion, cleanBuild, buildProject);
 
 // 默认任务
 exports.default = (cb) => {

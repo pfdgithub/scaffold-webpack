@@ -105,7 +105,14 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
 
     // mini-css-extract-plugin 配置
     let cssExtractLoader = deployCfg.assetExtractCss ? MiniCssExtractPlugin.loader : {
-      loader: 'style-loader'
+      loader: 'style-loader',
+      options: {
+        /**
+         * Aborting CSS HMR due to changed css-modules locals when using react-hot-loader
+         * https://github.com/webpack-contrib/style-loader/issues/320
+         */
+        hmr: false
+      }
     };
 
     return {
