@@ -1,9 +1,9 @@
 import React from 'react';
-import classnames from 'classnames';
+// import cls from 'classnames';
 import db from 'sources/db.inner';
 
 import EntryBase from '../Common/EntryBase';
-import styles from './styles/App.less';
+import stl from './styles/App.less';
 import logo from './images/logo.png';
 
 class App extends EntryBase {
@@ -25,7 +25,7 @@ class App extends EntryBase {
 
   render() {
     return (
-      <div className={classnames(styles.app)}>
+      <div className={stl.app}>
         <img src={logo} />
         <br />
         <br />
