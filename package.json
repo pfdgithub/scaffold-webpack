@@ -145,7 +145,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime-corejs2": "^7.2.0",
-    "antd": "^3.10.8",
+    "antd": "^3.12.1",
     "classnames": "^2.2.6",
     "core-js": "^2.6.1",
     "natty-fetch": "^2.5.7",
