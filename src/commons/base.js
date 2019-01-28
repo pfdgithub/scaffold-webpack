@@ -16,5 +16,5 @@ window.requestAnimationFrame || (raf.polyfill());
 // // 载入简单 SW 示例
 // import 'sources/sw.simple';
 
-// 载入日志上报
-import './report';
+// // 载入日志上报
+// import './report';

@@ -245,6 +245,7 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
               loader: 'less-loader',
               options: {
                 sourceMap: true,
+                javascriptEnabled: true, // node_modules/ant-design-mobile/es/style/ 目录下的 less 文件中存在内联 js 代码
                 modifyVars: pathsCfg.antdModify.lessVars
               }
             }

@@ -1,7 +1,7 @@
 import React from 'react';
 // import cls from 'classnames';
 import { Route, Switch } from 'react-router-dom';
-import routes from 'commons/routes';
+import { routes } from 'commons/routes';
 import DocTitle from 'components/DocTitle';
 import Notfound from 'views/Notfound';
 
