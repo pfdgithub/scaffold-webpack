@@ -44,6 +44,7 @@
     "no-use-before-define": 1,
     "no-var": 1,
     "semi": 1,
-    "unicode-bom": 1
+    "unicode-bom": 1,
+    "react/prop-types": 0
   }
 }

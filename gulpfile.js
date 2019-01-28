@@ -137,7 +137,7 @@ const checkVersion = (cb) => {
   let pkgVersionArr = pkgVersionStr.match(/^(\d+)\.(\d+)\.(\d+)$/);
   let gitBranchArr = gitBranchStr.match(/^([\w-]+)-v((\d+)\.(\d+)\.(\d+))$/);
 
-  let ignoreBranchs = ['master', 'react', 'react-antd', 'react-antd-mobile', 'react-antd-mobile-auth'];
+  let ignoreBranchs = ['HEAD', 'master', 'react', 'react-antd', 'react-antd-mobile'];
   if (ignoreBranchs.includes(gitBranchStr)) {
     funLog('checkVersion', `Ignore check packageVersion when branchName is "${ignoreBranchs.join('" "')}"`);
     return cb();
