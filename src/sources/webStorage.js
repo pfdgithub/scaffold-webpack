@@ -5,21 +5,21 @@ const def = {
   tag: 'v1.0' // 缓存的标记，用于判断是否有效。
 };
 
-const local = nattyStorage(Object.assign({}, def, {
-  type: 'localStorage',
-  duration: 1000 * 60 * 60 * 24 // 缓存的有效期长，以毫秒数指定
-}));
+export const local = (options) => {
+  return nattyStorage(Object.assign({
+    type: 'localStorage',
+    duration: 1000 * 60 * 60 * 24 // 缓存的有效期长，以毫秒数指定。
+  }, def, options));
+};
 
-const session = nattyStorage(Object.assign({}, def, {
-  type: 'sessionStorage'
-}));
+export const session = (options) => {
+  return nattyStorage(Object.assign({
+    type: 'sessionStorage'
+  }, def, options));
+};
 
-const variable = nattyStorage(Object.assign({}, def, {
-  type: 'variable'
-}));
-
-export {
-  local,
-  session,
-  variable
+export const variable = (options) => {
+  return nattyStorage(Object.assign({
+    type: 'variable'
+  }, def, options));
 };

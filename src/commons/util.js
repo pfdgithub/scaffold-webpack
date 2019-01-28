@@ -954,6 +954,119 @@ export const safariUserVer = () => {
 
 // #endregion
 
+// #region 随机算法
+
+// 可指定种子的随机数
+let _seed = Date.now();
+export const setSeed = (seed) => {
+  _seed = seed;
+};
+export const seededRandom = (max = 1, min = 0) => {
+  /**
+   * https://en.wikipedia.org/wiki/Linear_congruential_generator
+   * http://www.honeylocust.com/javascript/randomizer.html
+   * http://www.ict.griffith.edu.au/anthony/info/C/RandomNumbers
+   * http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+   * https://softwareengineering.stackexchange.com/questions/260969/original-source-of-seed-9301-49297-233280-random-algorithm
+   * https://stackoverflow.com/questions/33716998/why-does-seed-9301-49297-233280-233280-0-generate-a-random-number
+   * http://catx.me/2014/02/22/why-pseudo-random-generator-use-magic-number-9301-49297-233280/
+   * https://www.zhihu.com/question/22818104
+   */
+  _seed = (_seed * 9301 + 49297) % 233280;
+  let rnd = _seed / 233280;
+  return rnd * (max - min) + min;
+};
+
+// 两数之间的随机小数 (min <= return < max)
+export const randomFloat = (max = 1, min = 0) => {
+  /**
+   * This example returns a random number between the specified values.
+   * The returned value is no lower than (and may possibly equal) min, and is less than (and not equal) max.
+   */
+  return Math.random() * (max - min) + min;
+};
+
+// 两数之间的随机整数 (min <= return < max)
+export const randomInt = (max = Number.MAX_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER) => {
+  /**
+   * This example returns a random integer between the specified values.
+   * The value is no lower than min (or the next integer greater than min if min isn't an integer), and is less than (but not equal to) max.
+   */
+  max = Math.floor(max);
+  min = Math.ceil(min);
+  return Math.floor(Math.random() * (max - min)) + min;
+};
+
+// 两数之间的随机整数 (min <= return <= max)
+export const randomIntInclude = (max = Number.MAX_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER) => {
+  /**
+   * While the getRandomInt() function above is inclusive at the minimum, it's exclusive at the maximum.
+   * What if you need the results to be inclusive at both the minimum and the maximum?
+   * The getRandomIntInclusive() function below accomplishes that.
+   */
+  max = Math.floor(max);
+  min = Math.ceil(min);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+// 洗牌算法
+export const shuffle = (array) => {
+  /**
+   * https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+   * http://sedition.com/perl/javascript-fy.html
+   * https://blog.codinghorror.com/the-danger-of-naivete/
+   * https://bost.ocks.org/mike/shuffle/compare.html
+   * https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+   */
+  let newArray = [].concat(array);
+
+  let i = newArray.length;
+  if (i > 0) {
+    while (--i) {
+      let j = Math.floor(Math.random() * (i + 1));
+      let temp = newArray[i];
+      newArray[i] = newArray[j];
+      newArray[j] = temp;
+    }
+  }
+
+  return newArray;
+};
+
+// 随机抽取
+export const randomList = (sourceList, count) => {
+  let minLen = count <= sourceList.length
+    ? count : sourceList.length;
+
+  let targetList = new Array(minLen);
+
+  for (let i = 0; i < minLen; i++) {
+    let idx = Math.floor(Math.random() * sourceList.length);
+    targetList[i] = sourceList[idx];
+  }
+
+  return targetList;
+};
+
+// 随机抽取（去重）
+export const randomListDedupe = (sourceList, count) => {
+  let minLen = count <= sourceList.length
+    ? count : sourceList.length;
+
+  let nextList = [].concat(sourceList);
+  let targetList = new Array(minLen);
+
+  for (let i = 0; i < minLen; i++) {
+    let idx = Math.floor(Math.random() * nextList.length);
+    targetList[i] = nextList[idx];
+    nextList.splice(idx, 1);
+  }
+
+  return targetList;
+};
+
+// #endregion
+
 // #region 其它
 
 // 加载页面
