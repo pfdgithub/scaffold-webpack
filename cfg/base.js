@@ -8,6 +8,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HappyPack = require('happypack');
 
@@ -119,7 +120,7 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
       rules: [
         {
           enforce: 'pre',
-          test: /\.(js|jsx)$/,
+          test: /\.(js|jsx|ts|tsx)$/,
           use: [
             cacheLoader,
             {
@@ -132,7 +133,7 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
           include: pathsCfg.srcPath
         },
         {
-          test: /\.(js|jsx)$/,
+          test: /\.(js|jsx|ts|tsx)$/,
           use: [
             cacheLoader,
             {
@@ -403,6 +404,7 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
       pwaPlugins,
       new HtmlWebpackEventPlugin(),
       new HtmlWebpackHarddiskPlugin(),
+      new ForkTsCheckerWebpackPlugin(),
       new MiniCssExtractPlugin({
         filename: deployCfg.assetNameHash ? 'css/[name]-[contenthash].css' : 'css/[name].css',
         chunkFilename: deployCfg.assetNameHash ? 'css/[name]-[contenthash].css' : 'css/[name].css'
@@ -430,7 +432,7 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
     module: getModules(),
     plugins: getPlugins(),
     resolve: {
-      extensions: ['.js', '.jsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
       alias: {
         commons: pathsCfg.commonPath,
         components: pathsCfg.componentPath,
