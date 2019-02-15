@@ -36,7 +36,6 @@
     "dev": {
       "port": 8000,
       "https": false,
-      "hotOnly": true,
       "historyApi": false,
       "devtool": "cheap-module-eval-source-map",
       "headers": {},

@@ -58,7 +58,6 @@ npm run build:prod 构建项目（生产环境）。
   "dev": { // 开发环境配置
     "port": 8000, // 服务器端口
     "https": false, // 是否启用 HTTPS 模式
-    "hotOnly": false, // 是否热更新失败后自动刷新页面
     "historyApi": false, // 是否重写 404 请求至 index.html
     "devtool": "cheap-module-eval-source-map", // source maps 选项
     "headers": {}, // 在所有 response 中添加 header
