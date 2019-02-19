@@ -363,16 +363,11 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
         }, deployCfg.manifest)),
         new WorkboxPlugin.InjectManifest({
           swSrc: path.join(pathsCfg.sourcePath, 'sw.template.js'),
-          swDest: path.join(pathsCfg.portalPath, pathsCfg.swName),
+          swDest: path.join(pathsCfg.portalPath, pathsCfg.swName), // 与 html 文件文件保持一致
           importsDirectory: 'pwa',
           importWorkboxFrom: 'local', // 将 workbox 放在本地，否则需要访问谷歌 CDN
           precacheManifestFilename: 'precache-manifest.[manifestHash].js',
-          // 默认包含 webpack 中的全部资源，但由于直接使用 Asset 字符串拼接资源 url
-          // 造成部分资源路径错误无法正确加载，如 /assets/..\\index.html /assets/pwa\app-manifest.json
-          exclude: [/\.map$/, /\.html$/, /pwa[\\/]/],
-          // 添加 webpack 之外的资源，使用此方式添加正确的资源 url（相对路径），如 index.html
-          globDirectory: pathsCfg.portalPath,
-          globPatterns: ['**/*.html']
+          exclude: [/\.map$/, /pwa[\\/]/]
         }),
         new WriteFileWebpackPlugin({ // 在 webpack-dev-server 环境中输出自定义 service-worker
           test: new RegExp(pathsCfg.swName)
@@ -406,8 +401,8 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
       new HtmlWebpackHarddiskPlugin(),
       new ForkTsCheckerWebpackPlugin(),
       new MiniCssExtractPlugin({
-        filename: deployCfg.assetNameHash ? 'css/[name]-[contenthash].css' : 'css/[name].css',
-        chunkFilename: deployCfg.assetNameHash ? 'css/[name]-[contenthash].css' : 'css/[name].css'
+        filename: deployCfg.assetNameHash ? 'css/[name].[contenthash].css' : 'css/[name].css',
+        chunkFilename: deployCfg.assetNameHash ? 'css/[name].[contenthash].css' : 'css/[name].css'
       }),
       new webpack.BannerPlugin({
         banner: `name: ${pathsCfg.name}\nversion: ${pathsCfg.version}\ndescription: ${pathsCfg.description}`

@@ -2,7 +2,6 @@ const path = require('path');
 
 module.exports = (pkg, deployCfg) => {
   const pageSuffix = '.html'; // 入口页面后缀名
-  const assetDirName = 'assets'; // 资产文件夹
   const swName = 'service-worker.js'; // service worker 名称
 
   const name = pkg.name; // 项目名称
@@ -29,9 +28,9 @@ module.exports = (pkg, deployCfg) => {
   const portalPath = deployCfg.portalMultiVersion ?
     path.join(distPath, version) : path.join(distPath); // 项目页面路径
   const assetPath = deployCfg.assetMultiVersion ?
-    path.join(distPath, version, assetDirName) : path.join(distPath, assetDirName); // 项目资源路径
+    path.join(distPath, version) : path.join(distPath); // 项目资源路径
   const assetUrlPart = deployCfg.assetMultiVersion ?
-    `${version}/${assetDirName}` : `${assetDirName}`; // 项目资源 URL 片段
+    `${version}` : ``; // 项目资源 URL 片段
 
   // 入口页面列表
   const entryPages = (() => {
@@ -42,7 +41,6 @@ module.exports = (pkg, deployCfg) => {
 
   return {
     pageSuffix,
-    assetDirName,
     swName,
 
     name,
