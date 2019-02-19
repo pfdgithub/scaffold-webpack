@@ -10,7 +10,7 @@
     "clean": "gulp clean",
     "imagemin": "gulp imagemin",
     "compress": "gulp compress",
-    "serve": "cross-env NODE_ENV=development gulp serve --env=dev",
+    "server": "cross-env NODE_ENV=development gulp server --env=dev",
     "build:dev": "cross-env NODE_ENV=development gulp build --env=dev",
     "build:test": "cross-env NODE_ENV=production gulp build --env=test",
     "build:prod": "cross-env NODE_ENV=production gulp build --env=prod",

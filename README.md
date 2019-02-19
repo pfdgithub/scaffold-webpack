@@ -33,7 +33,7 @@ npm run check 检查 Git 分支名与 package.json 版本号是否一致。
 npm run clean 清理构建目录和临时文件。  
 npm run imagemin 压缩源文件的图片。  
 npm run compress 压缩构建目录为 zip 文件。  
-npm run serve 启动本地静态服务器（开发环境）。[或 gulp serve --env=dev](#sigint-信号量)  
+npm run server 启动本地静态服务器（开发环境）。[或 gulp server --env=dev](#sigint-信号量)  
 npm run build:dev 构建项目（开发环境）。  
 npm run build:test 构建项目（测试环境）。  
 npm run build:prod 构建项目（生产环境）。  
