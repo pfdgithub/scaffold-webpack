@@ -36,6 +36,11 @@ class List extends ComponentBase {
   }
 
   static defaultProps = {
+    loadingContent: '正在加载中...',
+    noDataContent: '暂无数据',
+    noMoreContent: '没有更多了',
+    loadMoreContent: '点击加载更多',
+
     autoLoadFirst: false,
     autoLoadMore: false,
     scrollOffset: 200,

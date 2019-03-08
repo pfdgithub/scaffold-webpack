@@ -9,12 +9,12 @@ import EntryBase from '../Common/EntryBase';
 // import stl from './styles/Main.less';
 
 // // 同步加载
-// import Home from 'views/Home';
 // import Notfound from 'views/Notfound';
+// import Home from 'views/Home';
 
 // 异步加载
-const Home = createAsyncCom(() => import(/* webpackChunkName: "c-home" */ 'views/Home'));
 const Notfound = createAsyncCom(() => import(/* webpackChunkName: "c-notfound" */ 'views/Notfound'));
+const Home = createAsyncCom(() => import(/* webpackChunkName: "c-home" */ 'views/Home'));
 
 class Main extends EntryBase {
   constructor(props) {

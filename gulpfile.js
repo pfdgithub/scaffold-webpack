@@ -291,7 +291,7 @@ exports.imagemin = gulp.series(imageminSrc);
 exports.compress = gulp.series(compressDist);
 
 // 启动开发服务器
-exports.serve = gulp.series(checkVersion, cleanBuild, devServer);
+exports.server = gulp.series(checkVersion, cleanBuild, devServer);
 
 // 构建项目
 exports.build = gulp.series(checkVersion, cleanBuild, buildProject);
