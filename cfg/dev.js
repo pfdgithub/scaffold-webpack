@@ -19,7 +19,7 @@ const publishCfg = {
   // 项目页面路径
   publicPagePath: '/',
   // 项目资源路径
-  publicAssetPath: `/${pathsCfg.assetUrlPart}/`,
+  publicAssetPath: '/' + (pathsCfg.assetUrlPart ? `${pathsCfg.assetUrlPart}/` : ''),
   // 后端接口路径
   publicRpcPath: Object.assign({
     inner: '/' // 配置一个默认项

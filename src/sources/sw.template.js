@@ -9,10 +9,7 @@
 
 // 日志
 const log = (...rest) => {
-  // https://github.com/GoogleChrome/workbox/blob/master/packages/workbox-core/models/LogLevels.mjs
-  if (workbox.core.logLevel <= 1) {
-    console.log('[SW]', ...rest);
-  }
+  console.log('[SW]', ...rest);
 };
 
 // 警告
@@ -148,7 +145,7 @@ let routeMatchHandler = (strategy) => {
  * 预缓存
  */
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {
-  ignoreUrlParametersMatching: [/.*/] // 忽略全部请求参数
+  ignoreURLParametersMatching: [/.*/] // 忽略全部请求参数
 });
 
 /**
@@ -157,7 +154,7 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {
  */
 workbox.routing.registerRoute(
   routeMatchHandler('staleWhileRevalidate'),
-  workbox.strategies.staleWhileRevalidate()
+  new workbox.strategies.StaleWhileRevalidate()
 );
 
 /**
@@ -166,7 +163,7 @@ workbox.routing.registerRoute(
  */
 workbox.routing.registerRoute(
   routeMatchHandler('networkFirst'),
-  workbox.strategies.networkFirst({
+  new workbox.strategies.NetworkFirst({
     networkTimeoutSeconds: 10
   })
 );
@@ -177,7 +174,7 @@ workbox.routing.registerRoute(
  */
 workbox.routing.registerRoute(
   routeMatchHandler('cacheFirst'),
-  workbox.strategies.cacheFirst()
+  new workbox.strategies.CacheFirst()
 );
 
 /**
@@ -186,7 +183,7 @@ workbox.routing.registerRoute(
  */
 workbox.routing.registerRoute(
   routeMatchHandler('networkOnly'),
-  workbox.strategies.networkOnly()
+  new workbox.strategies.NetworkOnly()
 );
 
 /**
@@ -195,7 +192,7 @@ workbox.routing.registerRoute(
  */
 workbox.routing.registerRoute(
   routeMatchHandler('cacheOnly'),
-  workbox.strategies.cacheOnly()
+  new workbox.strategies.CacheOnly()
 );
 
 // #endregion
