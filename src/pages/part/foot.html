@@ -20,5 +20,16 @@
     shim && document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!@babel/polyfill/dist/polyfill.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
   })();
 </script>
-<!-- <script src="${require('!!file-loader?name=lib/[name].[ext]!libraries/raven/raven.min.js')}" crossorigin="anonymous"></script> -->
+<script>
+  (function () {
+    var keyword = 'VConsole';
+    var search = window.location.search;
+    var show = search.indexOf(keyword) > -1;
+    show && document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!vconsole/dist/vconsole.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
+  })();
+</script>
+<script>
+  window.VConsole && new window.VConsole();
+</script>
+<!-- <script src="${require('!!file-loader?name=lib/[name].[ext]!raven-js/dist/raven.min.js')}" crossorigin="anonymous"></script> -->
 <!-- foot end -->
