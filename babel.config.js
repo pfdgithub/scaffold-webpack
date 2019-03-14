@@ -19,7 +19,7 @@ module.exports = (api) => {
       [
         "babel-plugin-imports",
         {
-          "ruleExtend": "imports.config.js"
+          "ruleExtend": "./imports.config.js"
         }
       ],
       [
