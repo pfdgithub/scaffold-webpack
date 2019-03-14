@@ -1,3 +1,24 @@
 <!-- foot start -->
+<script>
+  (function () {
+    var userAgent = window.navigator.userAgent;
+    var chrome = userAgent.match(/Chrome\\\/(\\d+)/i);
+    var firefox = userAgent.match(/Firefox\\\/(\\d+)/i);
+    var safari = userAgent.match(/Version\\\/(\\d+)/i);
+    var edge = userAgent.match(/Edge\\\/(\\d+)/i);
+    var ie = userAgent.match(/MSIE (\\d+)/i) || userAgent.match(/rv:(\\d+)/i);
+    var ios = userAgent.match(/OS (\\d+)/i);
+    var android = userAgent.match(/Android (\\d+)/i);
+    var shim = (chrome && chrome[1] < 57) // Chrome - X5/UC 最新内核
+      || (firefox && firefox[1] < 60) // Firefox - ESR 最新版本
+      || (safari && safari[1] < 10) // Safari - CanIUse 数据
+      || (edge && edge[1] < 15) // Edge - CanIUse 数据
+      || (ie) // IE - CanIUse 数据
+      || (ios && ios[1] < 10) // iOS - 最近三个版本
+      || (android && android[1] < 7) // Android - 最近三个版本
+      || false; // 其它环境
+    shim && document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!@babel/polyfill/dist/polyfill.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
+  })();
+</script>
 <!-- <script src="${require('!!file-loader?name=lib/[name].[ext]!libraries/raven/raven.min.js')}" crossorigin="anonymous"></script> -->
 <!-- foot end -->
