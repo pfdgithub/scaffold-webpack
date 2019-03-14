@@ -153,7 +153,6 @@
     "natty-storage": "^2.3.0",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
-    "raf": "^3.4.1",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-hot-loader": "^4.8.0",
