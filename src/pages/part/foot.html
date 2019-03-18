@@ -20,6 +20,7 @@
     shim && document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!@babel/polyfill/dist/polyfill.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
   })();
 </script>
+${(__define_env__ === 'dev' || __define_env__ === 'test') ? `
 <script>
   (function () {
     var keyword = 'VConsole';
@@ -31,5 +32,6 @@
 <script>
   window.VConsole && new window.VConsole();
 </script>
+` : ''}
 <!-- <script src="${require('!!file-loader?name=lib/[name].[ext]!raven-js/dist/raven.min.js')}" crossorigin="anonymous"></script> -->
 <!-- foot end -->
