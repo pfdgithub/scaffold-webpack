@@ -137,9 +137,15 @@ const checkVersion = (cb) => {
   let pkgVersionArr = pkgVersionStr.match(/^(\d+)\.(\d+)\.(\d+)$/);
   let gitBranchArr = gitBranchStr.match(/^([\w-]+)-v((\d+)\.(\d+)\.(\d+))$/);
 
-  let ignoreBranchs = ['HEAD', 'master', 'react', 'react-antd', 'react-antd-mobile'];
+  let ignoreProjects = ['scaffold-webpack'];
+  if (ignoreProjects.includes(pkg.name)) {
+    funLog('checkVersion', `Ignore check packageVersion when projectName is "${ignoreProjects.join('" or "')}"`);
+    return cb();
+  }
+
+  let ignoreBranchs = ['HEAD', 'master'];
   if (ignoreBranchs.includes(gitBranchStr)) {
-    funLog('checkVersion', `Ignore check packageVersion when branchName is "${ignoreBranchs.join('" "')}"`);
+    funLog('checkVersion', `Ignore check packageVersion when branchName is "${ignoreBranchs.join('" or "')}"`);
     return cb();
   }
 

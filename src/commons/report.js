@@ -1,33 +1,32 @@
+import Raven from 'raven-js';
 import config from './config';
-
-const Raven = window.Raven;
 
 // 设置用户信息
 const setUserContext = (opt) => {
   // opt 不存在将删除所有用户信息
-  Raven && Raven.setUserContext(opt);
+  Raven.setUserContext(opt);
 };
 
 // 设置全局 Tags
 const setTagsContext = (opt) => {
   opt = opt ? opt : {}; // opt 不存在将删除所有 Tags
-  Raven && Raven.setTagsContext(opt);
+  Raven.setTagsContext(opt);
 };
 
 // 设置全局 Extra
 const setExtraContext = (opt) => {
   opt = opt ? opt : {}; // opt 不存在将删除所有 Extra
-  Raven && Raven.setExtraContext(opt);
+  Raven.setExtraContext(opt);
 };
 
 // 捕获消息
 const captureMessage = (msg, opt) => {
-  Raven && Raven.captureMessage(msg, opt);
+  Raven.captureMessage(msg, opt);
 };
 
 // 捕获异常
 const captureException = (e, opt) => {
-  Raven && Raven.captureException(e, opt);
+  Raven.captureException(e, opt);
 };
 
 // 捕获信息
@@ -105,7 +104,7 @@ const initPageLoad = () => {
 // 初始化日志上报
 const init = () => {
   // 初始化配置
-  Raven && Raven.config(
+  Raven.config(
     config.raven.dsn,
     {
       environment: config.state.env,

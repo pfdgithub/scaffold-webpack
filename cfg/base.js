@@ -414,9 +414,9 @@ module.exports = (deployCfg, pathsCfg, publishCfg) => {
         '__define_public_asset_path__': JSON.stringify(publishCfg.publicAssetPath),
         '__define_public_rpc_path__': JSON.stringify(publishCfg.publicRpcPath),
         '__define_public_page_fullname__': JSON.stringify(publicPageFullname),
-        '__define_enable_pwa__': !!deployCfg.enablePWa,
+        '__define_enable_pwa__': !!deployCfg.enablePwa,
         '__define_enable_push__': !!deployCfg.enablePush,
-        '__define_sw_name__': JSON.stringify(deployCfg.enablePwa ? pathsCfg.swName : ''),
+        '__define_sw_name__': JSON.stringify(pathsCfg.swName)
       }, deployCfg._env === util.envEnum.dev ? undefined : {
         'process.env.NODE_ENV': JSON.stringify('production')
       }))
