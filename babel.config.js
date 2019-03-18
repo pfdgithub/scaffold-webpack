@@ -23,6 +23,13 @@ module.exports = (api) => {
         }
       ],
       [
+        "babel-plugin-react-intl-auto",
+        {
+          "filebase": true,
+          "removePrefix": "src"
+        }
+      ],
+      [
         "@babel/plugin-transform-runtime",
         {
           "corejs": 2,

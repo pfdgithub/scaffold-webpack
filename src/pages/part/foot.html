@@ -20,6 +20,13 @@
     shim && document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!@babel/polyfill/dist/polyfill.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
   })();
 </script>
+<script>
+  if (!window.Intl) {
+    document.write("<sc" + "ript src=\"${require('!!file-loader?name=lib/[name].[ext]!intl/dist/Intl.min.js')}\" crossorigin=\"anonymous\"></sc" + "ript>");
+    document.write("<sc" + "ript src=\"${require(`!!file-loader?name=lib/[name].[ext]!intl/locale-data/jsonp/en.js`)}\" crossorigin=\"anonymous\"></sc" + "ript>");
+    document.write("<sc" + "ript src=\"${require(`!!file-loader?name=lib/[name].[ext]!intl/locale-data/jsonp/zh.js`)}\" crossorigin=\"anonymous\"></sc" + "ript>");
+  }
+</script>
 ${(__define_env__ === 'dev' || __define_env__ === 'test') ? `
 <script>
   (function () {
