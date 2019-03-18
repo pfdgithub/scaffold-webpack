@@ -3,8 +3,8 @@ Thumbs.db
 *.log
 node_modules
 dist
-# ³ý·ÇÓÐÌØÊâµÄÀíÓÉ£¬Ò»°ã²»½¨ÒéÊ¹ÓÃ±¾µØÒÀÀµËø¶¨ÎÄ¼þ¡£
-# ·¢²¼ÏµÍ³°²×°ÒÀÀµÊ±£¬»á×Ô¶¯ÔÚ¹¤×÷¿Õ¼äÖÐÉú³É»òÊ¹ÓÃ¡£
+# é™¤éžæœ‰ç‰¹æ®Šçš„ç†ç”±ï¼Œä¸€èˆ¬ä¸å»ºè®®ä½¿ç”¨æœ¬åœ°ä¾èµ–é”å®šæ–‡ä»¶ã€‚
+# å‘å¸ƒç³»ç»Ÿå®‰è£…ä¾èµ–æ—¶ï¼Œä¼šè‡ªåŠ¨åœ¨å·¥ä½œç©ºé—´ä¸­ç”Ÿæˆæˆ–ä½¿ç”¨ã€‚
 package-lock.json
 yarn.lock
 shrinkwrap.yaml
