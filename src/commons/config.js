@@ -2,21 +2,23 @@ import logo from 'images/logo.png';
 
 /* eslint-disable */
 // 定义环境类型
-const defineEnv = __wd_define_env__;
+const env = __define_env__;
 // 定义项目版本
-const defineVer = __wd_define_ver__;
+const ver = __define_ver__;
 // 项目页面路径
-const publicPagePath = __wd_public_page_path__;
+const publicPagePath = __define_public_page_path__;
 // 项目资源路径
-const publicAssetPath = __wd_public_asset_path__;
+const publicAssetPath = __define_public_asset_path__;
 // 后端接口路径
-const publicRpcPath = __wd_public_rpc_path__;
+const publicRpcPath = __define_public_rpc_path__;
 // 项目页面名称
-const publicPageFullname = __wd_public_page_fullname__;
-// service worker 名称
-const serviceWorkerName = __wd_service_worker_name__;
+const publicPageFullname = __define_public_page_fullname__;
+// 启用 pwa
+const enablePwa = __define_enable_pwa__;
 // 启用 web push
-const enableWebPush = __wd_enable_web_push__;
+const enablePush = __define_enable_push__;
+// service worker 名称
+const swName = __define_sw_name__;
 /* eslint-enable */
 
 // 环境枚举
@@ -27,32 +29,32 @@ const envEnum = {
 };
 
 // 调试模式
-const isDebug = defineEnv === envEnum.dev || defineEnv === envEnum.test;
+const isDebug = env === envEnum.dev || env === envEnum.test;
 // 模拟数据
-const isMock = defineEnv === envEnum.dev;
+const isMock = env === envEnum.dev;
 // 启用日志上报
-const enabledRaven = defineEnv === envEnum.test || defineEnv === envEnum.prod;
+const enabledRaven = env === envEnum.test || env === envEnum.prod;
 // 禁用信息级别日志
-const disableInfo = defineEnv === envEnum.prod;
+const disableInfo = env === envEnum.prod;
 
 // 默认配置
 export default {
   public: { // 部署相关
-    defineEnv: defineEnv,
     pagePath: publicPagePath,
     assetPath: publicAssetPath,
     rpcPath: publicRpcPath,
     pageFullname: publicPageFullname
   },
   state: { // 状态相关
-    env: defineEnv,
-    ver: defineVer,
+    env: env,
+    ver: ver,
     isDebug: isDebug,
     isMock: isMock
   },
   sw: { // service worker 相关
-    swName: serviceWorkerName,
-    enablePush: enableWebPush,
+    enablePwa: enablePwa,
+    enablePush: enablePush,
+    swName: swName,
     noticeIcon: logo
   },
   raven: { // Raven 日志上报配置
