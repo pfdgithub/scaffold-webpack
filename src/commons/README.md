@@ -1,10 +1,13 @@
 # 公共资源目录
 
-config.js 项目配置文件，接收 webpack 传入的参数。  
+locale/ 国际化语言包和辅助函数。  
 base.js 基础资源，初始化页面环境，必须在每一个入口脚本中引入。  
-util.js 辅助函数定义。  
-report.js 向 Sentry 服务端上报错误追踪。  
+config.js 项目配置文件，接收 webpack 传入的参数。  
+cookie.js Cookie 辅助函数。  
 ReactBase.jsx 全项目的 React 基类。  
+report.js 向 Sentry 服务端上报错误追踪。  
+routes.js 维护单页路由并提供辅助函数。  
+util.js 辅助函数定义。  
 
 # 注意事项
 

@@ -22,14 +22,18 @@ src/ 源文件目录。
 .eslintrc ESLint 配置文件。  
 .gitignore Git 配置文件。  
 babel.config.js Babel 配置文件。  
-postcss.config.js PostCSS 配置。  
 gulpfile.js Gulp 配置文件。  
 package.json 项目配置文件。  
+postcss.config.js PostCSS 配置。  
+tsconfig.json typescript 配置文件。  
 
 # 常用命令
 
 建议以 package.json 文件的 scripts 节点作为命令行入口。  
 
+npm run tsc 检查 typescript 文件语法。  
+npm run tsc:watch 检查 typescript 文件语法，并监听文件变化。  
+npm run tsc:build 生成 typescript 声明文件。  
 npm run check 检查 Git 分支名与 package.json 版本号是否一致。  
 npm run clean 清理构建目录和临时文件。  
 npm run imagemin 压缩源文件的图片。  
