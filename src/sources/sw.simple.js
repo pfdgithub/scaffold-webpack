@@ -192,8 +192,8 @@ const initPush = () => {
   return pushInit();
 };
 
-// 无效名称认为禁用 PWA
-if (config.sw.swName) {
+// 如果启用 PWA
+if (config.sw.enablePwa) {
   // 自定义应用安装横幅事件
   customInstallPrompt();
 
