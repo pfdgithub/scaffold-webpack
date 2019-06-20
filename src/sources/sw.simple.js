@@ -45,10 +45,13 @@ const customInstallPrompt = () => {
     if (confirm('是否将应用安装至桌面？')) {
       log('InstallPrompt:', 'resolve');
 
-      // 触发应用安装横幅
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        log('InstallPrompt:', choiceResult.outcome, deferredPrompt.platforms);
+      // 最新的 Chrome 必须通过用户触发才能安装
+      document.addEventListener('click', () => {
+        // 触发应用安装横幅
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          log('InstallPrompt:', choiceResult.outcome, deferredPrompt.platforms);
+        });
       });
     }
     else {
@@ -65,6 +68,11 @@ const customInstallPrompt = () => {
       installPrompt(event);
     }, 1 * 1000);
     return false;
+  });
+
+  // 监听应用已安装事件
+  window.addEventListener('appinstalled', () => {
+    log('InstallPrompt:', 'installed');
   });
 };
 
